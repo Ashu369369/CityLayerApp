@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import ErrorBox from '../component/ErrorBox'; // Import the ErrorBox component
+import ErrorBox from '../component/ErrorBox'; // Import the ErrorBox component\
+import { createUser } from '../api/userApi';
+
 
 type FormData = {
   firstName: string;
@@ -8,6 +10,7 @@ type FormData = {
   username: string;
   dob: string;
   code: string;
+  email: string,
   password: string;
   confirmPassword: string;
 };
@@ -21,6 +24,7 @@ const SignupPage: React.FC = () => {
     username: '',
     dob: '',
     code: '',
+    email: '',
     password: '',
     confirmPassword: '',
   });
@@ -50,6 +54,10 @@ const SignupPage: React.FC = () => {
         if (!value.trim()||value.trim()=='') error = 'Date of Birth is required.';
         else if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) error = 'Date of Birth must be in YYYY-MM-DD format.';
         break;
+      case 'email':
+        if (!value.trim()||value.trim()=='') error = 'Email is required.';
+        // else if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) error = 'Email must be in YYYY-MM-DD format.';
+        break;
       case 'password':
         if (!value.trim()) error = 'Password is required.';
         else if (value.length < 6) error = 'Password must be at least 6 characters.';
@@ -62,15 +70,18 @@ const SignupPage: React.FC = () => {
   };
 
   
-  const handleSignup = () => {
+  const handleSignup = async () => {
     let allValid = true;
     const newErrors: Partial<FormData> = {};
+    console.log("shuru");
   
     // Check each field for validity
     Object.keys(formData).forEach((key) => {
       const field = key as keyof FormData;
       const value = formData[field];
       if (!value.trim()) {
+        if(key==="code")
+          return;
         newErrors[field] = `${field} is required.`; // Add error if empty
         allValid = false;
       } else {
@@ -79,9 +90,17 @@ const SignupPage: React.FC = () => {
     });
   
     setErrors(newErrors); // Display all errors if any
+
     if (allValid) {
       // Proceed only if all fields are valid
-      console.log('Form Submitted:', formData);
+      try {
+        const response = await createUser(formData);
+        let message = response.data.createUser.message;
+        console.log(message);
+      } catch (error: any) {
+        console.log(error);
+        alert(error.message);
+      }
     } else {
       console.log('Form has errors:', newErrors);
     }
@@ -133,6 +152,13 @@ const SignupPage: React.FC = () => {
         placeholder="Code (if any)"
         value={formData.code}
         onChangeText={(value) => handleChange('code', value)}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="example@email.com"
+        value={formData.email}
+        onChangeText={(value) => handleChange('email', value)}
       />
 
       <TextInput
