@@ -1,7 +1,6 @@
-import axios from 'axios';
 import axiosInstance from '../axios/axiosconfig';
 
-const baseUrl = `http://localhost:4000/graphql`; // Replace with your GraphQL backend URL
+const baseUrl = `http://10.44.25.129:4000/graphql`; // Replace with your GraphQL backend URL
 
 export interface CreateUserRequest {
   firstName: string;
@@ -11,6 +10,17 @@ export interface CreateUserRequest {
   dob: string;
   password: string; // Keep 'password' here
   code?: string;
+}
+
+interface GraphQLError {
+  message: string;
+  path?: string[];
+  extensions?: Record<string, any>;
+}
+
+interface GraphQLResponse<T> {
+  data?: T;
+  errors?: GraphQLError[];
 }
 
 export interface CreateUserResponse {
