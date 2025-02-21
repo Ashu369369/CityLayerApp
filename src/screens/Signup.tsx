@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import ErrorBox from '../component/ErrorBox'; // Import the ErrorBox component\
-import { createUser } from '../api/userApi';
+import { createUser, CreateUserResponse, GraphQLResponse } from '../api/userApi';
 
 
 type FormData = {
@@ -43,6 +43,8 @@ const SignupPage: React.FC = () => {
     let error = '';
     switch (name) {
       case 'firstName':
+        if (!value.trim()) error = `${name} is required.`;
+        break;
       case 'lastName':
         if (!value.trim()) error = `${name} is required.`;
         break;
@@ -94,12 +96,36 @@ const SignupPage: React.FC = () => {
     if (allValid) {
       // Proceed only if all fields are valid
       try {
-        const response = await createUser(formData);
-        let message = response.data.createUser.message;
+        const response: GraphQLResponse<CreateUserResponse> = await createUser(formData);
+        console.log(response);
+
+        if (response.errors) {
+          // If errors exist, handle them
+          console.log("GraphQL errors:", response.errors);
+          alert("Error: " + response.errors[0]?.message || "An unknown error occurred");
+          return;
+        }
+        let message = response?.data?.createUser?.message;
+        
+        alert(message);
         console.log(message);
       } catch (error: any) {
-        console.log(error);
-        alert(error.message);
+        console.log("here ya ga: ")
+        console.log(error.response)
+        if (error.response && error.response.status) {
+          switch (error.response.status) {
+            case 400:
+              alert("Invalid input: "+ error.response.data.message);
+              break;
+            case 409:
+              alert("User already exists: "+error.response);
+              break;
+            default:
+              alert("An unknown error occurred: "+error.response.data.message);
+          }
+        } else {
+          console.log("Network or server error:", error.message);
+        }
       }
     } else {
       console.log('Form has errors:', newErrors);
