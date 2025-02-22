@@ -8,11 +8,14 @@ import SignupPage from "./screens/Signup";
 import HomeScreen from "./screens/Home";
 import SearchScreen from "./screens/Search";
 import { RootStackParamList } from "./navigation/RootStackParams";
+import { Provider } from "react-redux";
+import store from "./state/store";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Signup">
         <Stack.Screen name="Home" component={HomeScreen} />
@@ -21,7 +24,7 @@ export default function App() {
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
-
+    </Provider>
   );
 }
 
