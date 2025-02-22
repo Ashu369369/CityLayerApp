@@ -1,3 +1,8 @@
+
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../navigation/RootStackParams";
+
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import ErrorBox from '../component/ErrorBox'; // Import the ErrorBox component\
@@ -8,34 +13,40 @@ import { setUser } from '../state/slices/userSlice';
 import { setToken } from '../state/slices/authSlice';
 
 
+type SignupScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Signup"
+>;
+
 type FormData = {
   firstName: string;
   lastName: string;
   username: string;
   dob: string;
   code: string;
-  email: string,
+  email: string;
   password: string;
   confirmPassword: string;
 };
 
 const SignupPage: React.FC = () => {
 
+  const navigation = useNavigation<SignupScreenNavigationProp>();
+
+
   const dispatch = useDispatch();
   const userState = useSelector((state: RootState) => state.user);
   const userToken = useSelector((state: RootState) => state.auth);
 
-
-
   const [formData, setFormData] = useState<FormData>({
-    firstName: '',
-    lastName: '',
-    username: '',
-    dob: '',
-    code: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    firstName: "",
+    lastName: "",
+    username: "",
+    dob: "",
+    code: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
@@ -43,24 +54,25 @@ const SignupPage: React.FC = () => {
   // Handle input changes
   const handleChange = (name: keyof FormData, value: string) => {
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: '' }); // Clear error when the user starts typing
+    setErrors({ ...errors, [name]: "" }); // Clear error when the user starts typing
   };
-
 
   // Validation logic
   const validateField = (name: keyof FormData, value: string) => {
-    let error = '';
+    let error = "";
     switch (name) {
-      case 'firstName':
+      case "firstName":
         if (!value.trim()) error = `${name} is required.`;
         break;
-      case 'lastName':
+      case "lastName":
         if (!value.trim()) error = `${name} is required.`;
         break;
-      case 'username':
-        if (!value.trim()) error = 'Username is required.';
-        else if (value.length < 5) error = 'Username must be at least 5 characters.';
+      case "username":
+        if (!value.trim()) error = "Username is required.";
+        else if (value.length < 5)
+          error = "Username must be at least 5 characters.";
         break;
+
       case 'dob':
         if (!value.trim() || value.trim() == '') error = 'Date of Birth is required.';
         else if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) error = 'Date of Birth must be in YYYY-MM-DD format.';
@@ -68,18 +80,19 @@ const SignupPage: React.FC = () => {
       case 'email':
         if (!value.trim() || value.trim() == '') error = 'Email is required.';
         // else if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) error = 'Email must be in YYYY-MM-DD format.';
+
         break;
-      case 'password':
-        if (!value.trim()) error = 'Password is required.';
-        else if (value.length < 6) error = 'Password must be at least 6 characters.';
+      case "password":
+        if (!value.trim()) error = "Password is required.";
+        else if (value.length < 6)
+          error = "Password must be at least 6 characters.";
         break;
-      case 'confirmPassword':
-        if (value !== formData.password) error = 'Passwords do not match.';
+      case "confirmPassword":
+        if (value !== formData.password) error = "Passwords do not match.";
         break;
     }
     setErrors({ ...errors, [name]: error });
   };
-
 
   const handleSignup = async () => {
     let allValid = true;
@@ -91,8 +104,9 @@ const SignupPage: React.FC = () => {
       const field = key as keyof FormData;
       const value = formData[field];
       if (!value.trim()) {
-        if (key === "code")
-          return;
+
+        if (key === "code") return;
+
         newErrors[field] = `${field} is required.`; // Add error if empty
         allValid = false;
       } else {
@@ -105,16 +119,22 @@ const SignupPage: React.FC = () => {
     if (allValid) {
       // Proceed only if all fields are valid
       try {
-        const response: GraphQLResponse<CreateUserResponse> = await createUser(formData);
+        const response: GraphQLResponse<CreateUserResponse> = await createUser(
+          formData
+        );
         console.log(response);
 
-        if (response.errors) {
+        if (response?.errors) {
           // If errors exist, handle them
           console.log("GraphQL errors:", response.errors);
-          alert("Error: " + response.errors[0]?.message || "An unknown error occurred");
+          alert(
+            "Error: " + response.errors[0]?.message ||
+              "An unknown error occurred"
+          );
           return;
         }
         let message = response?.data?.createUser?.message;
+
         let token = response?.data?.createUser?.token;
         let user = {
           id: response?.data?.createUser?.id,
@@ -125,8 +145,13 @@ const SignupPage: React.FC = () => {
           dob: formData.dob,
         };
 
+
         alert(message);
         console.log(message);
+
+
+        // Navigate to Home screen after successful signup
+        navigation.navigate("Home");
 
         // Dispatch the action to store the token and user information
         dispatch(setUser(user));
@@ -134,26 +159,29 @@ const SignupPage: React.FC = () => {
         console.log(userState);
         console.log(userToken);
 
+
       } catch (error: any) {
-        console.log("here ya ga: ")
-        console.log(error.response)
+        console.log("here ya ga: ");
+        console.log(error.response);
         if (error.response && error.response.status) {
           switch (error.response.status) {
             case 400:
               alert("Invalid input: " + error.response.data.message);
               break;
             case 409:
+
               alert("User already exists: " + error.response);
               break;
             default:
               alert("An unknown error occurred: " + error.response.data.message);
+
           }
         } else {
           console.log("Network or server error:", error.message);
         }
       }
     } else {
-      console.log('Form has errors:', newErrors);
+      console.log("Form has errors:", newErrors);
     }
   };
 
@@ -166,8 +194,8 @@ const SignupPage: React.FC = () => {
         style={styles.input}
         placeholder="First Name"
         value={formData.firstName}
-        onChangeText={(value) => handleChange('firstName', value)}
-        onBlur={() => validateField('firstName', formData.firstName)}
+        onChangeText={(value) => handleChange("firstName", value)}
+        onBlur={() => validateField("firstName", formData.firstName)}
       />
       <ErrorBox errorMessage={errors.firstName} />
 
@@ -175,8 +203,8 @@ const SignupPage: React.FC = () => {
         style={styles.input}
         placeholder="Last Name"
         value={formData.lastName}
-        onChangeText={(value) => handleChange('lastName', value)}
-        onBlur={() => validateField('lastName', formData.lastName)}
+        onChangeText={(value) => handleChange("lastName", value)}
+        onBlur={() => validateField("lastName", formData.lastName)}
       />
       <ErrorBox errorMessage={errors.lastName} />
 
@@ -184,8 +212,8 @@ const SignupPage: React.FC = () => {
         style={styles.input}
         placeholder="Username"
         value={formData.username}
-        onChangeText={(value) => handleChange('username', value)}
-        onBlur={() => validateField('username', formData.username)}
+        onChangeText={(value) => handleChange("username", value)}
+        onBlur={() => validateField("username", formData.username)}
       />
       <ErrorBox errorMessage={errors.username} />
 
@@ -193,8 +221,8 @@ const SignupPage: React.FC = () => {
         style={styles.input}
         placeholder="Date of Birth (YYYY-MM-DD)"
         value={formData.dob}
-        onChangeText={(value) => handleChange('dob', value)}
-        onBlur={() => validateField('dob', formData.dob)}
+        onChangeText={(value) => handleChange("dob", value)}
+        onBlur={() => validateField("dob", formData.dob)}
       />
       <ErrorBox errorMessage={errors.dob} />
 
@@ -202,23 +230,25 @@ const SignupPage: React.FC = () => {
         style={styles.input}
         placeholder="Code (if any)"
         value={formData.code}
-        onChangeText={(value) => handleChange('code', value)}
+        onChangeText={(value) => handleChange("code", value)}
       />
 
       <TextInput
         style={styles.input}
         placeholder="example@email.com"
         value={formData.email}
-        onChangeText={(value) => handleChange('email', value)}
+        onChangeText={(value) => handleChange("email", value)}
+        onBlur={() => validateField("email", formData.email)}
       />
+      <ErrorBox errorMessage={errors.email} />
 
       <TextInput
         style={styles.input}
         placeholder="Password"
         secureTextEntry
         value={formData.password}
-        onChangeText={(value) => handleChange('password', value)}
-        onBlur={() => validateField('password', formData.password)}
+        onChangeText={(value) => handleChange("password", value)}
+        onBlur={() => validateField("password", formData.password)}
       />
       <ErrorBox errorMessage={errors.password} />
 
@@ -227,8 +257,10 @@ const SignupPage: React.FC = () => {
         placeholder="Confirm Password"
         secureTextEntry
         value={formData.confirmPassword}
-        onChangeText={(value) => handleChange('confirmPassword', value)}
-        onBlur={() => validateField('confirmPassword', formData.confirmPassword)}
+        onChangeText={(value) => handleChange("confirmPassword", value)}
+        onBlur={() =>
+          validateField("confirmPassword", formData.confirmPassword)
+        }
       />
       <ErrorBox errorMessage={errors.confirmPassword} />
 
@@ -242,37 +274,37 @@ const SignupPage: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
+    width: "100%",
     flexGrow: 1,
-    padding: '20%',
-    justifyContent: 'center',
-    backgroundColor: '#ffff',
+    padding: "20%",
+    justifyContent: "center",
+    backgroundColor: "#ffff",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 20,
-    color: 'var(--darkBlue)',
+    color: "var(--darkBlue)",
   },
   input: {
     height: 40,
-    borderColor: 'var(--grey)',
+    borderColor: "var(--grey)",
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 5,
-    backgroundColor: 'var(--white)',
+    backgroundColor: "var(--white)",
   },
   button: {
-    backgroundColor: 'var(--lightBlue)',
+    backgroundColor: "var(--lightBlue)",
     paddingVertical: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'var(--white)',
-    fontWeight: 'bold',
+    color: "var(--white)",
+    fontWeight: "bold",
     fontSize: 16,
   },
 });

@@ -1,3 +1,4 @@
+
 import axiosInstance from '../axios/axiosconfig';
 import Constants from "expo-constants";
 
@@ -26,6 +27,7 @@ export interface GraphQLResponse<T> {
 }
 
 export interface CreateUserResponse {
+
     createUser: {
       id: number;
       message: string;
@@ -34,6 +36,7 @@ export interface CreateUserResponse {
 }
 
 export const createUser = async (data: CreateUserRequest): Promise<GraphQLResponse<CreateUserResponse>> => {
+
   const mutation = `
     mutation CreateUser(
       $firstName: String!,
@@ -67,27 +70,21 @@ export const createUser = async (data: CreateUserRequest): Promise<GraphQLRespon
     username: data.username,
     email: data.email,
     dob: data.dob,
-    passwordHash: data.password,  // Here, you map the 'password' to 'passwordHash' as expected in the mutation
+    passwordHash: data.password, // Here, you map the 'password' to 'passwordHash' as expected in the mutation
     code: data.code || null,
   };
 
   try {
+
     console.log(baseUrl)
     const response = await axiosInstance.post<CreateUserResponse>(baseUrl, {
+
       query: mutation,
-      variables: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        username: data.username,
-        email: data.email,
-        dob: data.dob,
-        passwordHash: data.password,
-        code: data.code || null,
-      },
+      variables,
     });
     return response.data;
   } catch (error: any) {
     console.log(error);
-    throw new Error(error.response?.data?.message || 'Error creating user');
+    throw new Error(error.response?.data?.message || "Error creating user");
   }
 };
