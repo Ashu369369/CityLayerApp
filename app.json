@@ -23,6 +23,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "config": "192.168.1.98",
+      "apiKey": "YOUR_API_KEY"
     }
   }
 }

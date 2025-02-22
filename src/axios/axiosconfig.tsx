@@ -2,7 +2,9 @@ import axios from "axios";
 
 // Create an Axios instance (you can customize it more if needed)
 const axiosInstance = axios.create({
-  baseURL: "http://192.168.1.114:4000/graphql", // Replace with your backend URL
+
+  baseURL: `http://${process.env.config}:4000/graphql`, // Replace with your backend URL
+
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
