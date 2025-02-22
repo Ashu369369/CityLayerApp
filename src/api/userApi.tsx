@@ -1,6 +1,6 @@
-import axiosInstance from '../axios/axiosconfig';
+import axiosInstance from "../axios/axiosconfig";
 
-const baseUrl = `http://10.44.25.129:4000/graphql`; // Replace with your GraphQL backend URL
+const baseUrl = `http://192.168.1.114:4000/graphql`; // Replace with your GraphQL backend URL
 
 export interface CreateUserRequest {
   firstName: string;
@@ -18,21 +18,21 @@ interface GraphQLError {
   extensions?: Record<string, any>;
 }
 
-interface GraphQLResponse<T> {
+export interface GraphQLResponse<T> {
   data?: T;
   errors?: GraphQLError[];
 }
 
 export interface CreateUserResponse {
-  data: {
-    createUser: {
-      id: number;
-      message: string;
-    };
+  createUser: {
+    id: number;
+    message: string;
   };
 }
 
-export const createUser = async (data: CreateUserRequest): Promise<CreateUserResponse> => {
+export const createUser = async (
+  data: CreateUserRequest
+): Promise<GraphQLResponse<CreateUserResponse>> => {
   const mutation = `
     mutation CreateUser(
       $firstName: String!,
@@ -65,26 +65,20 @@ export const createUser = async (data: CreateUserRequest): Promise<CreateUserRes
     username: data.username,
     email: data.email,
     dob: data.dob,
-    passwordHash: data.password,  // Here, you map the 'password' to 'passwordHash' as expected in the mutation
+    passwordHash: data.password, // Here, you map the 'password' to 'passwordHash' as expected in the mutation
     code: data.code || null,
   };
 
   try {
-    const response = await axiosInstance.post<CreateUserResponse>(baseUrl, {
+    const response = await axiosInstance.post<
+      GraphQLResponse<CreateUserResponse>
+    >(baseUrl, {
       query: mutation,
-      variables: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        username: data.username,
-        email: data.email,
-        dob: data.dob,
-        passwordHash: data.password,
-        code: data.code || null,
-      },
+      variables,
     });
     return response.data;
   } catch (error: any) {
     console.log(error);
-    throw new Error(error.response?.data?.message || 'Error creating user');
+    throw new Error(error.response?.data?.message || "Error creating user");
   }
 };
