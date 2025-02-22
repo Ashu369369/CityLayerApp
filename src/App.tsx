@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -8,25 +7,38 @@ import SignupPage from "./screens/Signup";
 import HomeScreen from "./screens/Home";
 import SearchScreen from "./screens/Search";
 import { RootStackParamList } from "./navigation/RootStackParams";
-import { Provider } from "react-redux";
-import store from "./state/store";
+import { Provider, useSelector } from "react-redux";
+import store, { RootState } from "./state/store";
+import MainNavBar from "./component/mainNavBar";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
     <Provider store={store}>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Signup">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Signup" component={SignupPage} />
-        <Stack.Screen name="Search" component={SearchScreen} />
-      </Stack.Navigator>
-      <StatusBar style="auto" />
-    </NavigationContainer>
+      <AppContent />
     </Provider>
   );
 }
+
+const AppContent: React.FC = () => {
+  const loggedIn = useSelector((state: RootState) => state.user.id) !== null;
+
+  return (
+    <NavigationContainer>
+      {loggedIn ? (
+        <MainNavBar />
+      ) : (
+        <Stack.Navigator initialRouteName="Signup">
+          <Stack.Screen name="Signup" component={SignupPage} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Search" component={SearchScreen} />
+        </Stack.Navigator>
+      )}
+      <StatusBar style="auto" />
+    </NavigationContainer>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
