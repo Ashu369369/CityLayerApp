@@ -1,6 +1,8 @@
 import axiosInstance from '../axios/axiosconfig';
+import Constants from "expo-constants";
 
-const baseUrl = `http://10.44.25.129:4000/graphql`; // Replace with your GraphQL backend URL
+const baseUrl = `http://${Constants.expoConfig?.extra?.config}:4000/graphql`; // Replace with your GraphQL backend URL
+
 
 export interface CreateUserRequest {
   firstName: string;
@@ -18,21 +20,20 @@ interface GraphQLError {
   extensions?: Record<string, any>;
 }
 
-interface GraphQLResponse<T> {
+export interface GraphQLResponse<T> {
   data?: T;
   errors?: GraphQLError[];
 }
 
 export interface CreateUserResponse {
-  data: {
     createUser: {
       id: number;
       message: string;
+      token?: string;
     };
-  };
 }
 
-export const createUser = async (data: CreateUserRequest): Promise<CreateUserResponse> => {
+export const createUser = async (data: CreateUserRequest): Promise<GraphQLResponse<CreateUserResponse>> => {
   const mutation = `
     mutation CreateUser(
       $firstName: String!,
@@ -54,6 +55,7 @@ export const createUser = async (data: CreateUserRequest): Promise<CreateUserRes
       ) {
         id
         message
+        token
       }
     }
   `;
@@ -70,6 +72,7 @@ export const createUser = async (data: CreateUserRequest): Promise<CreateUserRes
   };
 
   try {
+    console.log(baseUrl)
     const response = await axiosInstance.post<CreateUserResponse>(baseUrl, {
       query: mutation,
       variables: {
