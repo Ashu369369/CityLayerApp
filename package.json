@@ -27,7 +27,7 @@
     "react-native": "0.76.7",
 
     "react-native-safe-area-context": "^5.2.0",
-    "react-native-screens": "^4.9.0"
+    "react-native-screens": "^4.9.0",
 
     "react-redux": "^9.2.0",
     "redux": "^5.0.1"

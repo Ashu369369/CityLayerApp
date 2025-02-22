@@ -1,17 +1,26 @@
-
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
 
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import ErrorBox from '../component/ErrorBox'; // Import the ErrorBox component\
-import { createUser, CreateUserResponse, GraphQLResponse } from '../api/userApi';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../state/store';
-import { setUser } from '../state/slices/userSlice';
-import { setToken } from '../state/slices/authSlice';
-
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import ErrorBox from "../component/ErrorBox"; // Import the ErrorBox component\
+import {
+  createUser,
+  CreateUserResponse,
+  GraphQLResponse,
+} from "../api/userApi";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../state/store";
+import { setUser } from "../state/slices/userSlice";
+import { setToken } from "../state/slices/authSlice";
 
 type SignupScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -30,9 +39,7 @@ type FormData = {
 };
 
 const SignupPage: React.FC = () => {
-
   const navigation = useNavigation<SignupScreenNavigationProp>();
-
 
   const dispatch = useDispatch();
   const userState = useSelector((state: RootState) => state.user);
@@ -73,12 +80,14 @@ const SignupPage: React.FC = () => {
           error = "Username must be at least 5 characters.";
         break;
 
-      case 'dob':
-        if (!value.trim() || value.trim() == '') error = 'Date of Birth is required.';
-        else if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) error = 'Date of Birth must be in YYYY-MM-DD format.';
+      case "dob":
+        if (!value.trim() || value.trim() == "")
+          error = "Date of Birth is required.";
+        else if (!/^\d{4}-\d{2}-\d{2}$/.test(value))
+          error = "Date of Birth must be in YYYY-MM-DD format.";
         break;
-      case 'email':
-        if (!value.trim() || value.trim() == '') error = 'Email is required.';
+      case "email":
+        if (!value.trim() || value.trim() == "") error = "Email is required.";
         // else if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) error = 'Email must be in YYYY-MM-DD format.';
 
         break;
@@ -104,7 +113,6 @@ const SignupPage: React.FC = () => {
       const field = key as keyof FormData;
       const value = formData[field];
       if (!value.trim()) {
-
         if (key === "code") return;
 
         newErrors[field] = `${field} is required.`; // Add error if empty
@@ -145,10 +153,8 @@ const SignupPage: React.FC = () => {
           dob: formData.dob,
         };
 
-
         alert(message);
         console.log(message);
-
 
         // Navigate to Home screen after successful signup
         navigation.navigate("Home");
@@ -158,8 +164,6 @@ const SignupPage: React.FC = () => {
         dispatch(setToken(token));
         console.log(userState);
         console.log(userToken);
-
-
       } catch (error: any) {
         console.log("here ya ga: ");
         console.log(error.response);
@@ -169,12 +173,12 @@ const SignupPage: React.FC = () => {
               alert("Invalid input: " + error.response.data.message);
               break;
             case 409:
-
               alert("User already exists: " + error.response);
               break;
             default:
-              alert("An unknown error occurred: " + error.response.data.message);
-
+              alert(
+                "An unknown error occurred: " + error.response.data.message
+              );
           }
         } else {
           console.log("Network or server error:", error.message);
@@ -184,7 +188,6 @@ const SignupPage: React.FC = () => {
       console.log("Form has errors:", newErrors);
     }
   };
-
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
