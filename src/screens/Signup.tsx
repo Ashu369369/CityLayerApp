@@ -127,20 +127,15 @@ const SignupPage: React.FC = () => {
     if (allValid) {
       // Proceed only if all fields are valid
       try {
-        const response: GraphQLResponse<CreateUserResponse> = await createUser(
-          formData
-        );
-        console.log(response);
-
-        if (response?.errors) {
-          // If errors exist, handle them
-          console.log("GraphQL errors:", response.errors);
-          alert(
-            "Error: " + response.errors[0]?.message ||
-              "An unknown error occurred"
-          );
-          return;
-        }
+        const response = await createUser(formData);
+        
+        
+      if (response.errors && response.errors.length > 0) {
+        // If errors exist, handle them
+        console.log("GraphQL errors:", response.errors);
+        alert("Error: " + response.errors[0]?.message || "An unknown error occurred");
+        return;
+      }
         let message = response?.data?.createUser?.message;
 
         let token = response?.data?.createUser?.token;
@@ -154,10 +149,6 @@ const SignupPage: React.FC = () => {
         };
 
         alert(message);
-        console.log(message);
-
-        // Navigate to Home screen after successful signup
-        navigation.navigate("Home");
 
         // Dispatch the action to store the token and user information
         dispatch(setUser(user));
@@ -166,7 +157,7 @@ const SignupPage: React.FC = () => {
         console.log(userToken);
       } catch (error: any) {
         console.log("here ya ga: ");
-        console.log(error.response);
+        console.log(error);
         if (error.response && error.response.status) {
           switch (error.response.status) {
             case 400:
@@ -266,6 +257,9 @@ const SignupPage: React.FC = () => {
         }
       />
       <ErrorBox errorMessage={errors.confirmPassword} />
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+      <Text style={styles.LoginText}>Already have an account? Log In</Text>
+    </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <Text style={styles.buttonText}>Sign Up</Text>
@@ -310,6 +304,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
+  LoginText: {
+    marginTop: 0,
+    marginBottom: 10,
+    fontSize: 12,
+    textAlign: "right",
+    color: "blue",
+    textDecorationLine: "none",
+  }
 });
 
 export default SignupPage;

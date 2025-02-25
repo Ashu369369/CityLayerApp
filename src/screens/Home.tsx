@@ -4,11 +4,20 @@ import { useNavigation } from "@react-navigation/native";
 import ErrorBox from "../component/ErrorBox";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+
+  const dispatch = useDispatch();
+  const userState = useSelector((state: RootState) => state.user);
+  const userToken = useSelector((state: RootState) => state.auth);
+
+console.log(userState);
+console.log(userToken);
 
   const navigateToSearch = () => {
     navigation.navigate("Search");
