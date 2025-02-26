@@ -15,7 +15,7 @@ export interface CreateUserRequest {
   code?: string;
 }
 
-interface GraphQLError {
+export interface GraphQLError {
   message: string;
   path?: string[];
   extensions?: Record<string, any>;
@@ -27,13 +27,32 @@ export interface GraphQLResponse<T> {
 }
 
 export interface CreateUserResponse {
-
-    createUser: {
-      id: number;
-      message: string;
-      token?: string;
-    };
+  createUser: {
+    id: number;
+    message: string;
+    token?: string;
+  };
 }
+
+
+export interface LoginUserRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginUserResponse {
+  login: {
+    id: number;
+    firstName: string,
+    lastName: string,
+    username: string,
+    email: string,
+    dob: string,
+    message: string;
+    token?: string;
+  };
+}
+
 
 export const createUser = async (data: CreateUserRequest): Promise<GraphQLResponse<CreateUserResponse>> => {
 
@@ -75,16 +94,49 @@ export const createUser = async (data: CreateUserRequest): Promise<GraphQLRespon
   };
 
   try {
-
     console.log(baseUrl)
-    const response = await axiosInstance.post<CreateUserResponse>(baseUrl, {
+    const response = await axiosInstance.post<GraphQLResponse<CreateUserResponse>>(baseUrl, {
+      query: mutation,
+      variables,
+    });
 
+    return response.data;
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(error.response?.data?.message || "Error creating user");
+  }
+};
+
+//login function
+export const loginUser = async (data: LoginUserRequest): Promise<GraphQLResponse<LoginUserResponse>> => {
+
+  const mutation = `
+    mutation LoginUser($username: String!, $password: String!) {
+      login(username: $username, password: $password) {
+        id
+        firstName
+        lastName
+        username
+        email
+        dob
+        message
+        token
+      }
+    }
+  `;
+
+  const variables = {
+    username: data.username,
+    password: data.password,
+  };
+  try {
+    const response = await axiosInstance.post<GraphQLResponse<LoginUserResponse>>(baseUrl, {
       query: mutation,
       variables,
     });
     return response.data;
   } catch (error: any) {
     console.log(error);
-    throw new Error(error.response?.data?.message || "Error creating user");
+    throw new Error(error.response?.data?.message || "Error logging in");
   }
 };
