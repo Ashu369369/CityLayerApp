@@ -23,7 +23,8 @@ export default function App() {
 }
 
 const AppContent: React.FC = () => {
-  const loggedIn = useSelector((state: RootState) => state.user.id) !== null && useSelector((state: RootState) => state.user.id) !== "null";
+  const loggedIn = useSelector((state: RootState) => state.user.id) != null;
+  console.log(loggedIn);
 
   return (
     <NavigationContainer>
