@@ -94,7 +94,6 @@ export const createUser = async (data: CreateUserRequest): Promise<GraphQLRespon
   };
 
   try {
-
     console.log(baseUrl)
     const response = await axiosInstance.post<GraphQLResponse<CreateUserResponse>>(baseUrl, {
       query: mutation,
@@ -135,7 +134,6 @@ export const loginUser = async (data: LoginUserRequest): Promise<GraphQLResponse
       query: mutation,
       variables,
     });
-
     return response.data;
   } catch (error: any) {
     console.log(error);
