@@ -34,7 +34,6 @@ export interface CreateUserResponse {
   };
 }
 
-
 export interface LoginUserRequest {
   username: string;
   password: string;
