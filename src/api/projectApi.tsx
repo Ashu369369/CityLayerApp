@@ -1,3 +1,4 @@
+import { ProjectPrivacy } from "expo/config";
 import { demoProjects } from "../demoData/projects";
 
 export interface Project {
@@ -13,8 +14,13 @@ export interface Project {
   timeline: string;
   departmentid: number;
   createdat: string;
+  updatedat: string;
 }
 
 export const getProjectsByDepartmentId = (departmentId: number): Project[] => {
-  return demoProjects.filter(project => project.departmentid == departmentId);
+  return demoProjects.filter((project) => project.departmentid == departmentId);
+};
+
+export const getProjectById = (projectId: number): Project[] => {
+  return demoProjects.filter((project) => project.projectid == projectId);
 };

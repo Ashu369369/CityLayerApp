@@ -25,5 +25,10 @@ export type RootStackParamList = {
     departmentid: number;
     createdat: string;
   };
+  Project: {
+    projectId: number;
+  };
   MainNavBar: undefined;
+  Program: { programId: number };
+  Programs: undefined;
 };

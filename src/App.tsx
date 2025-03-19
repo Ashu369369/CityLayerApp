@@ -6,6 +6,7 @@ import store, { RootState } from "./state/store";
 import MainNavBar from "./component/mainNavBar";
 import LoginPage from "./screens/Login";
 import SignupPage from "./screens/Signup";
+// import Project from "./screens/Project";
 
 export default function App() {
   return (

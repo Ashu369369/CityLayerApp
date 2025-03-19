@@ -1,9 +1,7 @@
-
-import axiosInstance from '../axios/axiosconfig';
+import axiosInstance from "../axios/axiosconfig";
 import Constants from "expo-constants";
 
 const baseUrl = `http://${Constants.expoConfig?.extra?.config}:4000/graphql`; // Replace with your GraphQL backend URL
-
 
 export interface CreateUserRequest {
   firstName: string;
@@ -43,20 +41,20 @@ export interface LoginUserRequest {
 export interface LoginUserResponse {
   login: {
     id: number;
-    firstName: string,
-    lastName: string,
-    username: string,
-    email: string,
-    dob: string,
+    firstName: string;
+    lastName: string;
+    username: string;
+    email: string;
+    dob: string;
     message: string;
     token?: string;
     role?: number;
   };
 }
 
-
-export const createUser = async (data: CreateUserRequest): Promise<GraphQLResponse<CreateUserResponse>> => {
-
+export const createUser = async (
+  data: CreateUserRequest
+): Promise<GraphQLResponse<CreateUserResponse>> => {
   const mutation = `
     mutation CreateUser(
       $firstName: String!,
@@ -96,8 +94,10 @@ export const createUser = async (data: CreateUserRequest): Promise<GraphQLRespon
   };
 
   try {
-    console.log(baseUrl)
-    const response = await axiosInstance.post<GraphQLResponse<CreateUserResponse>>(baseUrl, {
+    console.log(baseUrl);
+    const response = await axiosInstance.post<
+      GraphQLResponse<CreateUserResponse>
+    >(baseUrl, {
       query: mutation,
       variables,
     });
@@ -110,8 +110,9 @@ export const createUser = async (data: CreateUserRequest): Promise<GraphQLRespon
 };
 
 //login function
-export const loginUser = async (data: LoginUserRequest): Promise<GraphQLResponse<LoginUserResponse>> => {
-
+export const loginUser = async (
+  data: LoginUserRequest
+): Promise<GraphQLResponse<LoginUserResponse>> => {
   const mutation = `
     mutation LoginUser($username: String!, $password: String!) {
       login(username: $username, password: $password) {
@@ -133,7 +134,9 @@ export const loginUser = async (data: LoginUserRequest): Promise<GraphQLResponse
     password: data.password,
   };
   try {
-    const response = await axiosInstance.post<GraphQLResponse<LoginUserResponse>>(baseUrl, {
+    const response = await axiosInstance.post<
+      GraphQLResponse<LoginUserResponse>
+    >(baseUrl, {
       query: mutation,
       variables,
     });

@@ -1,4 +1,3 @@
-// filepath: d:\college\capstone\frontend\CityLayerApp\src\screens\ProjectDetails.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';

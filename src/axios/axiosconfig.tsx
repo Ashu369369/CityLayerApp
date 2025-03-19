@@ -4,6 +4,7 @@ import Constants from "expo-constants";
 const axiosInstance = axios.create({
 
   baseURL: `http://${Constants.expoConfig?.extra?.config}:4000/graphql`,
+
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

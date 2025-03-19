@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { Department, getAllDepartments } from "../api/deptApi";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -7,13 +14,14 @@ import { RootStackParamList } from "../navigation/RootStackParams";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 
-type DepartmentScreenNavigationProp = StackNavigationProp<RootStackParamList, "Department">;
-
+type DepartmentScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Department"
+>;
 
 const DepartmentScreen: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const navigation = useNavigation<DepartmentScreenNavigationProp>();
-
 
   const userState = useSelector((state: RootState) => state.user);
 
@@ -49,8 +57,18 @@ const DepartmentScreen: React.FC = () => {
         keyExtractor={(item) => item.departmentid.toString()}
         numColumns={2}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.item} onPress={() => handleDepartmentPress(item)}>
-            <Image source={{ uri: item.imageUrl || 'https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg' }} style={styles.image} />
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => handleDepartmentPress(item)}
+          >
+            <Image
+              source={{
+                uri:
+                  item.imageUrl ||
+                  "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
+              }}
+              style={styles.image}
+            />
             <Text style={styles.itemText}>{item.title}</Text>
           </TouchableOpacity>
         )}
