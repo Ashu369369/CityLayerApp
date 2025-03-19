@@ -28,6 +28,10 @@ export type RootStackParamList = {
   Project: {
     projectId: number;
   };
+  Edit: {
+    type: string;
+    id: number;
+  };
   MainNavBar: undefined;
   Program: { programId: number };
   Programs: undefined;

@@ -146,7 +146,7 @@ const SignupPage: React.FC = () => {
           username: formData.username,
           email: formData.email,
           dob: formData.dob,
-          role: response?.data?.createUser?.roleid,
+          role: response?.data?.createUser?.role,
         };
 
         alert(message);

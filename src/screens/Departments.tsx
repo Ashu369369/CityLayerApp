@@ -13,6 +13,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import EditButton from "../component/EditButton";
 
 type DepartmentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -23,7 +24,7 @@ const DepartmentScreen: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const navigation = useNavigation<DepartmentScreenNavigationProp>();
 
-  const userState = useSelector((state: RootState) => state.user);
+  const role = useSelector((state: RootState) => state.user.role);
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -37,7 +38,6 @@ const DepartmentScreen: React.FC = () => {
         console.error("Error fetching departments:", error);
       }
     };
-    console.log(userState);
     fetchDepartments();
   }, []);
 
@@ -70,6 +70,7 @@ const DepartmentScreen: React.FC = () => {
               style={styles.image}
             />
             <Text style={styles.itemText}>{item.title}</Text>
+            {role===3 ? <EditButton type={"department"} id={item.departmentid} /> : "" }
           </TouchableOpacity>
         )}
       />
