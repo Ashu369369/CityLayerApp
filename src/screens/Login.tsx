@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -35,6 +35,8 @@ const LoginPage: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
+
+  const passwordInputRef = useRef<TextInput>(null);
 
   // Handle input changes
   const handleChange = (name: keyof FormData, value: string) => {
@@ -138,6 +140,8 @@ const LoginPage: React.FC = () => {
         value={formData.username}
         onChangeText={(value) => handleChange("username", value)}
         onBlur={() => validateField("username", formData.username)}
+        returnKeyType="next"
+        onSubmitEditing={() => passwordInputRef.current?.focus()}
       />
       <ErrorBox errorMessage={errors.username} />
 
@@ -148,6 +152,9 @@ const LoginPage: React.FC = () => {
         value={formData.password}
         onChangeText={(value) => handleChange("password", value)}
         onBlur={() => validateField("password", formData.password)}
+        ref={passwordInputRef}
+        returnKeyType="done"
+        onSubmitEditing={handleLogin}
       />
       <ErrorBox errorMessage={errors.password} />
 
