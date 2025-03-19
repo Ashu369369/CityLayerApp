@@ -1,8 +1,9 @@
 import axios from "axios";
+import Constants from "expo-constants";
 
 // Create an Axios instance (you can customize it more if needed)
 const axiosInstance = axios.create({
-  baseURL: `http://${process.env.config}:4000/graphql`, // Replace with your backend URL
+  baseURL: `http://${Constants.expoConfig?.extra?.config}:4000/graphql`, // Replace with your backend URL
 
   headers: {
     "Content-Type": "application/json",

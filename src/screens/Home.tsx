@@ -16,11 +16,16 @@ export const HomeScreen: React.FC = () => {
   const userState = useSelector((state: RootState) => state.user);
   const userToken = useSelector((state: RootState) => state.auth);
 
-console.log(userState);
-console.log(userToken);
+  console.log(userState);
+  console.log(userToken);
 
   const navigateToSearch = () => {
-    navigation.navigate("Search");
+    navigation.navigate("Department", {
+      title: "Department Title",
+      id: 1,
+      description: "Department Description",
+      imageUrl: "https://example.com/image.jpg",
+    });
   };
 
   return (
