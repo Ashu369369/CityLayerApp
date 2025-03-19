@@ -21,8 +21,8 @@ export const getProjectsByDepartmentId = (departmentId: number): Project[] => {
   return demoProjects.filter((project) => project.departmentid == departmentId);
 };
 
-export const getProjectById = (projectId: number): Project[] => {
-  return demoProjects.filter((project) => project.projectid == projectId);
+export const getProjectById = (projectId: number): Project | undefined => {
+  return demoProjects.find((project) => project.projectid == projectId);
 };
 
 export const deleteProject = (projectId: number): void => {

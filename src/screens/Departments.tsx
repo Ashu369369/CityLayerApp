@@ -32,6 +32,7 @@ const DepartmentScreen: React.FC = () => {
 
   const role = useSelector((state: RootState) => state.user.role);
 
+
   const fetchDepartments = async () => {
     try {
       const response = await getAllDepartments();

@@ -88,6 +88,16 @@ const Department: React.FC = () => {
   useEffect(() => {
     if (selectedTab === "projects") {
       const departmentId = route.params.id;
+
+      const fetchProjects = async () => {
+        try {
+          const fetchedProjects = await getProjectsByDepartmentId(departmentId);
+          setProjects(fetchedProjects);
+        } catch (error) {
+          console.error("Error fetching projects:", error);
+        }
+      };
+
       fetchProjects();
     }
   }, [selectedTab]);
@@ -100,19 +110,9 @@ const Department: React.FC = () => {
   }, [selectedTab]);
 
   const handleProjectPress = (project: Project) => {
-    navigation.navigate("ProjectDetails", {
-      projectid: project.projectid,
-      title: project.title,
-      description: project.description,
-      startdate: project.startdate,
-      duedate: project.duedate,
-      status: project.status,
-      assignedto: project.assignedto,
-      workforce: project.workforce,
-      budget: project.budget,
-      timeline: project.timeline,
-      departmentid: project.departmentid,
-      createdat: project.createdat,
+
+    navigation.navigate('Project', {
+      projectid: project.projectid
     });
   };
 
@@ -202,7 +202,7 @@ const Department: React.FC = () => {
         <TouchableOpacity
           onPress={() => {
             if (selectedTab === "projects") {
-              handleProjectPress(item);
+              navigation.navigate('Project', { projectid: item.projectid });
             } else if (selectedTab === "programs") {
               navigation.navigate("Program", { programId: item.programid });
             } else if (selectedTab === "announcements") {
@@ -244,6 +244,7 @@ const Department: React.FC = () => {
             ) : (
               ""
             )}
+
           </View>
         </TouchableOpacity>
       )}
