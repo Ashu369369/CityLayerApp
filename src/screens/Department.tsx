@@ -9,31 +9,86 @@ import {
 } from "react-native";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
-import { getProjectsByDepartmentId, Project } from "../api/projectApi";
-import { getProgramsByDepartmentId, Program } from "../api/programApi";
+import {
+  deleteProject,
+  getProjectsByDepartmentId,
+  Project,
+} from "../api/projectApi";
+import {
+  deleteProgram,
+  getProgramsByDepartmentId,
+  Program,
+} from "../api/programApi";
 import { StackNavigationProp } from "@react-navigation/stack";
 import EditButton from "../component/EditButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import DeleteButton from "../component/DeleteButton";
+import { deleteDepartment } from "../api/deptApi";
+import {
+  Announcement,
+  getAnnouncementsByDepartmentId,
+} from "../api/announcementsApi";
 
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
 type ProjectScreenRouteProp = StackNavigationProp<RootStackParamList>;
 
 const Department: React.FC = () => {
-
   const route = useRoute<DepartmentScreenRouteProp>();
   const navigation = useNavigation<ProjectScreenRouteProp>();
+
+  const departmentId = route.params.id;
 
   const { title, description, imageUrl } = route.params;
   const [selectedTab, setSelectedTab] = useState<
     "announcements" | "projects" | "programs"
   >("announcements");
-  const [projects, setProjects] = useState<Project[]>([]);
+
   const role = useSelector((state: RootState) => state.user.role);
 
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+
+  const fetchAnnouncements = async () => {
+    try {
+      const fetchedAnnouncements = await getAnnouncementsByDepartmentId(
+        departmentId
+      );
+      console.log(fetchedAnnouncements);
+      setAnnouncements(fetchedAnnouncements);
+    } catch (error) {
+      console.error("Error fetching announcements:", error);
+    }
+  };
+  const fetchProjects = async () => {
+    try {
+      const fetchedProjects = await getProjectsByDepartmentId(departmentId);
+      // console.log(fetchedProjects);
+      setProjects(fetchedProjects);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+  const fetchPrograms = async () => {
+    try {
+      const fetchedPrograms = await getProgramsByDepartmentId(departmentId);
+      setPrograms(fetchedPrograms);
+    } catch (error) {
+      console.error("Error fetching programs:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedTab === "announcements") {
+      const departmentId = route.params.id;
+      fetchAnnouncements();
+    }
+  }, [selectedTab]);
   useEffect(() => {
     if (selectedTab === "projects") {
       const departmentId = route.params.id;
+
       const fetchProjects = async () => {
         try {
           const fetchedProjects = await getProjectsByDepartmentId(departmentId);
@@ -42,31 +97,34 @@ const Department: React.FC = () => {
           console.error("Error fetching projects:", error);
         }
       };
+
       fetchProjects();
     }
   }, [selectedTab]);
 
-  const [programs, setPrograms] = useState<Program[]>([]);
-
   useEffect(() => {
     if (selectedTab === "programs") {
       const departmentId = route.params.id;
-      const fetchPrograms = async () => {
-        try {
-          const fetchedPrograms = await getProgramsByDepartmentId(departmentId);
-          setPrograms(fetchedPrograms);
-        } catch (error) {
-          console.error("Error fetching programs:", error);
-        }
-      };
       fetchPrograms();
     }
   }, [selectedTab]);
 
   const handleProjectPress = (project: Project) => {
+
     navigation.navigate('Project', {
       projectid: project.projectid
     });
+  };
+
+  const handleDelete = async (type: string, id: number) => {
+    if (type === "projects") {
+      await deleteProject(id);
+      fetchProjects();
+    } else if (type === "programs") {
+      // Add this block
+      await deleteProgram(id);
+      fetchPrograms();
+    }
   };
 
   const renderHeader = () => (
@@ -129,51 +187,73 @@ const Department: React.FC = () => {
     <FlatList
       data={
         selectedTab === "announcements"
-          ? []
+          ? announcements
           : ((selectedTab === "projects" ? projects : programs) as any[])
       } // Display projects or programs based on selectedTab
       keyExtractor={(item) =>
-        item.projectid ? item.projectid.toString() : item.programid.toString()
+        selectedTab === "announcements"
+          ? item.announcementId.toString() // Use announcementId for announcements
+          : item.projectid
+          ? item.projectid.toString()
+          : item.programid.toString()
       } // Dynamic key based on type
       ListHeaderComponent={renderHeader}
       renderItem={({ item }) => (
-
         <TouchableOpacity
           onPress={() => {
-            if (selectedTab === "projects")
+            if (selectedTab === "projects") {
               navigation.navigate('Project', { projectid: item.projectid });
-            else if (selectedTab === "programs")
+            } else if (selectedTab === "programs") {
               navigation.navigate("Program", { programId: item.programid });
-          }}>
+            } else if (selectedTab === "announcements") {
+              // Handle announcement press if needed
+              console.log("Announcement clicked:", item.messageTitle);
+            }
+          }}
+        >
           <View style={styles.projectItem}>
             {/* Render title based on selected tab */}
             <Text style={styles.projectTitle}>
-              {selectedTab === "projects" ? item.title : item.name}
+              {selectedTab === "projects"
+                ? item.title
+                : selectedTab === "programs"
+                ? item.programName
+                : item.messageTitle}
             </Text>
-
             {/* Render description based on selected tab */}
             <Text style={styles.projectDescription}>
-              {selectedTab === "projects" ? item.description : item.description}
+              {selectedTab === "projects"
+                ? item.description
+                : selectedTab === "programs"
+                ? item.description
+                : item.messageBody}
             </Text>
 
-            {role === 2 || role === 3 ? <EditButton type={selectedTab} id={item.projectid || item.programid} /> : ""}
+            {role === 2 || role === 3 ? (
+              <>
+                <EditButton
+                  type={selectedTab}
+                  id={item.projectid || item.programid}
+                />
+                <DeleteButton
+                  onDelete={() => {
+                    handleDelete(selectedTab, item.projectid || item.programid);
+                  }}
+                />
+              </>
+            ) : (
+              ""
+            )}
 
           </View>
-        </TouchableOpacity >
+        </TouchableOpacity>
       )}
       ListEmptyComponent={
-        selectedTab === "announcements" ? (
-          <View style={styles.announcements}>
-            <Text style={styles.announcementText}>
-              No announcements available.
-            </Text>
-          </View>
-        ) :
-          (
-            <View style={styles.announcements}>
-              <Text style={styles.announcementText}>No Projects available.</Text>
-            </View>
-          )
+        <View style={styles.announcements}>
+          <Text style={styles.announcementText}>
+            No {selectedTab} available.
+          </Text>
+        </View>
       }
     />
   );
