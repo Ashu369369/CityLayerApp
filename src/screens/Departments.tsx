@@ -7,13 +7,19 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { Department, getAllDepartments } from "../api/deptApi";
+import {
+  deleteDepartment,
+  Department,
+  getAllDepartments,
+} from "../api/deptApi";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import EditButton from "../component/EditButton";
+import DeleteButton from "../component/DeleteButton";
+import { deleteProject } from "../api/projectApi";
 
 type DepartmentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -26,18 +32,28 @@ const DepartmentScreen: React.FC = () => {
 
   const role = useSelector((state: RootState) => state.user.role);
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await getAllDepartments();
-        console.log(response);
-        if (response.data) {
-          setDepartments(response.data.getAllDepartments);
-        }
-      } catch (error) {
-        console.error("Error fetching departments:", error);
+  const fetchDepartments = async () => {
+    try {
+      const response = await getAllDepartments();
+      console.log(response);
+      if (response.data) {
+        setDepartments(response.data.getAllDepartments);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
+
+  const handleDelete = async (departmentId: number) => {
+    try {
+      await deleteDepartment(departmentId);
+      fetchDepartments();
+    } catch (error) {
+      console.error("Error deleting department:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchDepartments();
   }, []);
 
@@ -70,7 +86,16 @@ const DepartmentScreen: React.FC = () => {
               style={styles.image}
             />
             <Text style={styles.itemText}>{item.title}</Text>
-            {role===3 ? <EditButton type={"department"} id={item.departmentid} /> : "" }
+            {role === 3 ? (
+              <>
+                <EditButton type={"department"} id={item.departmentid} />
+                <DeleteButton
+                  onDelete={() => handleDelete(item.departmentid)}
+                />
+              </>
+            ) : (
+              ""
+            )}
           </TouchableOpacity>
         )}
       />

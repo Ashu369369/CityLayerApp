@@ -35,3 +35,8 @@ export const getProgramsByCreator = (creatorId: number): Program[] => {
 export const getProgramById = (programId: number): Program | undefined => {
   return programs.find((program: Program) => program.programid === programId);
 };
+
+export const deleteProgram = (programId: number): void => {
+  const index = programs.findIndex((program) => program.programid == programId);
+  programs.splice(index, 1);
+};

@@ -17,7 +17,7 @@ const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
     <TouchableOpacity onPress={handleDelete} style={styles.button}>
       <Image
         source={require("../../assets/bin.png")}
-        style={styles.icon}
+        style={styles.image}
         resizeMode="contain"
       />
     </TouchableOpacity>
@@ -26,11 +26,19 @@ const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
 
 const styles = StyleSheet.create({
   button: {
+    position: "absolute",
+    top: 10,
+    right: 50,
     padding: 10,
+    backgroundColor: "rgba(255, 0, 0, 1)",
+    borderRadius: 20,
   },
-  icon: {
-    width: 24,
-    height: 24,
+  image: {
+    position: "relative",
+    left: 1,
+    width: 10,
+    height: 10,
+    tintColor: "#fff",
   },
 });
 

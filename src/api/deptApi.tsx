@@ -1,4 +1,4 @@
-import axiosInstance from '../axios/axiosconfig';
+import axiosInstance from "../axios/axiosconfig";
 import Constants from "expo-constants";
 
 const baseUrl = `http://${Constants.expoConfig?.extra?.config}:4000/graphql`; // Replace with your GraphQL backend URL
@@ -48,7 +48,9 @@ export interface GetAllDepartmentsResponse {
   getAllDepartments: Department[];
 }
 
-export const createDepartment = async (data: CreateDepartmentRequest): Promise<GraphQLResponse<CreateDepartmentResponse>> => {
+export const createDepartment = async (
+  data: CreateDepartmentRequest
+): Promise<GraphQLResponse<CreateDepartmentResponse>> => {
   const mutation = `
     mutation CreateDepartment($title: String!, $description: String!, $imageUrl: String) {
       createDepartment(title: $title, description: $description, imageUrl: $imageUrl) {
@@ -65,11 +67,15 @@ export const createDepartment = async (data: CreateDepartmentRequest): Promise<G
   const variables = {
     title: data.title,
     description: data.description,
-    imageUrl: data.imageUrl || 'https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg',
+    imageUrl:
+      data.imageUrl ||
+      "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
   };
 
   try {
-    const response = await axiosInstance.post<GraphQLResponse<CreateDepartmentResponse>>(baseUrl, {
+    const response = await axiosInstance.post<
+      GraphQLResponse<CreateDepartmentResponse>
+    >(baseUrl, {
       query: mutation,
       variables,
     });
@@ -77,11 +83,15 @@ export const createDepartment = async (data: CreateDepartmentRequest): Promise<G
     return response.data;
   } catch (error: any) {
     console.log(error);
-    throw new Error(error.response?.data?.message || "Error creating department");
+    throw new Error(
+      error.response?.data?.message || "Error creating department"
+    );
   }
 };
 
-export const getDepartment = async (departmentId: string): Promise<GraphQLResponse<GetDepartmentResponse>> => {
+export const getDepartment = async (
+  departmentId: string
+): Promise<GraphQLResponse<GetDepartmentResponse>> => {
   const query = `
     query GetDepartment($departmentId: String!) {
       getDepartment(departmentId: $departmentId) {
@@ -100,7 +110,9 @@ export const getDepartment = async (departmentId: string): Promise<GraphQLRespon
   };
 
   try {
-    const response = await axiosInstance.post<GraphQLResponse<GetDepartmentResponse>>(baseUrl, {
+    const response = await axiosInstance.post<
+      GraphQLResponse<GetDepartmentResponse>
+    >(baseUrl, {
       query,
       variables,
     });
@@ -108,11 +120,15 @@ export const getDepartment = async (departmentId: string): Promise<GraphQLRespon
     return response.data;
   } catch (error: any) {
     console.log(error);
-    throw new Error(error.response?.data?.message || "Error fetching department");
+    throw new Error(
+      error.response?.data?.message || "Error fetching department"
+    );
   }
 };
 
-export const getAllDepartments = async (): Promise<GraphQLResponse<GetAllDepartmentsResponse>> => {
+export const getAllDepartments = async (): Promise<
+  GraphQLResponse<GetAllDepartmentsResponse>
+> => {
   const query = `
     query GetAllDepartments {
       getAllDepartments {
@@ -127,13 +143,62 @@ export const getAllDepartments = async (): Promise<GraphQLResponse<GetAllDepartm
   `;
 
   try {
-    const response = await axiosInstance.post<GraphQLResponse<GetAllDepartmentsResponse>>(baseUrl, {
+    const response = await axiosInstance.post<
+      GraphQLResponse<GetAllDepartmentsResponse>
+    >(baseUrl, {
       query,
     });
 
     return response.data;
   } catch (error: any) {
     console.log(error);
-    throw new Error(error.response?.data?.message || "Error fetching departments");
+    throw new Error(
+      error.response?.data?.message || "Error fetching departments"
+    );
+  }
+};
+
+//correct this function
+export const deleteDepartment = async (
+  departmentId: number
+): Promise<{ success: boolean; message: string }> => {
+  const mutation = `
+    mutation DeleteDepartment($departmentId: ID!) {
+      deleteDepartment(departmentId: $departmentId) {
+        success
+        message
+      }
+    }
+  `;
+
+  const variables = {
+    departmentId: departmentId.toString(), // Ensure the ID is passed as a string
+  };
+
+  try {
+    const response = await axiosInstance.post(baseUrl, {
+      query: mutation,
+      variables,
+    });
+
+    const data = response.data as GraphQLResponse<{
+      deleteDepartment: { success: boolean; message: string };
+    }>;
+
+    if (data.errors) {
+      throw new Error(data.errors[0]?.message || "Error deleting department");
+    }
+
+    return (
+      data.data?.deleteDepartment || {
+        success: false,
+        message: "Unknown error",
+      }
+    );
+  } catch (error: any) {
+    console.error("Error deleting department:", error);
+    throw new Error(
+      error.response?.data?.message || "Error deleting department"
+    );
   }
 };

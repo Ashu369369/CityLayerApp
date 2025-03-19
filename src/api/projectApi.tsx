@@ -24,3 +24,10 @@ export const getProjectsByDepartmentId = (departmentId: number): Project[] => {
 export const getProjectById = (projectId: number): Project[] => {
   return demoProjects.filter((project) => project.projectid == projectId);
 };
+
+export const deleteProject = (projectId: number): void => {
+  const index = demoProjects.findIndex(
+    (project) => project.projectid == projectId
+  );
+  demoProjects.splice(index, 1);
+};
