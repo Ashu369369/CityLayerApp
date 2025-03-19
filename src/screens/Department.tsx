@@ -24,11 +24,12 @@ import EditButton from "../component/EditButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import DeleteButton from "../component/DeleteButton";
-import { deleteDepartment } from "../api/deptApi";
 import {
   Announcement,
   getAnnouncementsByDepartmentId,
 } from "../api/announcementsApi";
+import { sortItems } from "../Tools/sortFunction";
+import { Button, Menu, Divider, Provider } from 'react-native-paper';
 
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
 type ProjectScreenRouteProp = StackNavigationProp<RootStackParamList>;
@@ -50,12 +51,14 @@ const Department: React.FC = () => {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
+  const [sortMenuVisible, setSortMenuVisible] = useState(false);
+  const [filterMenuVisible, setFilterMenuVisible] = useState(false);
+
   const fetchAnnouncements = async () => {
     try {
       const fetchedAnnouncements = await getAnnouncementsByDepartmentId(
         departmentId
       );
-      console.log(fetchedAnnouncements);
       setAnnouncements(fetchedAnnouncements);
     } catch (error) {
       console.error("Error fetching announcements:", error);
@@ -64,7 +67,6 @@ const Department: React.FC = () => {
   const fetchProjects = async () => {
     try {
       const fetchedProjects = await getProjectsByDepartmentId(departmentId);
-      // console.log(fetchedProjects);
       setProjects(fetchedProjects);
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -81,50 +83,44 @@ const Department: React.FC = () => {
 
   useEffect(() => {
     if (selectedTab === "announcements") {
-      const departmentId = route.params.id;
       fetchAnnouncements();
     }
   }, [selectedTab]);
   useEffect(() => {
     if (selectedTab === "projects") {
-      const departmentId = route.params.id;
-
-      const fetchProjects = async () => {
-        try {
-          const fetchedProjects = await getProjectsByDepartmentId(departmentId);
-          setProjects(fetchedProjects);
-        } catch (error) {
-          console.error("Error fetching projects:", error);
-        }
-      };
-
       fetchProjects();
     }
   }, [selectedTab]);
 
   useEffect(() => {
     if (selectedTab === "programs") {
-      const departmentId = route.params.id;
       fetchPrograms();
     }
   }, [selectedTab]);
-
-  const handleProjectPress = (project: Project) => {
-
-    navigation.navigate('Project', {
-      projectid: project.projectid
-    });
-  };
 
   const handleDelete = async (type: string, id: number) => {
     if (type === "projects") {
       await deleteProject(id);
       fetchProjects();
     } else if (type === "programs") {
-      // Add this block
       await deleteProgram(id);
       fetchPrograms();
     }
+  };
+
+  const handleSort = (value: string) => {
+    const [criteria, order] = value.split('-');
+    if (selectedTab === "announcements") {
+      const sortedAnnouncements = sortItems(announcements, criteria === "title" ? "messageTitle" : "createdat" as keyof Announcement, order as "asc" | "desc");
+      setAnnouncements([...sortedAnnouncements]);
+    } else if (selectedTab === "projects") {
+      const sortedProjects = sortItems(projects, criteria === "title" ? "title" : "createdat" as keyof Project, order as "asc" | "desc");
+      setProjects([...sortedProjects]);
+    } else if (selectedTab === "programs") {
+      const sortedPrograms = sortItems(programs, criteria === "title" ? "name" : "createdAt" as keyof Program, order as "asc" | "desc");
+      setPrograms([...sortedPrograms]);
+    }
+    setSortMenuVisible(false);
   };
 
   const renderHeader = () => (
@@ -179,83 +175,111 @@ const Department: React.FC = () => {
             <Text style={styles.buttonText}>Programs</Text>
           </TouchableOpacity>
         </View>
+        {/* Sort and Filter Bar */}
+        <View style={styles.sortFilterBar}>
+          <Menu
+            visible={sortMenuVisible}
+            onDismiss={() => setSortMenuVisible(false)}
+            anchor={
+              <Button onPress={() => setSortMenuVisible(true)}>Sort by</Button>
+            }
+          >
+            <Menu.Item onPress={() => handleSort('title-asc')} title="Name (Asc)" />
+            <Menu.Item onPress={() => handleSort('title-desc')} title="Name (Desc)" />
+            <Divider />
+            <Menu.Item onPress={() => handleSort('createdAt-asc')} title="Date (Asc)" />
+            <Menu.Item onPress={() => handleSort('createdAt-desc')} title="Date (Desc)" />
+          </Menu>
+          <Menu
+            visible={filterMenuVisible}
+            onDismiss={() => setFilterMenuVisible(false)}
+            anchor={
+              <Button onPress={() => setFilterMenuVisible(true)}>Filter by</Button>
+            }
+          >
+            <Menu.Item onPress={() => handleSort('title')} title="Name" />
+            <Menu.Item onPress={() => handleSort('createdAt')} title="Date" />
+          </Menu>
+        </View>
       </View>
     </>
   );
 
   return (
-    <FlatList
-      data={
-        selectedTab === "announcements"
-          ? announcements
-          : ((selectedTab === "projects" ? projects : programs) as any[])
-      } // Display projects or programs based on selectedTab
-      keyExtractor={(item) =>
-        selectedTab === "announcements"
-          ? item.announcementId.toString() // Use announcementId for announcements
-          : item.projectid
-          ? item.projectid.toString()
-          : item.programid.toString()
-      } // Dynamic key based on type
-      ListHeaderComponent={renderHeader}
-      renderItem={({ item }) => (
-        <TouchableOpacity
-          onPress={() => {
-            if (selectedTab === "projects") {
-              navigation.navigate('Project', { projectid: item.projectid });
-            } else if (selectedTab === "programs") {
-              navigation.navigate("Program", { programId: item.programid });
-            } else if (selectedTab === "announcements") {
-              // Handle announcement press if needed
-              console.log("Announcement clicked:", item.messageTitle);
-            }
-          }}
-        >
-          <View style={styles.projectItem}>
-            {/* Render title based on selected tab */}
-            <Text style={styles.projectTitle}>
-              {selectedTab === "projects"
-                ? item.title
-                : selectedTab === "programs"
-                ? item.programName
-                : item.messageTitle}
-            </Text>
-            {/* Render description based on selected tab */}
-            <Text style={styles.projectDescription}>
-              {selectedTab === "projects"
-                ? item.description
-                : selectedTab === "programs"
-                ? item.description
-                : item.messageBody}
-            </Text>
+    <Provider>
+      <FlatList
+        data={
+          selectedTab === "announcements"
+            ? announcements
+            : ((selectedTab === "projects" ? projects : programs) as any[])
+        } // Display projects or programs based on selectedTab
+        keyExtractor={(item) =>
+          selectedTab === "announcements"
+            ? item.announcementId.toString() // Use announcementId for announcements
+            : item.projectid
+              ? item.projectid.toString()
+              : item.programid.toString()
+        } // Dynamic key based on type
+        ListHeaderComponent={renderHeader}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => {
+              if (selectedTab === "projects") {
+                navigation.navigate('Project', { projectid: item.projectid });
+              } else if (selectedTab === "programs") {
+                navigation.navigate("Program", { programId: item.programid });
+              } else if (selectedTab === "announcements") {
+                // Handle announcement press if needed
+                console.log("Announcement clicked:", item.messageTitle);
+              }
+            }}
+          >
+            <View style={styles.projectItem}>
+              {/* Render title based on selected tab */}
+              <Text style={styles.projectTitle}>
+                {selectedTab === "projects"
+                  ? item.title
+                  : selectedTab === "programs"
+                    ? item.name
+                    : item.messageTitle}
+              </Text>
+              {/* Render description based on selected tab */}
+              <Text style={styles.projectDescription}>
+                {selectedTab === "projects"
+                  ? item.description
+                  : selectedTab === "programs"
+                    ? item.description
+                    : item.messageBody}
+              </Text>
 
-            {role === 2 || role === 3 ? (
-              <>
-                <EditButton
-                  type={selectedTab}
-                  id={item.projectid || item.programid}
-                />
-                <DeleteButton
-                  onDelete={() => {
-                    handleDelete(selectedTab, item.projectid || item.programid);
-                  }}
-                />
-              </>
-            ) : (
-              ""
-            )}
+              {role === 2 || role === 3 ? (
+                <>
+                  <EditButton
+                    type={selectedTab}
+                    id={item.projectid || item.programid}
+                  />
+                  <DeleteButton
+                    onDelete={() => {
+                      handleDelete(selectedTab, item.projectid || item.programid);
+                    }}
+                  />
+                </>
+              ) : (
+                ""
+              )}
 
+            </View>
+          </TouchableOpacity>
+        )}
+        ListEmptyComponent={
+          <View style={styles.announcements}>
+            <Text style={styles.announcementText}>
+              No {selectedTab} available.
+            </Text>
           </View>
-        </TouchableOpacity>
-      )}
-      ListEmptyComponent={
-        <View style={styles.announcements}>
-          <Text style={styles.announcementText}>
-            No {selectedTab} available.
-          </Text>
-        </View>
-      }
-    />
+        }
+      />
+    </Provider>
   );
 };
 
@@ -319,6 +343,15 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  sortFilterBar: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#f0f0f0",
+    borderTopWidth: 1,
+    borderTopColor: "#ccc",
   },
   announcements: {
     padding: 20,
