@@ -20,11 +20,11 @@ export const HomeScreen: React.FC = () => {
   console.log(userToken);
 
   const navigateToSearch = () => {
-    navigation.navigate("Department", {
-      title: "Department Title",
+    navigation.navigate('Department', {
       id: 1,
-      description: "Department Description",
-      imageUrl: "https://example.com/image.jpg",
+      title: 'Department Title',
+      description: 'Department Description',
+      imageUrl: 'https://example.com/image.jpg'
     });
   };
 

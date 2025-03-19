@@ -29,6 +29,7 @@ export interface CreateUserResponse {
     id: number;
     message: string;
     token?: string;
+    role?: number;
   };
 }
 
@@ -47,6 +48,7 @@ export interface LoginUserResponse {
     dob: string;
     message: string;
     token?: string;
+    role?: number;
   };
 }
 
@@ -75,6 +77,7 @@ export const createUser = async (
         id
         message
         token
+        role
       }
     }
   `;
@@ -121,6 +124,7 @@ export const loginUser = async (
         dob
         message
         token
+        role
       }
     }
   `;
@@ -136,6 +140,7 @@ export const loginUser = async (
       query: mutation,
       variables,
     });
+    console.log("response : ", response.data);
     return response.data;
   } catch (error: any) {
     console.log(error);

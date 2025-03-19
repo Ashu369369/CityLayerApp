@@ -1,61 +1,27 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ImageBackground,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-import { useRoute, RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "../navigation/RootStackParams";
-import { getProjectById, Project } from "../api/projectApi";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/RootStackParams';
 
-type ProjectScreenRouteProp = RouteProp<RootStackParamList, "Project">;
+type ProjectDetailsRouteProp = RouteProp<RootStackParamList, 'ProjectDetails'>;
 
-const Project: React.FC = () => {
-  const route = useRoute<ProjectScreenRouteProp>();
-  const { projectId } = route.params;
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProject = async () => {
-      const fetchedProject = await getProjectById(projectId);
-
-      setLoading(false);
-    };
-
-    fetchProject();
-  }, [projectId]);
-
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
-  if (!project) {
-    return (
-      <View style={styles.container}>
-        <Text>Project not found</Text>
-      </View>
-    );
-  }
+const ProjectDetails: React.FC = () => {
+  const route = useRoute<ProjectDetailsRouteProp>();
+  const { projectid, title, description, startdate, duedate, status, assignedto, workforce, budget, timeline, departmentid, createdat } = route.params;
 
   return (
     <View style={styles.container}>
-      <View style={styles.imageBackground}>
-        <View style={styles.overlay}>
-          <Text style={styles.title}>{project.title}</Text>
-        </View>
-      </View>
-      <View style={styles.content}>
-        <Text style={styles.description}>{project.description}</Text>
-        <Text style={styles.date}>
-          Created at: {new Date(project.createdat).toLocaleDateString()}
-        </Text>
-        <Text style={styles.date}>
-          Updated at: {new Date(project.updatedat).toLocaleDateString()}
-        </Text>
-      </View>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.description}>{description}</Text>
+      <Text style={styles.detail}>Start Date: {startdate}</Text>
+      <Text style={styles.detail}>Due Date: {duedate}</Text>
+      <Text style={styles.detail}>Status: {status}</Text>
+      <Text style={styles.detail}>Assigned To: {assignedto}</Text>
+      <Text style={styles.detail}>Workforce: {workforce.team.join(', ')}</Text>
+      <Text style={styles.detail}>Budget: ${budget}</Text>
+      <Text style={styles.detail}>Timeline: {timeline}</Text>
+      <Text style={styles.detail}>Department ID: {departmentid}</Text>
+      <Text style={styles.detail}>Created At: {createdat}</Text>
     </View>
   );
 };
@@ -63,44 +29,22 @@ const Project: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-  },
-  imageBackground: {
-    width: "100%",
-    height: 250,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+    padding: 16,
+    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-  },
-  content: {
-    padding: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
   },
   description: {
     fontSize: 16,
-    color: "#666",
-    lineHeight: 24,
-    marginBottom: 20,
+    marginBottom: 16,
   },
-  date: {
+  detail: {
     fontSize: 14,
-    color: "#666",
+    marginBottom: 8,
   },
 });
 
-export default Project;
+export default ProjectDetails;

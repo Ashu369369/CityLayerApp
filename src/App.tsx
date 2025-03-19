@@ -29,7 +29,6 @@ const AppContent: React.FC = () => {
   );
 };
 
-// ✅ Separate Stack Navigator for Login & Signup
 import { createStackNavigator } from "@react-navigation/stack";
 const AuthStack = createStackNavigator();
 

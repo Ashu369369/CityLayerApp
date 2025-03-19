@@ -18,8 +18,10 @@ type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
 type ProjectScreenRouteProp = StackNavigationProp<RootStackParamList>;
 
 const Department: React.FC = () => {
+
   const route = useRoute<DepartmentScreenRouteProp>();
   const navigation = useNavigation<ProjectScreenRouteProp>();
+  
   const { title, description, imageUrl } = route.params;
   const [selectedTab, setSelectedTab] = useState<
     "announcements" | "projects" | "programs"
@@ -58,6 +60,23 @@ const Department: React.FC = () => {
       fetchPrograms();
     }
   }, [selectedTab]);
+
+  const handleProjectPress = (project: Project) => {
+    navigation.navigate('ProjectDetails', {
+      projectid: project.projectid,
+      title: project.title,
+      description: project.description,
+      startdate: project.startdate,
+      duedate: project.duedate,
+      status: project.status,
+      assignedto: project.assignedto,
+      workforce: project.workforce,
+      budget: project.budget,
+      timeline: project.timeline,
+      departmentid: project.departmentid,
+      createdat: project.createdat,
+    });
+  };
 
   const renderHeader = () => (
     <>
@@ -127,10 +146,11 @@ const Department: React.FC = () => {
       } // Dynamic key based on type
       ListHeaderComponent={renderHeader}
       renderItem={({ item }) => (
+
         <TouchableOpacity
           onPress={() => {
             if (selectedTab === "projects") {
-              navigation.navigate("Project", { projectId: item.projectid });
+              handleProjectPress(item)}
             } else if (selectedTab === "programs") {
               navigation.navigate("Program", { programId: item.programid });
             }
@@ -175,7 +195,12 @@ const Department: React.FC = () => {
               No announcements available.
             </Text>
           </View>
-        ) : null
+        ) :
+          (
+            <View style={styles.announcements}>
+              <Text style={styles.announcementText}>No Projects available.</Text>
+            </View>
+          )
       }
     />
   );
