@@ -21,11 +21,11 @@ export const HomeScreen: React.FC = () => {
 
   const navigateToSearch = () => {
     navigation.navigate('Department', {
+      id: 1,
       title: 'Department Title',
       description: 'Department Description',
       imageUrl: 'https://example.com/image.jpg'
     });
-    
   };
 
   return (

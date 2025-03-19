@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import ErrorBox from "../component/ErrorBox"; // Import the ErrorBox component
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../state/store";
 import { setUser } from "../state/slices/userSlice";
 import { setToken } from "../state/slices/authSlice";
 import { loginUser, LoginUserResponse, GraphQLResponse } from "../api/userApi";
@@ -29,8 +28,6 @@ const LoginPage: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const dispatch = useDispatch();
-  const userState = useSelector((state: RootState) => state.user);
-  const userToken = useSelector((state: RootState) => state.auth);
 
   const [formData, setFormData] = useState<FormData>({
     username: "",
@@ -81,7 +78,6 @@ const LoginPage: React.FC = () => {
       // Proceed only if all fields are valid
       try {
         const response: GraphQLResponse<LoginUserResponse> = await loginUser(formData);
-        console.log(response.data?.login);
 
         if (response?.errors) {
           // If errors exist, handle them
@@ -98,6 +94,7 @@ const LoginPage: React.FC = () => {
           lastName: response?.data?.login?.lastName,
           email: response?.data?.login?.email,
           dob: response?.data?.login?.dob,
+          role: response?.data?.login?.role,
         };
         alert(message);
 
@@ -109,7 +106,7 @@ const LoginPage: React.FC = () => {
         dispatch(setToken(token));
 
       } catch (error: any) {
-        console.log("here ya ga: ");
+        console.log("Error logging in:");
         console.log(error.response);
         if (error.response && error.response.status) {
           switch (error.response.status) {

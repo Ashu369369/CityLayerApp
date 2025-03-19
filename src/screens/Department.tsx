@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/RootStackParams';
 import { getProjectsByDepartmentId, Project } from '../api/projectApi';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, 'Department'>;
+type DepartmentScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Department'>;
 
 const Department: React.FC = () => {
+
   const route = useRoute<DepartmentScreenRouteProp>();
+  const navigation = useNavigation<DepartmentScreenNavigationProp>();
+
   const { title, description, imageUrl } = route.params;
   const [selectedTab, setSelectedTab] = useState<'announcements' | 'projects'>('announcements');
   const [projects, setProjects] = useState<Project[]>([]);
@@ -20,6 +25,23 @@ const Department: React.FC = () => {
       setProjects(fetchedProjects);
     }
   }, [selectedTab]);
+
+  const handleProjectPress = (project: Project) => {
+    navigation.navigate('ProjectDetails', {
+      projectid: project.projectid,
+      title: project.title,
+      description: project.description,
+      startdate: project.startdate,
+      duedate: project.duedate,
+      status: project.status,
+      assignedto: project.assignedto,
+      workforce: project.workforce,
+      budget: project.budget,
+      timeline: project.timeline,
+      departmentid: project.departmentid,
+      createdat: project.createdat,
+    });
+  };
 
   const renderHeader = () => (
     <>
@@ -59,17 +81,24 @@ const Department: React.FC = () => {
       keyExtractor={(item) => item.projectid.toString()}
       ListHeaderComponent={renderHeader}
       renderItem={({ item }) => (
-        <View style={styles.projectItem}>
-          <Text style={styles.projectTitle}>{item.title}</Text>
-          <Text style={styles.projectDescription}>{item.description}</Text>
-        </View>
+        <TouchableOpacity onPress={() => handleProjectPress(item)}>
+          <View style={styles.projectItem}>
+            <Text style={styles.projectTitle}>{item.title}</Text>
+            <Text style={styles.projectDescription}>{item.description}</Text>
+          </View>
+        </TouchableOpacity>
       )}
       ListEmptyComponent={
         selectedTab === 'announcements' ? (
           <View style={styles.announcements}>
             <Text style={styles.announcementText}>No announcements available.</Text>
           </View>
-        ) : null
+        ) :
+          (
+            <View style={styles.announcements}>
+              <Text style={styles.announcementText}>No Projects available.</Text>
+            </View>
+          )
       }
     />
   );

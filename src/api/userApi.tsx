@@ -31,6 +31,7 @@ export interface CreateUserResponse {
     id: number;
     message: string;
     token?: string;
+    role?: number;
   };
 }
 
@@ -49,6 +50,7 @@ export interface LoginUserResponse {
     dob: string,
     message: string;
     token?: string;
+    role?: number;
   };
 }
 
@@ -77,6 +79,7 @@ export const createUser = async (data: CreateUserRequest): Promise<GraphQLRespon
         id
         message
         token
+        role
       }
     }
   `;
@@ -120,6 +123,7 @@ export const loginUser = async (data: LoginUserRequest): Promise<GraphQLResponse
         dob
         message
         token
+        role
       }
     }
   `;
@@ -133,6 +137,7 @@ export const loginUser = async (data: LoginUserRequest): Promise<GraphQLResponse
       query: mutation,
       variables,
     });
+    console.log("response : ", response.data);
     return response.data;
   } catch (error: any) {
     console.log(error);

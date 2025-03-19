@@ -4,6 +4,8 @@ import { Department, getAllDepartments } from "../api/deptApi";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 type DepartmentScreenNavigationProp = StackNavigationProp<RootStackParamList, "Department">;
 
@@ -12,7 +14,9 @@ const DepartmentScreen: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const navigation = useNavigation<DepartmentScreenNavigationProp>();
 
-  
+
+  const userState = useSelector((state: RootState) => state.user);
+
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -25,7 +29,7 @@ const DepartmentScreen: React.FC = () => {
         console.error("Error fetching departments:", error);
       }
     };
-
+    console.log(userState);
     fetchDepartments();
   }, []);
 
@@ -40,7 +44,6 @@ const DepartmentScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Departments</Text>
       <FlatList
         data={departments}
         keyExtractor={(item) => item.departmentid.toString()}
