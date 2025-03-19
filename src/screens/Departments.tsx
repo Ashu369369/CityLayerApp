@@ -30,7 +30,6 @@ const DepartmentScreen: React.FC = () => {
     const fetchDepartments = async () => {
       try {
         const response = await getAllDepartments();
-        console.log(response);
         if (response.data) {
           setDepartments(response.data.getAllDepartments);
         }
@@ -70,7 +69,7 @@ const DepartmentScreen: React.FC = () => {
               style={styles.image}
             />
             <Text style={styles.itemText}>{item.title}</Text>
-            {role===3 ? <EditButton type={"department"} id={item.departmentid} /> : "" }
+            {role === 3 ? <EditButton type={"department"} id={item.departmentid} /> : ""}
           </TouchableOpacity>
         )}
       />
