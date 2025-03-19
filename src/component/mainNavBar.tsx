@@ -8,6 +8,7 @@ import ProfileScreen from "../screens/Profile";
 import { createStackNavigator } from "@react-navigation/stack";
 import Department from "../screens/Department";
 import ProjectDetails from "../screens/Project";
+import EditScreen from "../screens/Edit";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -29,6 +30,7 @@ const DepartmentStack = () => (
     <Stack.Screen name="DepartmentsMain" component={DepartmentScreen} />
     <Stack.Screen name="Department" component={Department} />
     <Stack.Screen name="ProjectDetails" component={ProjectDetails} />
+    <Stack.Screen name="Edit" component={EditScreen} />
   </Stack.Navigator>
 );
 

@@ -11,8 +11,10 @@ import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { getProjectsByDepartmentId, Project } from "../api/projectApi";
 import { getProgramsByDepartmentId, Program } from "../api/programApi";
-import Icon from "react-native-vector-icons/FontAwesome"; // Import FontAwesome icons
 import { StackNavigationProp } from "@react-navigation/stack";
+import EditButton from "../component/EditButton";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
 type ProjectScreenRouteProp = StackNavigationProp<RootStackParamList>;
@@ -21,12 +23,13 @@ const Department: React.FC = () => {
 
   const route = useRoute<DepartmentScreenRouteProp>();
   const navigation = useNavigation<ProjectScreenRouteProp>();
-  
+
   const { title, description, imageUrl } = route.params;
   const [selectedTab, setSelectedTab] = useState<
     "announcements" | "projects" | "programs"
   >("announcements");
   const [projects, setProjects] = useState<Project[]>([]);
+  const role = useSelector((state: RootState) => state.user.role);
 
   useEffect(() => {
     if (selectedTab === "projects") {
@@ -150,12 +153,12 @@ const Department: React.FC = () => {
         <TouchableOpacity
           onPress={() => {
             if (selectedTab === "projects") {
-              handleProjectPress(item)}
-            } else if (selectedTab === "programs") {
+              handleProjectPress(item)
+            }
+            else if (selectedTab === "programs") {
               navigation.navigate("Program", { programId: item.programid });
             }
-          }}
-        >
+          }}>
           <View style={styles.projectItem}>
             {/* Render title based on selected tab */}
             <Text style={styles.projectTitle}>
@@ -167,26 +170,10 @@ const Department: React.FC = () => {
               {selectedTab === "projects" ? item.description : item.description}
             </Text>
 
-            <View style={styles.iconRow}>
-              <TouchableOpacity>
-                <Icon
-                  name="thumbs-up"
-                  size={20}
-                  color="#007BFF"
-                  style={styles.icon}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Icon
-                  name="comment"
-                  size={20}
-                  color="#007BFF"
-                  style={styles.icon}
-                />
-              </TouchableOpacity>
-            </View>
+            {role===2 || role===3 ? <EditButton type={selectedTab} id={item.projectid || item.programid} /> : ""}
+
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity >
       )}
       ListEmptyComponent={
         selectedTab === "announcements" ? (
