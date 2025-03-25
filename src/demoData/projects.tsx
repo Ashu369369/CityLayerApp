@@ -67,7 +67,7 @@ export const demoProjects: Project[] = [
     description: "Optimize cloud storage infrastructure.",
     startdate: "2023-06-15",
     duedate: "2023-12-15",
-    status: "Ongoing",
+    status: "Active",
     assignedto: 112,
     workforce: { team: ["Walter", "Xena"] },
     budget: 27000.0,

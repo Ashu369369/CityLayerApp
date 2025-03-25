@@ -10,11 +10,13 @@ import SignupPage from "./screens/Signup";
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <AppContent />
-      </NavigationContainer>
-    </Provider>
+    <PaperProvider theme={theme}>
+      <Provider store={store}>
+        <NavigationContainer>
+          <AppContent />
+        </NavigationContainer>
+      </Provider>
+    </PaperProvider>
   );
 }
 
@@ -30,6 +32,8 @@ const AppContent: React.FC = () => {
 };
 
 import { createStackNavigator } from "@react-navigation/stack";
+import { PaperProvider } from "react-native-paper";
+import theme from "./theme/theme";
 const AuthStack = createStackNavigator();
 
 const AuthNavigator: React.FC = () => (
