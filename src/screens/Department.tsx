@@ -3,8 +3,6 @@ import {
   View,
   Text,
   ImageBackground,
-  StyleSheet,
-  TouchableOpacity,
   FlatList,
 } from "react-native";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
@@ -24,11 +22,15 @@ import EditButton from "../component/EditButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import DeleteButton from "../component/DeleteButton";
-import { deleteDepartment } from "../api/deptApi";
 import {
   Announcement,
   getAnnouncementsByDepartmentId,
 } from "../api/announcementsApi";
+import { sortItems } from "../Tools/sortFunction";
+import { Button, Menu, Divider, Provider, Card, TouchableRipple, Paragraph, Title } from 'react-native-paper';
+import { LinearGradient } from 'expo-linear-gradient';
+import styles from '../styles/Department';
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
 type ProjectScreenRouteProp = StackNavigationProp<RootStackParamList>;
@@ -50,12 +52,14 @@ const Department: React.FC = () => {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
+  const [sortMenuVisible, setSortMenuVisible] = useState(false);
+  const [filterMenuVisible, setFilterMenuVisible] = useState(false);
+
   const fetchAnnouncements = async () => {
     try {
       const fetchedAnnouncements = await getAnnouncementsByDepartmentId(
         departmentId
       );
-      // console.log(fetchedAnnouncements);
       setAnnouncements(fetchedAnnouncements);
     } catch (error) {
       console.error("Error fetching announcements:", error);
@@ -64,7 +68,6 @@ const Department: React.FC = () => {
   const fetchProjects = async () => {
     try {
       const fetchedProjects = await getProjectsByDepartmentId(departmentId);
-      // console.log(fetchedProjects);
       setProjects(fetchedProjects);
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -81,30 +84,17 @@ const Department: React.FC = () => {
 
   useEffect(() => {
     if (selectedTab === "announcements") {
-      const departmentId = route.params.id;
       fetchAnnouncements();
     }
   }, [selectedTab]);
   useEffect(() => {
     if (selectedTab === "projects") {
-      const departmentId = route.params.id;
-
-      const fetchProjects = async () => {
-        try {
-          const fetchedProjects = await getProjectsByDepartmentId(departmentId);
-          setProjects(fetchedProjects);
-        } catch (error) {
-          console.error("Error fetching projects:", error);
-        }
-      };
-
       fetchProjects();
     }
   }, [selectedTab]);
 
   useEffect(() => {
     if (selectedTab === "programs") {
-      const departmentId = route.params.id;
       fetchPrograms();
     }
   }, [selectedTab]);
@@ -120,232 +110,193 @@ const Department: React.FC = () => {
       await deleteProject(id);
       fetchProjects();
     } else if (type === "programs") {
-      // Add this block
       await deleteProgram(id);
       fetchPrograms();
     }
+  };
+
+  const handleSort = (value: string) => {
+    const [criteria, order] = value.split('-');
+    if (selectedTab === "announcements") {
+      const sortedAnnouncements = sortItems(announcements, criteria === "title" ? "messageTitle" : "createdat" as keyof Announcement, order as "asc" | "desc");
+      setAnnouncements([...sortedAnnouncements]);
+    } else if (selectedTab === "projects") {
+      const sortedProjects = sortItems(projects, criteria === "title" ? "title" : "createdat" as keyof Project, order as "asc" | "desc");
+      setProjects([...sortedProjects]);
+    } else if (selectedTab === "programs") {
+      const sortedPrograms = sortItems(programs, criteria === "title" ? "name" : "createdAt" as keyof Program, order as "asc" | "desc");
+      setPrograms([...sortedPrograms]);
+    }
+    setSortMenuVisible(false);
   };
 
   const renderHeader = () => (
     <>
       <ImageBackground
         source={{
-          uri:
-            imageUrl ||
-            "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
+          uri: imageUrl || "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
         }}
         style={styles.imageBackground}
-        imageStyle={styles.image}
-        blurRadius={10}
+      // imageStyle={styles.image}
       >
-        <View style={styles.overlay}>
+        <LinearGradient
+          colors={["rgba(0,0,0,0.5)", "rgba(0,0,0,1)"]}
+          style={styles.overlay}
+        >
           <Text style={styles.title}>{title}</Text>
-        </View>
+          <View style={styles.descContainer}>
+            <Text style={styles.description}>{description}</Text>
+          </View>
+        </LinearGradient>
       </ImageBackground>
       <View style={styles.content}>
-        <Text style={styles.description}>{description}</Text>
+        {/* button row */}
         <View style={styles.buttonRow}>
           {/* Announcements Button */}
-          <TouchableOpacity
-            style={[
-              styles.button,
-              selectedTab === "announcements" && styles.selectedButton,
-            ]}
+          <Button
+            mode={selectedTab === "announcements" ? "contained" : "contained-tonal"}
             onPress={() => setSelectedTab("announcements")}
+            style={[
+              styles.button,
+              selectedTab === "announcements" ? styles.focusedButton : null, // Apply when focused
+            ]}
           >
-            <Text style={styles.buttonText}>Announcements</Text>
-          </TouchableOpacity>
-
+            Announcements
+          </Button>
           {/* Projects Button */}
-          <TouchableOpacity
-            style={[
-              styles.button,
-              selectedTab === "projects" && styles.selectedButton,
-            ]}
+          <Button
+            mode={selectedTab === "projects" ? "contained" : "contained-tonal"}
             onPress={() => setSelectedTab("projects")}
-          >
-            <Text style={styles.buttonText}>Projects</Text>
-          </TouchableOpacity>
-
-          {/* Programs Button */}
-          <TouchableOpacity
             style={[
               styles.button,
-              selectedTab === "programs" && styles.selectedButton,
+              selectedTab === "projects" ? styles.focusedButton : null, // Apply when focused
             ]}
-            onPress={() => setSelectedTab("programs")}
           >
-            <Text style={styles.buttonText}>Programs</Text>
-          </TouchableOpacity>
+            Projects
+          </Button>
+          {/* Programs Button */}
+          <Button
+            mode={selectedTab === "programs" ? "contained" : "contained-tonal"}
+            onPress={() => setSelectedTab("programs")}
+            style={[
+              styles.button,
+              selectedTab === "programs" ? styles.focusedButton : null, // Apply when focused
+            ]}
+          >
+            Programs
+          </Button>
+        </View>
+        {/* Sort and Filter Bar */}
+        <View style={styles.sortFilterBar}>
+          <Menu
+            visible={sortMenuVisible}
+            onDismiss={() => setSortMenuVisible(false)}
+            anchor={
+              <Button onPress={() => setSortMenuVisible(true)}>Sort by</Button>
+            }
+          >
+            <Menu.Item onPress={() => handleSort('title-asc')} title="Name (Asc)" />
+            <Menu.Item onPress={() => handleSort('title-desc')} title="Name (Desc)" />
+            <Divider />
+            <Menu.Item onPress={() => handleSort('createdAt-asc')} title="Date (Asc)" />
+            <Menu.Item onPress={() => handleSort('createdAt-desc')} title="Date (Desc)" />
+          </Menu>
+          <Menu
+            visible={filterMenuVisible}
+            onDismiss={() => setFilterMenuVisible(false)}
+            anchor={
+              <Button onPress={() => setFilterMenuVisible(true)}>Filter by</Button>
+            }
+          >
+            <Menu.Item onPress={() => handleSort('title')} title="Name" />
+            <Menu.Item onPress={() => handleSort('createdAt')} title="Date" />
+          </Menu>
         </View>
       </View>
     </>
   );
 
   return (
-    <FlatList
-      data={
-        selectedTab === "announcements"
-          ? announcements
-          : ((selectedTab === "projects" ? projects : programs) as any[])
-      } // Display projects or programs based on selectedTab
-      keyExtractor={(item) =>
-        selectedTab === "announcements"
-          ? item.announcementId.toString() // Use announcementId for announcements
-          : item.projectid
-          ? item.projectid.toString()
-          : item.programid.toString()
-      } // Dynamic key based on type
-      ListHeaderComponent={renderHeader}
-      renderItem={({ item }) => (
-        <TouchableOpacity
-          onPress={() => {
-            if (selectedTab === "projects") {
-              navigation.navigate("Project", { projectid: item.projectid });
-            } else if (selectedTab === "programs") {
-              navigation.navigate("Program", { programId: item.programid });
-            } else if (selectedTab === "announcements") {
-              // Handle announcement press if needed
-              console.log("Announcement clicked:", item.messageTitle);
-            }
-          }}
-        >
-          <View style={styles.projectItem}>
-            {/* Render title based on selected tab */}
-            <Text style={styles.projectTitle}>
-              {selectedTab === "projects"
-                ? item.title
-                : selectedTab === "programs"
-                ? item.name
-                : item.messageTitle}
+    <Provider>
+      <FlatList
+      style={styles.CardsContainer}
+        data={
+          selectedTab === "announcements"
+            ? announcements
+            : ((selectedTab === "projects" ? projects : programs) as any[])
+        } // Display projects or programs based on selectedTab
+        keyExtractor={(item) =>
+          selectedTab === "announcements"
+            ? item.announcementId.toString() // Use announcementId for announcements
+            : item.projectid
+              ? item.projectid.toString()
+              : item.programid.toString()
+        } // Dynamic key based on type
+        ListHeaderComponent={renderHeader}
+        renderItem={({ item }) => (
+          <TouchableRipple
+            onPress={() => {
+              if (selectedTab === "projects") {
+                navigation.navigate('Project', { projectid: item.projectid });
+              } else if (selectedTab === "programs") {
+                navigation.navigate("Program", { programId: item.programid });
+              } else if (selectedTab === "announcements") {
+                // Handle announcement press if needed
+                console.log("Announcement clicked:", item.messageTitle);
+              }
+            }}
+          >
+            <Card style={styles.projectItem}>
+              <Card.Content>
+                {/* Render title based on selected tab */}
+                <Title>
+                  {selectedTab === "projects"
+                    ? item.title
+                    : selectedTab === "programs"
+                      ? item.name
+                      : item.messageTitle}
+                </Title>
+                {/* Render description based on selected tab */}
+                {
+                  selectedTab=="projects" &&
+                    <Paragraph>
+                      Status: <Text style={item.status==="Active"? {color: "green"} : (item.status === "Pending" ? {color:"orange"} : {color: "red"}) }>{item.status}</Text>
+                    </Paragraph>
+                }
+                <Paragraph>
+                  {selectedTab === "projects"
+                    ? item.description
+                    : selectedTab === "programs"
+                      ? item.description
+                      : item.messageBody}
+                </Paragraph>
+              </Card.Content>
+              {role === 2 || role === 3 ? (
+                <Card.Actions>
+                  <EditButton
+                    type={selectedTab}
+                    id={item.projectid || item.programid}
+                  />
+                  <DeleteButton
+                    onDelete={() => {
+                      handleDelete(selectedTab, item.projectid || item.programid);
+                    }}
+                  />
+                </Card.Actions>
+              ) : null}
+            </Card>
+          </TouchableRipple>
+        )}
+        ListEmptyComponent={
+          <View style={styles.announcements}>
+            <Text style={styles.announcementText}>
+              No {selectedTab} available.
             </Text>
-            {/* Render description based on selected tab */}
-            <Text style={styles.projectDescription}>
-              {selectedTab === "projects"
-                ? item.description
-                : selectedTab === "programs"
-                ? item.description
-                : item.messageBody}
-            </Text>
-
-            {role === 2 || role === 3 ? (
-              <>
-                <EditButton
-                  type={selectedTab}
-                  id={item.projectid || item.programid}
-                />
-                <DeleteButton
-                  onDelete={() => {
-                    handleDelete(selectedTab, item.projectid || item.programid);
-                  }}
-                />
-              </>
-            ) : (
-              ""
-            )}
           </View>
-        </TouchableOpacity>
-      )}
-      ListEmptyComponent={
-        <View style={styles.announcements}>
-          <Text style={styles.announcementText}>
-            No {selectedTab} available.
-          </Text>
-        </View>
-      }
-    />
+        }
+      />
+    </Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: "#fff",
-  },
-  imageBackground: {
-    width: "100%",
-    height: 250,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-  },
-  content: {
-    padding: 0,
-    backgroundColor: "#f9f9f9",
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    marginTop: -20,
-  },
-  description: {
-    fontSize: 16,
-    color: "#666",
-    lineHeight: 24,
-    marginBottom: 20,
-    padding: 20,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    backgroundColor: "#C0C0C0",
-  },
-  button: {
-    backgroundColor: "#C0C0C0",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 2,
-  },
-  selectedButton: {
-    backgroundColor: "#007BFF",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  announcements: {
-    padding: 20,
-  },
-  announcementText: {
-    fontSize: 16,
-    color: "#666",
-  },
-  projectItem: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  projectTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  projectDescription: {
-    fontSize: 14,
-    color: "#666",
-  },
-  iconRow: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginTop: 10,
-  },
-  icon: {
-    marginLeft: 15,
-  },
-});
 
 export default Department;

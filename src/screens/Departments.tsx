@@ -20,6 +20,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import EditButton from "../component/EditButton";
+import DeleteButton from "../component/DeleteButton";
 
 type DepartmentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

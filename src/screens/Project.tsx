@@ -23,7 +23,6 @@ const ProjectDetails: React.FC = () => {
         setError('Error fetching project');
       } finally {
         setLoading(false);
-        console.log('Project:', project);
       }
     };
 
@@ -49,9 +48,9 @@ const ProjectDetails: React.FC = () => {
       </View>
     );
   }
-  console.log(project);
+
   return (
-    
+
     <View style={styles.container}>
       <Text style={styles.title}>{project.title}</Text>
       <Text style={styles.description}>{project.description}</Text>
