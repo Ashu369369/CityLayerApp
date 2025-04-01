@@ -19,7 +19,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import EditButton from "../component/EditButton";
 import DeleteButton from "../component/DeleteButton";
-import { deleteProject } from "../api/projectApi";
 
 type DepartmentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
