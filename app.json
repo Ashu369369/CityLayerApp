@@ -25,7 +25,7 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "config": "192.168.1.98",
+      "config": "10.36.245.87",
       "apiKey": "YOUR_API_KEY"
     }
   }

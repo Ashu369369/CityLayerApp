@@ -55,7 +55,7 @@ const Department: React.FC = () => {
       const fetchedAnnouncements = await getAnnouncementsByDepartmentId(
         departmentId
       );
-      console.log(fetchedAnnouncements);
+      // console.log(fetchedAnnouncements);
       setAnnouncements(fetchedAnnouncements);
     } catch (error) {
       console.error("Error fetching announcements:", error);
@@ -110,9 +110,8 @@ const Department: React.FC = () => {
   }, [selectedTab]);
 
   const handleProjectPress = (project: Project) => {
-
-    navigation.navigate('Project', {
-      projectid: project.projectid
+    navigation.navigate("Project", {
+      projectid: project.projectid,
     });
   };
 
@@ -202,7 +201,7 @@ const Department: React.FC = () => {
         <TouchableOpacity
           onPress={() => {
             if (selectedTab === "projects") {
-              navigation.navigate('Project', { projectid: item.projectid });
+              navigation.navigate("Project", { projectid: item.projectid });
             } else if (selectedTab === "programs") {
               navigation.navigate("Program", { programId: item.programid });
             } else if (selectedTab === "announcements") {
@@ -217,7 +216,7 @@ const Department: React.FC = () => {
               {selectedTab === "projects"
                 ? item.title
                 : selectedTab === "programs"
-                ? item.programName
+                ? item.name
                 : item.messageTitle}
             </Text>
             {/* Render description based on selected tab */}
@@ -244,7 +243,6 @@ const Department: React.FC = () => {
             ) : (
               ""
             )}
-
           </View>
         </TouchableOpacity>
       )}

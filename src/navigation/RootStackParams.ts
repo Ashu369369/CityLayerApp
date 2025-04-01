@@ -25,4 +25,10 @@ export type RootStackParamList = {
   MainNavBar: undefined;
   Program: { programId: number };
   Programs: undefined;
+
+  //by Arsh for testing purpose
+  EditDepartment: {
+    departmentId: number;
+  };
+  AddDepartment: undefined;
 };
