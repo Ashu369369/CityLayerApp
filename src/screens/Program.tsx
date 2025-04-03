@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, FlatList } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { getProgramById, Program } from "../api/programApi";
+import { Text, useTheme, Card } from "react-native-paper";
+import styles from "../styles/ProgramStyles";
+import programPosts from "../demoData/programPosts"; // Import demo data
 
 type ProgramScreenRouteProp = RouteProp<RootStackParamList, "Program">;
 
@@ -11,6 +14,10 @@ const ProgramScreen: React.FC = () => {
   const { programId } = route.params;
   const [program, setProgram] = useState<Program | null>(null);
   const [loading, setLoading] = useState(true);
+  const theme = useTheme();
+
+  // Filter posts related to the current program
+  const filteredPosts = programPosts.filter((post) => post.projectId === programId);
 
   useEffect(() => {
     const fetchProgram = async () => {
@@ -23,77 +30,103 @@ const ProgramScreen: React.FC = () => {
   }, [programId]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color={theme.colors.primary} />;
   }
 
   if (!program) {
     return (
       <View style={styles.container}>
-        <Text>Program not found</Text>
+        <Text variant="bodyLarge" style={{ color: theme.colors.error }}>
+          Program not found
+        </Text>
       </View>
     );
   }
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{program.name}</Text>
-      </View>
-      <View style={styles.content}>
-        <Text style={styles.description}>{program.description}</Text>
-        <Text style={styles.date}>
-          Start Date: {new Date(program.startDate).toLocaleDateString()}
+  const renderPost = ({ item }: { item: typeof programPosts[0] }) => (
+    <Card style={styles.postCard}>
+      <Card.Content>
+        <Text variant="bodyMedium" style={styles.postText}>
+          {item.textContent}
         </Text>
-        <Text style={styles.date}>Duration: {program.duration} months</Text>
-        {program.endDate && (
-          <Text style={styles.date}>
-            End Date: {new Date(program.endDate).toLocaleDateString()}
+        <View style={styles.PostmediaContainer}>
+
+        <Text variant="bodySmall" style={styles.postDate}>
+          Posted on: {new Date(item.createdAt).toLocaleDateString()}
+        </Text>
+        {item.location && (
+          <Text variant="bodySmall" style={styles.postLocation}>
+            Location: {item.location}
           </Text>
         )}
-        <Text style={styles.date}>
-          Repeat:{" "}
-          {program.isRepeat ? `Yes (${program.repeatAfter?.type})` : "No"}
+        </View>
+      </Card.Content>
+    </Card>
+  );
+
+  return (
+    <FlatList
+      ListHeaderComponent={
+        <>
+          <View style={styles.header}>
+            <Text variant="headlineMedium" style={styles.title}>
+              {program.name}
+            </Text>
+          </View>
+          <View style={styles.content}>
+            {/* Time container */}
+            <View style={styles.durationContainer}>
+              <View>
+                <Text variant="bodySmall" style={styles.date}>
+                  Start Date: {new Date(program.startDate).toLocaleDateString()}
+                </Text>
+                {program.endDate && (
+                  <Text variant="bodySmall" style={styles.date}>
+                    End Date: {new Date(program.endDate).toLocaleDateString()}
+                  </Text>
+                )}
+              </View>
+              <View>
+                <Text variant="bodyMedium" style={styles.duration}>
+                  Duration: {program.duration} months
+                </Text>
+                <Text variant="bodySmall" style={styles.date}>
+                  Repeat: {program.isRepeat ? `Yes (${program.repeatAfter?.type})` : "No"}
+                </Text>
+              </View>
+            </View>
+            <Text variant="bodyMedium" style={styles.description}>
+              {program.description}
+            </Text>
+          </View>
+          <Text variant="headlineSmall" style={styles.postsTitle}>
+            Posts
+          </Text>
+        </>
+      }
+      data={filteredPosts}
+      keyExtractor={(item) => item.updateId.toString()}
+      renderItem={renderPost}
+      ListEmptyComponent={
+        <Text variant="bodyMedium" style={styles.noPosts}>
+          No posts available for this program.
         </Text>
-        <Text style={styles.date}>Created by: User {program.createdBy}</Text>
-        <Text style={styles.date}>
-          Created at: {new Date(program.createdAt).toLocaleDateString()}
-        </Text>
-      </View>
-    </View>
+      }
+      ListFooterComponent={
+        <View style={styles.footer}>
+          <View style={styles.footerDetails}>
+            <Text variant="bodySmall" style={styles.date}>
+              Created by: User {program.createdBy}
+            </Text>
+            <Text variant="bodySmall" style={styles.date}>
+              Created at: {new Date(program.createdAt).toLocaleDateString()}
+            </Text>
+          </View>
+        </View>
+      }
+      keyboardShouldPersistTaps="handled"
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  header: {
-    width: "100%",
-    height: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#007bff",
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-  },
-  content: {
-    padding: 20,
-  },
-  description: {
-    fontSize: 16,
-    color: "#666",
-    lineHeight: 24,
-    marginBottom: 20,
-  },
-  date: {
-    fontSize: 14,
-    color: "#666",
-  },
-});
 
 export default ProgramScreen;
