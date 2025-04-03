@@ -84,32 +84,37 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.light.fontFamily,
   },
   projectItem: {
+    margin: 20,
     padding: 20,
-    paddingVertical: 50,
+    paddingVertical: 30,
     borderBottomWidth: 0,
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surface,
     borderRadius: 8,
-    marginVertical: 5,
-    shadowColor: theme.colors.primary, 
+    marginVertical: 10,
+    borderColor: theme.colors.white,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    shadowColor: theme.colors.backdrop,
   },
   projectTitle: {
-    fontSize: 18,
     fontWeight: "bold",
-    color: theme.colors.primary,
+    color: theme.colors.text,
     fontFamily: theme.fonts.medium.fontFamily,
+    fontSize: theme.fonts.medium.fontSize,
   },
   projectDescription: {
-    fontSize: 14,
-    color: theme.colors.placeholder, // Use theme placeholder color
-    fontFamily: theme.fonts.regular.fontFamily,
+    fontSize: theme.fonts.light.fontSize,
+    fontFamily: theme.fonts.light.fontFamily,
+    color: theme.colors.text,
   },
   sortFilterBar: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.grey,
   },
   CardsContainer: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.grey,
   },
   projectCard: {
     marginHorizontal: 10,
@@ -117,11 +122,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: theme.colors.grey,
-    elevation: 2, // Shadow for Android
-    shadowColor: "#000", // Shadow for iOS
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
+    tintColor: "#ffffff",
   },
   emptyCard: {
     margin: 20,

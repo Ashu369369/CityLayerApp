@@ -14,21 +14,41 @@ const theme = {
     backdrop: "#000000", // Backdrop overlay
   },
   fonts: {
+    ...DefaultTheme.fonts,
     regular: {
       fontFamily: 'sans-serif',
       fontWeight: 'normal',
+      fontSize: 16, // Default font size for regular text
     },
     medium: {
       fontFamily: 'sans-serif-medium',
       fontWeight: 'normal',
+      fontSize: 18, // Font size for medium text
     },
     light: {
       fontFamily: 'sans-serif-light',
       fontWeight: 'normal',
+      fontSize: 14, // Font size for light text
     },
     thin: {
       fontFamily: 'sans-serif-thin',
       fontWeight: 'normal',
+      fontSize: 12, // Font size for thin text
+    },
+    large: {
+      fontFamily: 'sans-serif-medium',
+      fontWeight: 'bold',
+      fontSize: 24, // Font size for large text
+    },
+    xlarge: {
+      fontFamily: 'sans-serif-medium',
+      fontWeight: 'bold',
+      fontSize: 44, // Font size for large text
+    },
+    small: {
+      fontFamily: 'sans-serif',
+      fontWeight: 'normal',
+      fontSize: 12, // Font size for small text
     },
   },
 };
