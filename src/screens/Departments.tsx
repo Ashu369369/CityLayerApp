@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, StyleSheet, RefreshControl } from "react-native";
+import { View, FlatList, RefreshControl, Text } from "react-native";
 import {
   Card,
   Title,
@@ -20,8 +20,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import EditButton from "../component/EditButton";
-import DeleteButton from "../component/DeleteButton";
+import styles from "../styles/Departments"; // Import styles from the styles file
 
 type DepartmentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -112,9 +111,9 @@ const DepartmentScreen: React.FC = () => {
                     "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
                 }}
               />
-              <Card.Content>
-                <Title>{item.title}</Title>
-                <Paragraph>
+              <Card.Content style={styles.cardContent}>
+                <Title style={styles.title}>{item.title}</Title>
+                <Paragraph style={styles.subtitle}>
                   {item.description || "No description available"}
                 </Paragraph>
               </Card.Content>
@@ -143,6 +142,11 @@ const DepartmentScreen: React.FC = () => {
               )}
             </Card>
           )}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No departments available.</Text>
+            </View>
+          }
         />
         <FAB
           style={styles.fab}
@@ -169,34 +173,5 @@ const DepartmentScreen: React.FC = () => {
     </Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: "#fff",
-  },
-  card: {
-    marginVertical: 10, // Add vertical spacing between cards
-    borderRadius: 10,
-    elevation: 3,
-    overflow: "hidden", // Ensures child components stay within the card
-  },
-  cardActions: {
-    justifyContent: "space-between", // Align buttons properly
-    paddingHorizontal: 10, // Add padding for better spacing
-  },
-  actionButton: {
-    flex: 1, // Ensure buttons take equal space
-    marginHorizontal: 5, // Add spacing between buttons
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#007BFF",
-  },
-});
 
 export default DepartmentScreen;

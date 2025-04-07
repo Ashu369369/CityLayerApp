@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     borderRadius: 8,
     marginVertical: 5,
-    shadowColor: theme.colors.primary, 
+    shadowColor: theme.colors.primary,
   },
   projectTitle: {
     fontSize: 18,
