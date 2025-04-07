@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { View, FlatList, RefreshControl, Text } from "react-native";
 import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+  Card,
+  Title,
+  Paragraph,
+  Button,
+  FAB,
+  Dialog,
+  Portal,
+  Provider,
+} from "react-native-paper";
 import {
   deleteDepartment,
   Department,
@@ -17,8 +20,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import EditButton from "../component/EditButton";
-import DeleteButton from "../component/DeleteButton";
+import styles from "../styles/Departments"; // Import styles from the styles file
 
 type DepartmentScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -27,15 +29,18 @@ type DepartmentScreenNavigationProp = StackNavigationProp<
 
 const DepartmentScreen: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<
+    number | null
+  >(null);
   const navigation = useNavigation<DepartmentScreenNavigationProp>();
 
   const role = useSelector((state: RootState) => state.user.role);
 
-
   const fetchDepartments = async () => {
     try {
       const response = await getAllDepartments();
-      console.log(response);
       if (response.data) {
         setDepartments(response.data.getAllDepartments);
       }
@@ -44,18 +49,23 @@ const DepartmentScreen: React.FC = () => {
     }
   };
 
-  const handleDelete = async (departmentId: number) => {
-    try {
-      await deleteDepartment(departmentId);
-      fetchDepartments();
-    } catch (error) {
-      console.error("Error deleting department:", error);
+  const handleDelete = async () => {
+    if (selectedDepartmentId !== null) {
+      try {
+        await deleteDepartment(selectedDepartmentId);
+        fetchDepartments();
+        setDialogVisible(false); // Close the dialog after deletion
+      } catch (error) {
+        console.error("Error deleting department:", error);
+      }
     }
   };
 
-  useEffect(() => {
-    fetchDepartments();
-  }, []);
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchDepartments();
+    setRefreshing(false);
+  };
 
   const handleDepartmentPress = (department: Department) => {
     navigation.navigate("Department", {
@@ -66,72 +76,102 @@ const DepartmentScreen: React.FC = () => {
     });
   };
 
+  const showDialog = (departmentId: number) => {
+    setSelectedDepartmentId(departmentId);
+    setDialogVisible(true);
+  };
+
+  const hideDialog = () => {
+    setDialogVisible(false);
+    setSelectedDepartmentId(null);
+  };
+
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={departments}
-        keyExtractor={(item) => item.departmentid.toString()}
-        numColumns={2}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => handleDepartmentPress(item)}
-          >
-            <Image
-              source={{
-                uri:
-                  item.imageUrl ||
-                  "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
-              }}
-              style={styles.image}
-            />
-            <Text style={styles.itemText}>{item.title}</Text>
-            {role === 3 ? (
-              <>
-                <EditButton type={"department"} id={item.departmentid} />
-                <DeleteButton
-                  onDelete={() => handleDelete(item.departmentid)}
-                />
-              </>
-            ) : (
-              ""
-            )}
-          </TouchableOpacity>
-        )}
-      />
-    </View>
+    <Provider>
+      <View style={styles.container}>
+        <FlatList
+          data={departments}
+          keyExtractor={(item) => item.departmentid.toString()}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+          renderItem={({ item }) => (
+            <Card
+              style={styles.card}
+              onPress={() => handleDepartmentPress(item)}
+            >
+              <Card.Cover
+                source={{
+                  uri:
+                    item.imageUrl ||
+                    "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
+                }}
+              />
+              <Card.Content style={styles.cardContent}>
+                <Title style={styles.title}>{item.title}</Title>
+                <Paragraph style={styles.subtitle}>
+                  {item.description || "No description available"}
+                </Paragraph>
+              </Card.Content>
+              {role === 3 && (
+                <Card.Actions style={styles.cardActions}>
+                  <Button
+                    mode="contained"
+                    style={styles.actionButton}
+                    onPress={() =>
+                      navigation.navigate("Edit", {
+                        type: "department",
+                        id: item.departmentid,
+                      })
+                    }
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    mode="contained"
+                    style={styles.actionButton}
+                    onPress={() => showDialog(item.departmentid)}
+                  >
+                    Delete
+                  </Button>
+                </Card.Actions>
+              )}
+            </Card>
+          )}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No departments available.</Text>
+            </View>
+          }
+        />
+        <FAB
+          style={styles.fab}
+          icon="plus"
+          onPress={() => navigation.navigate("AddDepartment")}
+        />
+
+        {/* Confirmation Dialog */}
+        <Portal>
+          <Dialog visible={dialogVisible} onDismiss={hideDialog}>
+            <Dialog.Title>Confirm Deletion</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>
+                Are you sure you want to delete this department?
+              </Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={hideDialog}>Cancel</Button>
+              <Button onPress={handleDelete}>Delete</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      </View>
+    </Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: "#fff",
-  },
-  text: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  item: {
-    flex: 1,
-    margin: 10,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 10,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  image: {
-    width: "100%",
-    height: 100,
-  },
-  itemText: {
-    fontSize: 18,
-    padding: 10,
-    textAlign: "center",
-  },
-});
 
 export default DepartmentScreen;

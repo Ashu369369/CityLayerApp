@@ -99,6 +99,12 @@ const Department: React.FC = () => {
     }
   }, [selectedTab]);
 
+  const handleProjectPress = (project: Project) => {
+    navigation.navigate("Project", {
+      projectid: project.projectid,
+    });
+  };
+
   const handleDelete = async (type: string, id: number) => {
     if (type === "projects") {
       await deleteProject(id);

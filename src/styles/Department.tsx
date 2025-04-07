@@ -90,6 +90,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     backgroundColor: theme.colors.surface,
     borderRadius: 8,
+    marginVertical: 5,
+    shadowColor: theme.colors.primary,
     marginVertical: 10,
     borderColor: theme.colors.white,
     borderTopWidth: 1,

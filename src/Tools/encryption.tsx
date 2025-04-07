@@ -1,8 +1,7 @@
 import CryptoJS from "crypto-js";
 
-
-const SECRET_KEY = process.env.SECRET_KEY
-const IV = process.env.IV; 
+const SECRET_KEY = process.env.SECRET_KEY;
+const IV = process.env.IV;
 
 // Encrypt function
 export const encryptAES = (plainText: string): string => {

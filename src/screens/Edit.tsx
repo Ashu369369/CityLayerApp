@@ -1,10 +1,10 @@
 // filepath: d:\college\capstone\frontend\CityLayerApp\src\screens\EditScreen.tsx
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/RootStackParams';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "../navigation/RootStackParams";
 
-type EditScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
+type EditScreenRouteProp = RouteProp<RootStackParamList, "Edit">;
 
 const EditScreen: React.FC = () => {
   const route = useRoute<EditScreenRouteProp>();
@@ -23,11 +23,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   detail: {

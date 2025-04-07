@@ -17,7 +17,10 @@ import { setUser } from "../state/slices/userSlice";
 import { setToken } from "../state/slices/authSlice";
 import { loginUser, LoginUserResponse, GraphQLResponse } from "../api/userApi";
 
-type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, "Login">;
+type LoginScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Login"
+>;
 
 type FormData = {
   username: string;
@@ -79,12 +82,17 @@ const LoginPage: React.FC = () => {
     if (allValid) {
       // Proceed only if all fields are valid
       try {
-        const response: GraphQLResponse<LoginUserResponse> = await loginUser(formData);
+        const response: GraphQLResponse<LoginUserResponse> = await loginUser(
+          formData
+        );
 
         if (response?.errors) {
           // If errors exist, handle them
           console.log("GraphQL errors:", response.errors);
-          alert("Error: " + response.errors[0]?.message || "An unknown error occurred");
+          alert(
+            "Error: " + response.errors[0]?.message ||
+              "An unknown error occurred"
+          );
           return;
         }
         let message = response?.data?.login?.message;
@@ -106,7 +114,6 @@ const LoginPage: React.FC = () => {
         // Dispatch the action to store the token and user information
         dispatch(setUser(user));
         dispatch(setToken(token));
-
       } catch (error: any) {
         console.log("Error logging in:");
         console.log(error.response);
@@ -119,7 +126,9 @@ const LoginPage: React.FC = () => {
               alert("Invalid credentials: " + error.response.data.message);
               break;
             default:
-              alert("An unknown error occurred: " + error.response.data.message);
+              alert(
+                "An unknown error occurred: " + error.response.data.message
+              );
           }
         } else {
           console.log("Network or server error:", error.message);
@@ -165,7 +174,6 @@ const LoginPage: React.FC = () => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-
     </ScrollView>
   );
 };
