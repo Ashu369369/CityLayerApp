@@ -249,7 +249,7 @@ const Department: React.FC = () => {
             <Card style={styles.projectItem}>
               <Card.Content>
                 {/* Render title based on selected tab */}
-                <Title>
+                <Title style={styles.projectTitle}>
                   {selectedTab === "projects"
                     ? item.title
                     : selectedTab === "programs"
@@ -263,7 +263,7 @@ const Department: React.FC = () => {
                       Status: <Text style={item.status==="Active"? {color: "green"} : (item.status === "Pending" ? {color:"orange"} : {color: "red"}) }>{item.status}</Text>
                     </Paragraph>
                 }
-                <Paragraph>
+                <Paragraph style={styles.projectDescription}>
                   {selectedTab === "projects"
                     ? item.description
                     : selectedTab === "programs"
