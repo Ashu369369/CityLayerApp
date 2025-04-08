@@ -18,7 +18,8 @@ import { RouteProp } from "@react-navigation/native";
 import Project from "../screens/Project";
 import ProjectDetails from "../screens/Project";
 import ProgramScreen from "../screens/Program";
-
+import Feedback from "../component/Feedback";
+import Feedbacks from "../screens/Feedbacks";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -39,47 +40,79 @@ const DepartmentStack = () => {
   const role = useSelector((state: RootState) => state.user.role);
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
-      {role === 3 ?
+      {role === 3 ? (
         //if Admin
-        <Stack.Screen name="Departments" component={DepartmentScreen} options={({ navigation }) => ({
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate("CreateNew", { type: "Department" })}
-              style={{ marginRight: 10 }}
-            >
-              <Text style={{ color: "blue" }}>Create Department</Text>
-            </TouchableOpacity>
-          ),
-        })} />
-        :
+        <Stack.Screen
+          name="Departments"
+          component={DepartmentScreen}
+          options={({ navigation }) => ({
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("CreateNew", { type: "Department" })
+                }
+                style={{ marginRight: 10 }}
+              >
+                <Text style={{ color: "blue" }}>Create Department</Text>
+              </TouchableOpacity>
+            ),
+          })}
+        />
+      ) : (
         <Stack.Screen name="Departments" component={DepartmentScreen} />
-      }
-      {role === 2 || role === 3 ?
+      )}
+      {role === 2 || role === 3 ? (
         //if Department Admin or Admin
-        <Stack.Screen name="Department" component={Department} options={({ navigation, route }) => ({
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate("CreateNew", { type: "Project", id: (route as RouteProp<RootStackParamList, 'Department'>).params?.id })}
-              style={{ marginRight: 10 }}
-            >
-              <Text style={{ color: "blue" }}>Create Project</Text>
-            </TouchableOpacity>
-          ),
-        })} />
-        :
-        <Stack.Screen name="Department" component={Department} />}
+        <Stack.Screen
+          name="Department"
+          component={Department}
+          options={({ navigation, route }) => ({
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("CreateNew", {
+                    type: "Project",
+                    id: (route as RouteProp<RootStackParamList, "Department">)
+                      .params?.id,
+                  })
+                }
+                style={{ marginRight: 10 }}
+              >
+                <Text style={{ color: "blue" }}>Create Project</Text>
+              </TouchableOpacity>
+            ),
+          })}
+        />
+      ) : (
+        <Stack.Screen name="Department" component={Department} />
+      )}
 
       <Stack.Screen name="Project" component={ProjectDetails} />
       <Stack.Screen name="Program" component={ProgramScreen} />
       <Stack.Screen name="Edit" component={EditScreen} />
       <Stack.Screen name="CreateNew" component={CreateNewScreen} />
     </Stack.Navigator>
-  )
+  );
 };
 
 const ProfileStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="ProfileMain" component={ProfileScreen} />
+    <Stack.Screen
+      name="Feedback"
+      options={{ presentation: "modal", headerShown: false }}
+    >
+      {() => (
+        <Feedback
+          onSubmit={(feedback) => {
+            console.log("Feedback submitted:", feedback);
+            // Add logic here for submitting feedback
+          }}
+          onCancel={() => console.log("Feedback canceled")}
+        />
+      )}
+    </Stack.Screen>
+    <Stack.Screen name="Feedbacks" component={Feedbacks} />
   </Stack.Navigator>
 );
 
@@ -102,7 +135,11 @@ const MainNavBar: React.FC = () => {
     >
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Search" component={SearchStack} />
-      <Tab.Screen name="Departments" options={{ headerShown: false }} component={DepartmentStack} />
+      <Tab.Screen
+        name="Departments"
+        options={{ headerShown: false }}
+        component={DepartmentStack}
+      />
       <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
