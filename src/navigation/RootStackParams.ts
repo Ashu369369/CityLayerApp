@@ -23,6 +23,7 @@ export type RootStackParamList = {
     id?: number;
   };
   MainNavBar: undefined;
+
   Program: { programId: number };
   Programs: undefined;
 
@@ -31,4 +32,6 @@ export type RootStackParamList = {
     departmentId: number;
   };
   AddDepartment: undefined;
+  Feedback: { onSubmit: () => void; onCancel: () => void };
+  Feedbacks: undefined;
 };
