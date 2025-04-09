@@ -129,11 +129,15 @@ const EditScreen: React.FC = () => {
 
       {imageurl && <Image source={{ uri: imageurl }} style={styles.image} />}
 
-      <Button
-        title={loading ? 'Submitting...' : 'Submit Changes'}
+      <TouchableOpacity
+        style={styles.submitButton}
         onPress={handleSubmit}
         disabled={loading}
-      />
+      >
+        <Text style={styles.submitButtonText}>
+          {loading ? 'Submitting...' : 'Submit Changes'}
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -171,7 +175,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   imagePicker: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#81d5a6',  // Sea Green color
     padding: 10,
     borderRadius: 6,
     alignItems: 'center',
@@ -188,6 +192,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 6,
   },
+  submitButton: {
+    backgroundColor: '#81d5a6',  // Sea Green color
+    paddingVertical: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
+
 
 export default EditScreen;
