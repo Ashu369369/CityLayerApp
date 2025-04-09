@@ -17,6 +17,10 @@ export interface Project {
   updatedat: string;
 }
 
+export const getAllProjects = (): Project[] => {
+  return demoProjects;
+};
+
 export const getProjectsByDepartmentId = (departmentId: number): Project[] => {
   return demoProjects.filter((project) => project.departmentid == departmentId);
 };

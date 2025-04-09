@@ -19,6 +19,11 @@ export interface Program {
   departmentId: number; // Assuming this field exists
 }
 
+// Get all programs
+export const getAllPrograms = (): Program[] => {
+  return programs;
+};
+
 // Get programs by department ID
 export const getProgramsByDepartmentId = (departmentId: number): Program[] => {
   return programs.filter(
