@@ -28,7 +28,7 @@ const ProfileScreen: React.FC = () => {
       <Text style={styles.text}>Profile Screen</Text>
 
       {/* Conditionally render the button based on the user's role */}
-      {role === 3 && (
+      {role !== 3 && (
         <TouchableOpacity
           style={styles.button}
           onPress={() => setFeedbackVisible(true)}
