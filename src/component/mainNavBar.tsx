@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "../screens/Home";
@@ -9,26 +9,75 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Department from "../screens/Department";
 import EditScreen from "../screens/Edit";
 import CreateNewScreen from "../screens/CreateNew";
-import { Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, Image } from "react-native";
 import CreateButton from "./CreateButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { RootStackParamList } from "../navigation/RootStackParams";
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import Project from "../screens/Project";
 import ProjectDetails from "../screens/Project";
 import ProgramScreen from "../screens/Program";
+import NotificationsScreen from "../screens/Notification";
+import notificationsData from "../demoData/notifications";
+import CreateNotificationScreen from "../screens/CreateNotification";
+
 import Feedback from "../component/Feedback";
 import Feedbacks from "../screens/Feedbacks";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const HomeStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="HomeMain" component={HomeScreen} />
-  </Stack.Navigator>
-);
+const HomeStack = () => {
+  const currentUserId = useSelector((state: RootState) => state.user.id); // Get the current user's ID
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false); // State to track unread notifications
+
+  // Recheck for unread notifications whenever the Home page gains focus
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkUnreadNotifications = notificationsData.some(
+        (notification) => !notification.readBy.includes(currentUserId ? currentUserId : 0)
+      );
+      setHasUnreadNotifications(checkUnreadNotifications); // Update the state
+    }, [currentUserId])
+  );
+  return (
+
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="HomeMain" component={HomeScreen} options={({ navigation }) => ({
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Notifications", { type: "Department" })}
+            style={{ marginRight: 10 }}
+          >
+            <Image
+              source={
+                hasUnreadNotifications
+                  ? require("../../assets/bellnoti.png") // Icon for unread notifications
+                  : require("../../assets/bell.png")}
+              style={{ width: 24, height: 24 }}
+            />
+          </TouchableOpacity>
+        ),
+      })} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen}
+
+        options={({ navigation }) => ({
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("CreateNotification")}
+              style={{ margin: 10, padding: 10, backgroundColor: "blue", borderRadius: 5 }}
+            >
+              <Text style={{ color: "white", textAlign: "center" }}>Create Notification</Text>
+            </TouchableOpacity>
+
+          ),
+        })} />
+
+      <Stack.Screen name="CreateNotification" component={CreateNotificationScreen} />
+    </Stack.Navigator>
+  );
+}
 
 const SearchStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -133,7 +182,7 @@ const MainNavBar: React.FC = () => {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Home" options={{ headerShown: false }} component={HomeStack} />
       <Tab.Screen name="Search" component={SearchStack} />
       <Tab.Screen
         name="Departments"

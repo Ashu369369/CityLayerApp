@@ -26,12 +26,9 @@ export type RootStackParamList = {
 
   Program: { programId: number };
   Programs: undefined;
-
-  //by Arsh for testing purpose
-  EditDepartment: {
-    departmentId: number;
-  };
   AddDepartment: undefined;
+  Notifications: undefined;
+  CreateNotification: undefined;
   Feedback: { onSubmit: () => void; onCancel: () => void };
   Feedbacks: undefined;
 };
