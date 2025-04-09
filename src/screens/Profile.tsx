@@ -1,14 +1,18 @@
-import React, { useEffect } from "react";
-import { View, Alert, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Card, Text, Avatar } from "react-native-paper";
 import { RootState } from "../state/store";
 import theme from "../theme/theme";
 import { clearUser } from "../state/slices/userSlice";
 import { deleteUser } from "../api/userApi";
+import { useNavigation } from "@react-navigation/native";
+import Feedback from "../component/Feedback";
 
 const ProfileScreen: React.FC = () => {
   const dispatch = useDispatch();
+  const [isFeedbackVisible, setFeedbackVisible] = useState(false);
+  const navigation = useNavigation();
 
   let user = useSelector((state: RootState) => state.user) as {
     id: string | null;
@@ -16,8 +20,23 @@ const ProfileScreen: React.FC = () => {
     lastName?: string | null;
     email?: string | null;
     role?: number | null;
+    username?: string | null;
+    dob?: string | null;
   };
 
+  const handleFeedbackSubmit = (feedback: {
+    rating: string;
+    title: string;
+    description: string;
+  }) => {
+    console.log("Feedback submitted:", feedback);
+    setFeedbackVisible(false); // Close the feedback modal after submission
+  };
+
+  const role = useSelector((state: RootState) => state.user.role);
+  const navigateToFeedbacks = () => {
+    navigation.navigate("Feedbacks" as never);
+  }
   // Handle logout
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to log out?", [
@@ -110,6 +129,31 @@ const ProfileScreen: React.FC = () => {
           Delete Account
         </Button>
       </View>
+
+      {/* Conditionally render the button based on the user's role */}
+      {true && (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setFeedbackVisible(true)}
+        >
+          <Text style={styles.buttonText}>Give Feedback</Text>
+        </TouchableOpacity>
+      )}
+
+      {isFeedbackVisible && (
+        <Feedback
+          onSubmit={handleFeedbackSubmit}
+          onCancel={() => setFeedbackVisible(false)}
+        />
+      )}
+
+      {role === 3 && (
+        <Text style={styles.text}>
+          <TouchableOpacity style={styles.button} onPress={navigateToFeedbacks}>
+            <Text style={styles.buttonText}>View Feedbacks</Text>
+          </TouchableOpacity>
+        </Text>
+      )}
     </View>
   );
 };
@@ -166,6 +210,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     borderRadius: 5,
+  },
+  text: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: "red",
+    fontSize: 16,
   },
 });
 

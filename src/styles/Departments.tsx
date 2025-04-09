@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     borderRadius: 12, // Rounded corners for cards
     elevation: 4, // Shadow for cards
     backgroundColor: theme.colors.surface, // Use theme surface color
-    overflow: "hidden",
+    // overflow: "hidden",
   },
   cardContent: {
     padding: 15,
