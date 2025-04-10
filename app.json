@@ -25,11 +25,7 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-<<<<<<< HEAD
       "config": "192.168.1.80",
-=======
-      "config": "192.168.1.76",
->>>>>>> 8dd1189a60c3041b8b49ff542aaff031969f8f71
       "apiKey": "YOUR_API_KEY"
     }
   }
