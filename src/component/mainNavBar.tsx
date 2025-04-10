@@ -44,7 +44,7 @@ const HomeStack = () => {
   return (
 
     <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen name="HomeMain" component={HomeScreen} options={({ navigation }) => ({
+      <Stack.Screen name="Home" component={HomeScreen} options={({ navigation }) => ({
         headerRight: () => (
           <TouchableOpacity
             onPress={() => navigation.navigate("Notifications", { type: "Department" })}
@@ -73,7 +73,6 @@ const HomeStack = () => {
 
           ),
         })} />
-
       <Stack.Screen name="CreateNotification" component={CreateNotificationScreen} />
     </Stack.Navigator>
   );

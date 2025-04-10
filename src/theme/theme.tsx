@@ -11,7 +11,7 @@ const theme = {
     text: "#333333", // Primary text color for readability
     disabled: "#C0C0C0", // Disabled state color
     placeholder: "#A0A0A0", // Input placeholder text
-    backdrop: "#000000", // Backdrop overlay
+    backdrop: "#1e1e1e", // Backdrop overlay
   },
   fonts: {
     ...DefaultTheme.fonts,

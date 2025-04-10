@@ -31,3 +31,15 @@ export const deleteProject = (projectId: number): void => {
   );
   demoProjects.splice(index, 1);
 };
+
+export const countPendingProjects = (): number => {
+return demoProjects.filter((project) => project.status === "Pending").length;
+};
+
+export const countOngoingProjects = (): number => {
+  return demoProjects.filter((project) => project.status === "Ongoing").length;
+};
+
+export const countActiveProjects = (): number => {
+  return demoProjects.filter((project) => project.status === "Active").length;
+};

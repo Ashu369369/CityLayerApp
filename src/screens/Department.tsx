@@ -53,7 +53,6 @@ const Department: React.FC = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   const [sortMenuVisible, setSortMenuVisible] = useState(false);
-  const [filterMenuVisible, setFilterMenuVisible] = useState(false);
 
   const fetchAnnouncements = async () => {
     try {
@@ -99,11 +98,13 @@ const Department: React.FC = () => {
     }
   }, [selectedTab]);
 
-  const handleProjectPress = (project: Project) => {
-    navigation.navigate("Project", {
-      projectid: project.projectid,
+  const handleCreateNew = (selectedTab: string) => {
+    navigation.navigate("CreateNew", {
+      type: selectedTab,
+      id: departmentId,
     });
   };
+
 
   const handleDelete = async (type: string, id: number) => {
     if (type === "projects") {
@@ -201,16 +202,11 @@ const Department: React.FC = () => {
             <Menu.Item onPress={() => handleSort('createdAt-asc')} title="Date (Asc)" />
             <Menu.Item onPress={() => handleSort('createdAt-desc')} title="Date (Desc)" />
           </Menu>
-          <Menu
-            visible={filterMenuVisible}
-            onDismiss={() => setFilterMenuVisible(false)}
-            anchor={
-              <Button onPress={() => setFilterMenuVisible(true)}>Filter by</Button>
-            }
-          >
-            <Menu.Item onPress={() => handleSort('title')} title="Name" />
-            <Menu.Item onPress={() => handleSort('createdAt')} title="Date" />
-          </Menu>
+          {role >= 2 &&
+            <Button onPress={() => handleCreateNew(selectedTab)}>
+              Create {selectedTab === "projects" ? "Project" : selectedTab === "programs" ? "Program" : "Announcement"}
+            </Button>
+          }
         </View>
       </View>
     </>
@@ -219,7 +215,7 @@ const Department: React.FC = () => {
   return (
     <Provider>
       <FlatList
-      style={styles.CardsContainer}
+        style={styles.CardsContainer}
         data={
           selectedTab === "announcements"
             ? announcements
@@ -258,10 +254,10 @@ const Department: React.FC = () => {
                 </Title>
                 {/* Render description based on selected tab */}
                 {
-                  selectedTab=="projects" &&
-                    <Paragraph>
-                      Status: <Text style={item.status==="Active"? {color: "green"} : (item.status === "Pending" ? {color:"orange"} : {color: "red"}) }>{item.status}</Text>
-                    </Paragraph>
+                  selectedTab == "projects" &&
+                  <Paragraph>
+                    Status: <Text style={item.status === "Active" ? { color: "green" } : (item.status === "Pending" ? { color: "orange" } : { color: "red" })}>{item.status}</Text>
+                  </Paragraph>
                 }
                 <Paragraph style={styles.projectDescription}>
                   {selectedTab === "projects"
