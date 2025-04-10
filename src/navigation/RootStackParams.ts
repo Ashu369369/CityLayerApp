@@ -3,7 +3,7 @@ export type RootStackParamList = {
   Signup: undefined;
   Search: undefined;
   Login: undefined;
-  Departments: undefined;
+  Departments: { refresh?: boolean };
   Profile: undefined;
   Department: {
     id: number;
