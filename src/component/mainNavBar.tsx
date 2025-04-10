@@ -46,7 +46,7 @@ const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen
-        name="HomeMain"
+        name="Home"
         component={HomeScreen}
         options={({ navigation }) => ({
           headerRight: () => (
@@ -89,7 +89,6 @@ const HomeStack = () => {
           ),
         })}
       />
-
       <Stack.Screen
         name="CreateNotification"
         component={CreateNotificationScreen}

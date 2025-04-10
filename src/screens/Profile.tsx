@@ -142,12 +142,12 @@ const ProfileScreen: React.FC = () => {
       </View>
       {/* Conditionally render the button based on the user's role */}
       {role !== 3 && (
-        <TouchableOpacity
-          style={styles.button}
+        <Button
+          style={[styles.button, { backgroundColor: theme.colors.accent }]}
           onPress={() => setFeedbackVisible(true)}
         >
           <Text style={styles.buttonText}>Give Feedback</Text>
-        </TouchableOpacity>
+        </Button>
       )}
       ;
       {isFeedbackVisible && (
@@ -157,11 +157,12 @@ const ProfileScreen: React.FC = () => {
         />
       )}
       {role === 3 && (
-        <Text style={styles.text}>
-          <TouchableOpacity style={styles.button} onPress={navigateToFeedbacks}>
-            <Text style={styles.buttonText}>View Feedbacks</Text>
-          </TouchableOpacity>
-        </Text>
+        <Button
+          style={[styles.button, { backgroundColor: theme.colors.accent }]}
+          onPress={navigateToFeedbacks}
+        >
+          View Feedbacks
+        </Button>
       )}
     </View>
   );
@@ -219,6 +220,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     borderRadius: 5,
+    color: "red",
   },
   text: {
     fontSize: 24,
