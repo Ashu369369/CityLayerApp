@@ -1,26 +1,29 @@
-// filepath: d:\college\capstone\frontend\CityLayerApp\src\screens\EditScreen.tsx
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   Image,
   TouchableOpacity,
   ScrollView,
   Alert,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { RootStackParamList } from '../navigation/RootStackParams';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 type EditScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
 
+type EditScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Edit'>;
+
 const EditScreen: React.FC = () => {
   const route = useRoute<EditScreenRouteProp>();
+  const navigation = useNavigation<EditScreenNavigationProp>();
+
   const { type, id } = route.params;
 
   const [departmentid] = useState(id.toString()); // Not editable
@@ -28,6 +31,41 @@ const EditScreen: React.FC = () => {
   const [description, setDescription] = useState('');
   const [imageurl, setImageurl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const fetchDepartmentData = async () => {
+    try {
+      const query = `
+        query GetDepartment($departmentId: ID!) {
+          getDepartment(departmentId: $departmentId) {
+            departmentid
+            title
+            description
+            imageUrl
+          }
+        }
+      `;
+
+      const variables = { departmentId: departmentid };
+
+      const response = await axios.post('http://192.168.1.76:4000/graphql', {
+        query,
+        variables,
+      });
+
+      const data = response.data.data.getDepartment;
+
+      setTitle(data.title);
+      setDescription(data.description);
+      setImageurl(data.imageUrl);
+    } catch (error) {
+      console.error('❌ Failed to fetch department:', error);
+      Alert.alert('Error', 'Failed to load department data.');
+    }
+  };
+
+  useEffect(() => {
+    fetchDepartmentData();
+  }, []);
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -53,16 +91,16 @@ const EditScreen: React.FC = () => {
 
       const mutation = `
         mutation EditDepartment(
-          $departmentid: ID!
+          $departmentId: ID!
           $title: String!
           $description: String!
-          $imageurl: String!
+          $imageUrl: String!
         ) {
           editDepartment(
-            departmentId: $departmentid
+            departmentId: $departmentId
             title: $title
             description: $description
-            imageUrl: $imageurl
+            imageUrl: $imageUrl
           ) {
             departmentid
             title
@@ -73,10 +111,10 @@ const EditScreen: React.FC = () => {
       `;
 
       const variables = {
-        departmentid,
+        departmentId: departmentid,
         title,
         description,
-        imageurl: imageurl || 'https://via.placeholder.com/300',
+        imageUrl: imageurl || 'https://via.placeholder.com/300', // Default placeholder image URL
       };
 
       const response = await axios.post('http://192.168.1.76:4000/graphql', {
@@ -85,7 +123,14 @@ const EditScreen: React.FC = () => {
       });
 
       console.log('✅ Department updated:', response.data);
-      Alert.alert('Success', 'Department updated successfully!');
+      Alert.alert('Success', 'Department updated successfully!', [
+        {
+          text: 'OK',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ]);
     } catch (error) {
       console.error('❌ Error updating department:', error);
       Alert.alert('Error', 'Failed to update department.');
@@ -175,7 +220,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   imagePicker: {
-    backgroundColor: '#81d5a6',  // Sea Green color
+    backgroundColor: '#81d5a6', // Sea Green
     padding: 10,
     borderRadius: 6,
     alignItems: 'center',
@@ -193,7 +238,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   submitButton: {
-    backgroundColor: '#81d5a6',  // Sea Green color
+    backgroundColor: '#81d5a6', // Sea Green
     paddingVertical: 12,
     borderRadius: 6,
     alignItems: 'center',
@@ -204,6 +249,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
 
 export default EditScreen;

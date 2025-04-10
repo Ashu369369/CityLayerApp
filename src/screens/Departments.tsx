@@ -15,26 +15,30 @@ import {
   Department,
   getAllDepartments,
 } from "../api/deptApi";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from '@react-navigation/native';
+
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import styles from "../styles/Departments"; // Import styles from the styles file
+import styles from "../styles/Departments";
 
-type DepartmentScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Department"
->;
+// 1. Define the correct type for your route params
+type DepartmentScreenRouteProp = RouteProp<RootStackParamList, 'Departments'>;
+
+type DepartmentScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Department'>;
 
 const DepartmentScreen: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [selectedDepartmentId, setSelectedDepartmentId] = useState<
-    number | null
-  >(null);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | null>(null);
   const navigation = useNavigation<DepartmentScreenNavigationProp>();
+
+  // 2. Use the correct type for route
+  const route = useRoute<DepartmentScreenRouteProp>(); 
+  const refresh = route.params?.refresh;
 
   const role = useSelector((state: RootState) => state.user.role);
 
@@ -49,6 +53,11 @@ const DepartmentScreen: React.FC = () => {
     }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchDepartments();
+    }, []) // Only fetch on focus, no dependencies here
+  );
   const handleDelete = async () => {
     if (selectedDepartmentId !== null) {
       try {
@@ -86,10 +95,6 @@ const DepartmentScreen: React.FC = () => {
     setSelectedDepartmentId(null);
   };
 
-  useEffect(() => {
-    fetchDepartments();
-  }, []);
-
   return (
     <Provider>
       <View style={styles.container}>
@@ -100,10 +105,7 @@ const DepartmentScreen: React.FC = () => {
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
           renderItem={({ item }) => (
-            <Card
-              style={styles.card}
-              onPress={() => handleDepartmentPress(item)}
-            >
+            <Card style={styles.card} onPress={() => handleDepartmentPress(item)}>
               <Card.Cover
                 source={{
                   uri:
