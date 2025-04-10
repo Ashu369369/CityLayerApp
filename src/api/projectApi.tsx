@@ -37,7 +37,7 @@ export const deleteProject = (projectId: number): void => {
 };
 
 export const countPendingProjects = (): number => {
-return demoProjects.filter((project) => project.status === "Pending").length;
+  return demoProjects.filter((project) => project.status === "Pending").length;
 };
 
 export const countOngoingProjects = (): number => {
@@ -46,4 +46,8 @@ export const countOngoingProjects = (): number => {
 
 export const countActiveProjects = (): number => {
   return demoProjects.filter((project) => project.status === "Active").length;
+};
+
+export const createProject = (newProject: Project): void => {
+  demoProjects.push(newProject);
 };

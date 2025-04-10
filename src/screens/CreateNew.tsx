@@ -19,10 +19,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { createDepartment } from "../api/deptApi";
 import Constants from "expo-constants";
+import { createProject, getProjectsByDepartmentId } from "../api/projectApi";
+import { demoProjects } from "../demoData/projects";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const CreateNewScreen: React.FC = (params) => {
-  const route = useRoute<CreateNewScreenRouteProp>(); // Access route params
-  const { type, id } = route.params; // Destructure type and id from route params
+  // const route = useRoute<CreateNewScreenRouteProp>(); // Access route params
+  // const { type, id } = route.params; // Destructure type and id from route params
   // const type = route.type; // Get the type from route params
   // const [type, setType] = useState("Department");
   const [loading, setLoading] = useState(false);
@@ -45,6 +48,16 @@ const CreateNewScreen: React.FC = (params) => {
   const [createdby, setCreatedby] = useState("");
   const loggedInUser = useSelector((state: RootState) => state.user);
   const navigation = useNavigation(); // Access navigation prop
+
+  type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">;
+
+  type DepartmentScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "Department"
+  >;
+
+  const route = useRoute<CreateNewScreenRouteProp>();
+  const { type, id } = route.params;
 
   const GRAPHQL_ENDPOINT = `http://${Constants.expoConfig?.extra?.config}:4000/graphql`;
 
@@ -80,18 +93,31 @@ const CreateNewScreen: React.FC = (params) => {
           payload: { name: "Departments", params: { refresh: true } },
         });
       } else if (type === "Project") {
-        // Add the new project to the hardcoded array
         const newProject = {
-          id: Math.random(), // Generate a unique ID
+          projectid: demoProjects.length + 1, // Generate a unique ID
           title,
           description,
-          startDate,
-          dueDate,
+          startdate: startDate,
+          duedate: dueDate,
           status: status === "Custom" ? customStatus : status,
-          createdAt: createdat || new Date().toISOString(),
+          createdat: createdat || new Date().toISOString(),
+          updatedat: new Date().toISOString(), // Add updatedat property
+          assignedto: assignedTo ? parseInt(assignedTo, 10) : 0, // Convert to number or provide default value
+          budget: budget ? parseFloat(budget) : 0, // Convert to number or provide default value
+          workforce: workforce || "0", // Provide default or actual value
+          timeline: timeline || "N/A", // Provide default or actual value
+          departmentid: id ?? 0, // Ensure departmentid is a number, default to 0 if undefined
         };
+        createProject(newProject);
+        // Removed incorrect fetch call as demoProjects is an array and not a valid argument for fetch
+        getProjectsByDepartmentId(id ?? 0); // Fetch projects by department ID
+        const departmentNavigation =
+          navigation as unknown as StackNavigationProp<
+            RootStackParamList,
+            "Department"
+          >;
+        // Navigate back with required parameters
 
-        console.log("New Project:", newProject);
         Alert.alert("Success", "Project created successfully!");
       } else if (type === "Program") {
         // Add the new program to the hardcoded array
@@ -227,7 +253,102 @@ const CreateNewScreen: React.FC = (params) => {
         </>
       )}
 
-      {/* Loading Indicator */}
+      {type === "Program" && (
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={title}
+            onChangeText={setTitle}
+          />
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="Description"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Start Date (YYYY-MM-DD)"
+            value={startDate}
+            onChangeText={setStartDate}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Duration (in days)"
+            value={duration}
+            onChangeText={(value) => setDuration(value)}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="End Date (optional, YYYY-MM-DD)"
+            value={dueDate}
+            onChangeText={setDueDate}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 15,
+            }}
+          >
+            <Text style={styles.label}>Is Repeat:</Text>
+            <Picker
+              selectedValue={repeat}
+              onValueChange={(value) => setRepeat(value)}
+              style={styles.picker}
+            >
+              <Picker.Item label="No" value="No" />
+              <Picker.Item label="Yes" value="Yes" />
+            </Picker>
+          </View>
+          {repeat === "Yes" && (
+            <>
+              <Text style={styles.label}>Repeat Type</Text>
+              <Picker
+                selectedValue={customStatus}
+                onValueChange={(value) => setCustomStatus(value)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Weekly" value="Weekly" />
+                <Picker.Item label="Monthly" value="Monthly" />
+                <Picker.Item label="Custom" value="Custom" />
+              </Picker>
+              {customStatus === "Custom" && (
+                <TextInput
+                  style={styles.input}
+                  placeholder="Custom Repeat Value (e.g., every X days)"
+                  value={timeline}
+                  onChangeText={setTimeline}
+                  keyboardType="numeric"
+                />
+              )}
+            </>
+          )}
+          <TextInput
+            style={styles.input}
+            placeholder="Created By (User ID)"
+            value={createdby}
+            onChangeText={setCreatedby}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Created At (optional, YYYY-MM-DD)"
+            value={createdat}
+            onChangeText={setCreatedat}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Department ID"
+            value={workforce}
+            onChangeText={setWorkforce}
+            keyboardType="numeric"
+          />
+        </>
+      )}
       {loading && (
         <ActivityIndicator
           size="large"

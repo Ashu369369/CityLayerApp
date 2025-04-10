@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  ImageBackground,
-  FlatList,
-} from "react-native";
+import { View, Text, ImageBackground, FlatList } from "react-native";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import {
@@ -27,9 +22,18 @@ import {
   getAnnouncementsByDepartmentId,
 } from "../api/announcementsApi";
 import { sortItems } from "../Tools/sortFunction";
-import { Button, Menu, Divider, Provider, Card, TouchableRipple, Paragraph, Title } from 'react-native-paper';
-import { LinearGradient } from 'expo-linear-gradient';
-import styles from '../styles/Department';
+import {
+  Button,
+  Menu,
+  Divider,
+  Provider,
+  Card,
+  TouchableRipple,
+  Paragraph,
+  Title,
+} from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
+import styles from "../styles/Department";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
@@ -99,12 +103,17 @@ const Department: React.FC = () => {
   }, [selectedTab]);
 
   const handleCreateNew = (selectedTab: string) => {
-    navigation.navigate("CreateNew", {
-      type: selectedTab,
-      id: departmentId,
-    });
+    if (selectedTab === "projects") {
+      navigation.navigate("CreateNew", { type: "Project", id: departmentId });
+    } else if (selectedTab === "programs") {
+      navigation.navigate("CreateNew", { type: "Program", id: departmentId });
+    } else if (selectedTab === "announcements") {
+      navigation.navigate("CreateNew", {
+        type: "Announcement",
+        id: departmentId,
+      });
+    }
   };
-
 
   const handleDelete = async (type: string, id: number) => {
     if (type === "projects") {
@@ -117,15 +126,29 @@ const Department: React.FC = () => {
   };
 
   const handleSort = (value: string) => {
-    const [criteria, order] = value.split('-');
+    const [criteria, order] = value.split("-");
     if (selectedTab === "announcements") {
-      const sortedAnnouncements = sortItems(announcements, criteria === "title" ? "messageTitle" : "createdat" as keyof Announcement, order as "asc" | "desc");
+      const sortedAnnouncements = sortItems(
+        announcements,
+        criteria === "title"
+          ? "messageTitle"
+          : ("createdat" as keyof Announcement),
+        order as "asc" | "desc"
+      );
       setAnnouncements([...sortedAnnouncements]);
     } else if (selectedTab === "projects") {
-      const sortedProjects = sortItems(projects, criteria === "title" ? "title" : "createdat" as keyof Project, order as "asc" | "desc");
+      const sortedProjects = sortItems(
+        projects,
+        criteria === "title" ? "title" : ("createdat" as keyof Project),
+        order as "asc" | "desc"
+      );
       setProjects([...sortedProjects]);
     } else if (selectedTab === "programs") {
-      const sortedPrograms = sortItems(programs, criteria === "title" ? "name" : "createdAt" as keyof Program, order as "asc" | "desc");
+      const sortedPrograms = sortItems(
+        programs,
+        criteria === "title" ? "name" : ("createdAt" as keyof Program),
+        order as "asc" | "desc"
+      );
       setPrograms([...sortedPrograms]);
     }
     setSortMenuVisible(false);
@@ -135,10 +158,12 @@ const Department: React.FC = () => {
     <>
       <ImageBackground
         source={{
-          uri: imageUrl || "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
+          uri:
+            imageUrl ||
+            "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
         }}
         style={styles.imageBackground}
-      // imageStyle={styles.image}
+        // imageStyle={styles.image}
       >
         <LinearGradient
           colors={["rgba(0,0,0,0.5)", "rgba(0,0,0,1)"]}
@@ -155,7 +180,9 @@ const Department: React.FC = () => {
         <View style={styles.buttonRow}>
           {/* Announcements Button */}
           <Button
-            mode={selectedTab === "announcements" ? "contained" : "contained-tonal"}
+            mode={
+              selectedTab === "announcements" ? "contained" : "contained-tonal"
+            }
             onPress={() => setSelectedTab("announcements")}
             style={[
               styles.button,
@@ -196,17 +223,34 @@ const Department: React.FC = () => {
               <Button onPress={() => setSortMenuVisible(true)}>Sort by</Button>
             }
           >
-            <Menu.Item onPress={() => handleSort('title-asc')} title="Name (Asc)" />
-            <Menu.Item onPress={() => handleSort('title-desc')} title="Name (Desc)" />
+            <Menu.Item
+              onPress={() => handleSort("title-asc")}
+              title="Name (Asc)"
+            />
+            <Menu.Item
+              onPress={() => handleSort("title-desc")}
+              title="Name (Desc)"
+            />
             <Divider />
-            <Menu.Item onPress={() => handleSort('createdAt-asc')} title="Date (Asc)" />
-            <Menu.Item onPress={() => handleSort('createdAt-desc')} title="Date (Desc)" />
+            <Menu.Item
+              onPress={() => handleSort("createdAt-asc")}
+              title="Date (Asc)"
+            />
+            <Menu.Item
+              onPress={() => handleSort("createdAt-desc")}
+              title="Date (Desc)"
+            />
           </Menu>
-          {role >= 2 &&
+          {role >= 2 && (
             <Button onPress={() => handleCreateNew(selectedTab)}>
-              Create {selectedTab === "projects" ? "Project" : selectedTab === "programs" ? "Program" : "Announcement"}
+              {"Create "}
+              {selectedTab === "projects"
+                ? "Project"
+                : selectedTab === "programs"
+                ? "Program"
+                : "Announcement"}
             </Button>
-          }
+          )}
         </View>
       </View>
     </>
@@ -225,15 +269,15 @@ const Department: React.FC = () => {
           selectedTab === "announcements"
             ? item.announcementId.toString() // Use announcementId for announcements
             : item.projectid
-              ? item.projectid.toString()
-              : item.programid.toString()
+            ? item.projectid.toString()
+            : item.programid.toString()
         } // Dynamic key based on type
         ListHeaderComponent={renderHeader}
         renderItem={({ item }) => (
           <TouchableRipple
             onPress={() => {
               if (selectedTab === "projects") {
-                navigation.navigate('Project', { projectid: item.projectid });
+                navigation.navigate("Project", { projectid: item.projectid });
               } else if (selectedTab === "programs") {
                 navigation.navigate("Program", { programId: item.programid });
               } else if (selectedTab === "announcements") {
@@ -249,22 +293,32 @@ const Department: React.FC = () => {
                   {selectedTab === "projects"
                     ? item.title
                     : selectedTab === "programs"
-                      ? item.name
-                      : item.messageTitle}
+                    ? item.name
+                    : item.messageTitle}
                 </Title>
                 {/* Render description based on selected tab */}
-                {
-                  selectedTab == "projects" &&
+                {selectedTab == "projects" && (
                   <Paragraph>
-                    Status: <Text style={item.status === "Active" ? { color: "green" } : (item.status === "Pending" ? { color: "orange" } : { color: "red" })}>{item.status}</Text>
+                    Status:{" "}
+                    <Text
+                      style={
+                        item.status === "Active"
+                          ? { color: "green" }
+                          : item.status === "Pending"
+                          ? { color: "orange" }
+                          : { color: "red" }
+                      }
+                    >
+                      {item.status}
+                    </Text>
                   </Paragraph>
-                }
+                )}
                 <Paragraph style={styles.projectDescription}>
                   {selectedTab === "projects"
                     ? item.description
                     : selectedTab === "programs"
-                      ? item.description
-                      : item.messageBody}
+                    ? item.description
+                    : item.messageBody}
                 </Paragraph>
               </Card.Content>
               {role === 2 || role === 3 ? (
@@ -275,7 +329,10 @@ const Department: React.FC = () => {
                   />
                   <DeleteButton
                     onDelete={() => {
-                      handleDelete(selectedTab, item.projectid || item.programid);
+                      handleDelete(
+                        selectedTab,
+                        item.projectid || item.programid
+                      );
                     }}
                   />
                 </Card.Actions>

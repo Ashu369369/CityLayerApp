@@ -3,7 +3,7 @@ export type RootStackParamList = {
   Signup: undefined;
   Search: undefined;
   Login: undefined;
-  // Departments: undefined;
+  Departments: undefined;
   Profile: undefined;
   Department: {
     id: number;
@@ -31,5 +31,5 @@ export type RootStackParamList = {
   CreateNotification: undefined;
   Feedback: { onSubmit: () => void; onCancel: () => void };
   Feedbacks: undefined;
-  Departments: { refresh: boolean };
+  // Departments: { refresh: boolean };
 };

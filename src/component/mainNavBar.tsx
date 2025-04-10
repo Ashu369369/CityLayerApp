@@ -133,26 +133,29 @@ const DepartmentStack = () => {
       )}
       {role === 2 || role === 3 ? (
         //if Department Admin or Admin
-        <Stack.Screen
-          name="Department"
-          component={Department}
-          options={({ navigation, route }) => ({
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("CreateNew", {
-                    type: "Project",
-                    id: (route as RouteProp<RootStackParamList, "Department">)
-                      .params?.id,
-                  })
-                }
-                style={{ marginRight: 10 }}
-              >
-                <Text style={{ color: "blue" }}>Create Project</Text>
-              </TouchableOpacity>
-            ),
-          })}
-        />
+        <>
+          <Stack.Screen
+            name="Department"
+            component={Department}
+            options={({ navigation, route }) => ({
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("CreateNew", {
+                      type: "Project",
+                      id: (route as RouteProp<RootStackParamList, "Department">)
+                        .params?.id,
+                    })
+                  }
+                  style={{ marginRight: 10 }}
+                >
+                  <Text style={{ color: "blue" }}>Create Project</Text>
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen name="CreateNew" component={CreateNewScreen} />
+        </>
       ) : (
         <Stack.Screen name="Department" component={Department} />
       )}
@@ -160,7 +163,6 @@ const DepartmentStack = () => {
       <Stack.Screen name="Project" component={ProjectDetails} />
       <Stack.Screen name="Program" component={ProgramScreen} />
       <Stack.Screen name="Edit" component={EditScreen} />
-      <Stack.Screen name="CreateNew" component={CreateNewScreen} />
     </Stack.Navigator>
   );
 };
