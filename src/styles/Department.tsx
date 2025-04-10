@@ -88,11 +88,9 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingVertical: 30,
     borderBottomWidth: 0,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors.backdrop,
     borderRadius: 8,
     marginVertical: 5,
-    shadowColor: theme.colors.primary,
-    marginVertical: 10,
     borderColor: theme.colors.white,
     borderTopWidth: 1,
     borderLeftWidth: 1,
@@ -101,14 +99,17 @@ const styles = StyleSheet.create({
   },
   projectTitle: {
     fontWeight: "bold",
-    color: theme.colors.text,
+    color: theme.colors.primary,
     fontFamily: theme.fonts.medium.fontFamily,
     fontSize: theme.fonts.medium.fontSize,
   },
   projectDescription: {
     fontSize: theme.fonts.light.fontSize,
     fontFamily: theme.fonts.light.fontFamily,
-    color: theme.colors.text,
+    color: theme.colors.surface,
+  },
+  statusLabel:{
+    color: theme.colors.white,
   },
   sortFilterBar: {
     flexDirection: "row",

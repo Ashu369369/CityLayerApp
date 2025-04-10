@@ -255,8 +255,8 @@ const Department: React.FC = () => {
                 {/* Render description based on selected tab */}
                 {
                   selectedTab == "projects" &&
-                  <Paragraph>
-                    Status: <Text style={item.status === "Active" ? { color: "green" } : (item.status === "Pending" ? { color: "orange" } : { color: "red" })}>{item.status}</Text>
+                  <Paragraph style={styles.statusLabel}>
+                    Status: <Text style={item.status === "Active" ? { color: "green",fontWeight: "bold" } : (item.status === "Pending" ? { color: "orange",fontWeight: "bold" } : { color: "red",fontWeight: "bold" })}>{item.status}</Text>
                   </Paragraph>
                 }
                 <Paragraph style={styles.projectDescription}>
