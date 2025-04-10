@@ -1,6 +1,6 @@
 // filepath: d:\college\capstone\frontend\CityLayerApp\src\screens\EditScreen.tsx
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,28 +11,28 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-} from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import * as ImagePicker from 'expo-image-picker';
-import axios from 'axios';
-import { RootStackParamList } from '../navigation/RootStackParams';
+} from "react-native";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
+import { RootStackParamList } from "../navigation/RootStackParams";
 
-type EditScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
+type EditScreenRouteProp = RouteProp<RootStackParamList, "Edit">;
 
 const EditScreen: React.FC = () => {
   const route = useRoute<EditScreenRouteProp>();
   const { type, id } = route.params;
 
   const [departmentid] = useState(id.toString()); // Not editable
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [imageurl, setImageurl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      alert('Permission to access media library is required!');
+      alert("Permission to access media library is required!");
       return;
     }
 
@@ -76,19 +76,19 @@ const EditScreen: React.FC = () => {
         departmentid,
         title,
         description,
-        imageurl: imageurl || 'https://via.placeholder.com/300',
+        imageurl: imageurl || "https://via.placeholder.com/300",
       };
 
-      const response = await axios.post('http://192.168.1.76:4000/graphql', {
+      const response = await axios.post("http://192.168.1.76:4000/graphql", {
         query: mutation,
         variables,
       });
 
-      console.log('✅ Department updated:', response.data);
-      Alert.alert('Success', 'Department updated successfully!');
+      console.log("✅ Department updated:", response.data);
+      Alert.alert("Success", "Department updated successfully!");
     } catch (error) {
-      console.error('❌ Error updating department:', error);
-      Alert.alert('Error', 'Failed to update department.');
+      console.error("❌ Error updating department:", error);
+      Alert.alert("Error", "Failed to update department.");
     } finally {
       setLoading(false);
     }
@@ -130,7 +130,7 @@ const EditScreen: React.FC = () => {
       {imageurl && <Image source={{ uri: imageurl }} style={styles.image} />}
 
       <Button
-        title={loading ? 'Submitting...' : 'Submit Changes'}
+        title={loading ? "Submitting..." : "Submit Changes"}
         onPress={handleSubmit}
         disabled={loading}
       />
@@ -141,49 +141,49 @@ const EditScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     flexGrow: 1,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   label: {
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
     marginTop: 10,
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 10,
     borderRadius: 6,
   },
   disabledInput: {
-    backgroundColor: '#f2f2f2',
-    color: '#999',
+    backgroundColor: "#f2f2f2",
+    color: "#999",
   },
   textArea: {
     height: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   imagePicker: {
-    backgroundColor: '#007BFF',
+    backgroundColor: "#007BFF",
     padding: 10,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 12,
     marginTop: 10,
   },
   imagePickerText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 200,
     marginBottom: 16,
     borderRadius: 6,

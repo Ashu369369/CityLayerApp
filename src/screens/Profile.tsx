@@ -84,11 +84,18 @@ const ProfileScreen: React.FC = () => {
                 Alert.alert("Success", response.data.deleteUser.message);
                 dispatch(clearUser()); // Clear user state after deletion
               } else {
-                Alert.alert("Error", response.data?.deleteUser.message || "Failed to delete account");
+                Alert.alert(
+                  "Error",
+                  response.data?.deleteUser.message ||
+                    "Failed to delete account"
+                );
               }
             } catch (error) {
               console.error("Error deleting account:", error);
-              Alert.alert("Error", "Failed to delete account. Please try again.");
+              Alert.alert(
+                "Error",
+                "Failed to delete account. Please try again."
+              );
             }
           },
         },
@@ -127,11 +134,11 @@ const ProfileScreen: React.FC = () => {
             Date of Birth: {formatDate(user.dob) || "N/A"}
           </Text>
           <Text variant="bodySmall" style={styles.role}>
+
             Role: {user.role === 1 ? "User" : user.role === 2 ? "Employee" : "Admin"}
           </Text>
         </Card.Content>
       </Card>
-
       {/* Logout and Delete Account Buttons */}
       <View style={styles.buttonContainer}>
         <Button
@@ -149,26 +156,28 @@ const ProfileScreen: React.FC = () => {
           Delete Account
         </Button>
       </View>
-
       {/* Conditionally render the button based on the user's role */}
       {role !== 3 && (
         <Button
+
           style={[styles.button, { backgroundColor: theme.colors.primary }]}
+
           onPress={() => setFeedbackVisible(true)}
         >
           <Text style={styles.buttonText}>Give Feedback</Text>
         </Button>
       )}
-
+      ;
       {isFeedbackVisible && (
         <Feedback
           onSubmit={handleFeedbackSubmit}
           onCancel={() => setFeedbackVisible(false)}
         />
       )}
-
       {role === 3 && (
+
         <Button style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={navigateToFeedbacks}>
+
           View Feedbacks
         </Button>
       )}

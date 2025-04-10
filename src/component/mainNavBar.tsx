@@ -18,6 +18,7 @@ import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import Project from "../screens/Project";
 import ProjectDetails from "../screens/Project";
 import ProgramScreen from "../screens/Program";
+// import SearchScreen from "../screens/Search";
 import NotificationsScreen from "../screens/Notification";
 import notificationsData from "../demoData/notifications";
 import CreateNotificationScreen from "../screens/CreateNotification";
@@ -37,13 +38,13 @@ const HomeStack = () => {
   useFocusEffect(
     React.useCallback(() => {
       const checkUnreadNotifications = notificationsData.some(
-        (notification) => !notification.readBy.includes(currentUserId ? currentUserId : 0)
+        (notification) =>
+          !notification.readBy.includes(currentUserId ? currentUserId : 0)
       );
       setHasUnreadNotifications(checkUnreadNotifications); // Update the state
     }, [currentUserId])
   );
   return (
-
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Home" component={HomeScreen} options={({ navigation }) => ({
         headerRight: () => (
@@ -81,11 +82,14 @@ const HomeStack = () => {
       <Stack.Screen name="CreateNotification" component={CreateNotificationScreen} />
     </Stack.Navigator>
   );
-}
+};
 
 const SearchStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="SearchMain" component={SearchScreen} />
+    <Stack.Screen name="Department" component={Department} />
+    <Stack.Screen name="Project" component={ProjectDetails} />
+    <Stack.Screen name="Program" component={ProgramScreen} />
   </Stack.Navigator>
 );
 
@@ -116,26 +120,29 @@ const DepartmentStack = () => {
       )}
       {role === 2 || role === 3 ? (
         //if Department Admin or Admin
-        <Stack.Screen
-          name="Department"
-          component={Department}
-          options={({ navigation, route }) => ({
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("CreateNew", {
-                    type: "Project",
-                    id: (route as RouteProp<RootStackParamList, "Department">)
-                      .params?.id,
-                  })
-                }
-                style={{ marginRight: 10 }}
-              >
-                <Text style={{ color: "blue" }}>Create Project</Text>
-              </TouchableOpacity>
-            ),
-          })}
-        />
+        <>
+          <Stack.Screen
+            name="Department"
+            component={Department}
+            options={({ navigation, route }) => ({
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("CreateNew", {
+                      type: "Project",
+                      id: (route as RouteProp<RootStackParamList, "Department">)
+                        .params?.id,
+                    })
+                  }
+                  style={{ marginRight: 10 }}
+                >
+                  <Text style={{ color: "blue" }}>Create Project</Text>
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen name="CreateNew" component={CreateNewScreen} />
+        </>
       ) : (
         <Stack.Screen name="Department" component={Department} />
       )}
@@ -143,7 +150,6 @@ const DepartmentStack = () => {
       <Stack.Screen name="Project" component={ProjectDetails} />
       <Stack.Screen name="Program" component={ProgramScreen} />
       <Stack.Screen name="Edit" component={EditScreen} />
-      <Stack.Screen name="CreateNew" component={CreateNewScreen} />
     </Stack.Navigator>
   );
 };
@@ -186,7 +192,11 @@ const MainNavBar: React.FC = () => {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" options={{ headerShown: false }} component={HomeStack} />
+      <Tab.Screen
+        name="Home"
+        options={{ headerShown: false }}
+        component={HomeStack}
+      />
       <Tab.Screen name="Search" component={SearchStack} />
       <Tab.Screen
         name="Departments"
