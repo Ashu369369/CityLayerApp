@@ -91,7 +91,7 @@ const LoginPage: React.FC = () => {
           console.log("GraphQL errors:", response.errors);
           alert(
             "Error: " + response.errors[0]?.message ||
-              "An unknown error occurred"
+            "An unknown error occurred"
           );
           return;
         }
@@ -106,7 +106,8 @@ const LoginPage: React.FC = () => {
           dob: response?.data?.login?.dob,
           role: response?.data?.login?.role,
         };
-        alert(message);
+        if (!user)
+          alert(message);
 
         // Navigate to Home screen after successful login
         // navigation.navigate("Home");

@@ -4,20 +4,23 @@ import theme from "../theme/theme";
 const NotificationsStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
-    padding: 10,
+    backgroundColor: theme.colors.grey,
+    padding: 0,
   },
   notificationCard: {
-    marginBottom: 15,
-    padding: 10,
-    borderRadius: 8,
+    // marginBottom: 10,
+    padding: 5,
+    borderRadius: 0,
     elevation: 3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     shadowOpacity: 0.2,
     borderWidth: 1, // Default thin border for all notifications
-    borderLeftWidth: 6, // Thicker left border for severity
-    backgroundColor: theme.colors.grey, // Background color for unread notifications
+    borderLeftWidth: 10, // Thicker left border for severity
+    backgroundColor: theme.colors.disabled, // Background color for unread notifications
+    borderRightColor: theme.colors.disabled, // Default border color
+    borderTopColor: theme.colors.disabled, // Default border color
+    borderBottomColor: theme.colors.surface, // Default border color
   },
   unreadNotification: {
     backgroundColor: theme.colors.surface,
@@ -37,7 +40,7 @@ const NotificationsStyles = StyleSheet.create({
   notificationTitle: {
     fontSize: theme.fonts.medium.fontSize,
     fontWeight: "bold",
-    color: theme.colors.text,
+    color: theme.colors.backdrop,
     marginBottom: 5,
   },
   notificationDescription: {
@@ -57,12 +60,13 @@ const NotificationsStyles = StyleSheet.create({
   },
   deleteButton: {
     marginTop: 10,
-    padding: 10,
+    padding: 5,
     backgroundColor: theme.colors.white,
     borderWidth: 1,
-    borderColor: theme.colors.surface,
+    borderColor: theme.colors.white,
     borderRadius: 5,
     alignItems: "center",
+    opacity: 0.5,
   },
   deleteButtonText: {
     color: "grey",

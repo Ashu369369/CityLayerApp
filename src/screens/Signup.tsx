@@ -128,14 +128,14 @@ const SignupPage: React.FC = () => {
       // Proceed only if all fields are valid
       try {
         const response = await createUser(formData);
-        
-        
-      if (response.errors && response.errors.length > 0) {
-        // If errors exist, handle them
-        console.log("GraphQL errors:", response.errors);
-        alert("Error: " + response.errors[0]?.message || "An unknown error occurred");
-        return;
-      }
+
+
+        if (response.errors && response.errors.length > 0) {
+          // If errors exist, handle them
+          console.log("GraphQL errors:", response.errors);
+          alert("Error: " + response.errors[0]?.message || "An unknown error occurred");
+          return;
+        }
         let message = response?.data?.createUser?.message;
 
         let token = response?.data?.createUser?.token;
@@ -148,8 +148,8 @@ const SignupPage: React.FC = () => {
           dob: formData.dob,
           role: response?.data?.createUser?.role,
         };
-
-        alert(message);
+        if (!user)
+          alert(message);
 
         // Dispatch the action to store the token and user information
         dispatch(setUser(user));
@@ -259,8 +259,8 @@ const SignupPage: React.FC = () => {
       />
       <ErrorBox errorMessage={errors.confirmPassword} />
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-      <Text style={styles.LoginText}>Already have an account? Log In</Text>
-    </TouchableOpacity>
+        <Text style={styles.LoginText}>Already have an account? Log In</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <Text style={styles.buttonText}>Sign Up</Text>
