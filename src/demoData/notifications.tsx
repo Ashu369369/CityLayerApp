@@ -20,7 +20,7 @@ const notifications: {
     taggedFor: 2, // Manager
     createdBy: 1,
     createdAt: "2025-01-01T10:00:00Z", // Specific date
-    readBy: [7],
+    readBy: [6, 7, 8],
   },
   {
     notificationId: 2,
@@ -56,7 +56,7 @@ const notifications: {
     taggedFor: 4, // Employee
     createdBy: 5,
     createdAt: "2025-03-30T16:45:00Z", // Specific date
-    readBy: [6],
+    readBy: [],
   },
   {
     notificationId: 5,
@@ -92,7 +92,7 @@ const notifications: {
     taggedFor: 5,
     createdBy: 2,
     createdAt: "2025-03-31T11:00:00Z", // Specific date
-    readBy: [6, 7, 8],
+    readBy: [],
   },
   {
     notificationId: 8,
@@ -116,7 +116,7 @@ const notifications: {
     taggedFor: 4,
     createdBy: 4,
     createdAt: "2025-03-29T15:00:00Z", // Specific date
-    readBy: [6, 7, 8],
+    readBy: [8],
   },
   {
     notificationId: 10,

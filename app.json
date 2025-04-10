@@ -26,7 +26,6 @@
     },
     "extra": {
       "config": "192.168.1.114",
-
       "apiKey": "YOUR_API_KEY"
     }
   }
