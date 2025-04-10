@@ -17,6 +17,10 @@ export interface Project {
   updatedat: string;
 }
 
+export const getAllProjects = (): Project[] => {
+  return demoProjects;
+};
+
 export const getProjectsByDepartmentId = (departmentId: number): Project[] => {
   return demoProjects.filter((project) => project.departmentid == departmentId);
 };
@@ -30,4 +34,20 @@ export const deleteProject = (projectId: number): void => {
     (project) => project.projectid == projectId
   );
   demoProjects.splice(index, 1);
+};
+
+export const countPendingProjects = (): number => {
+  return demoProjects.filter((project) => project.status === "Pending").length;
+};
+
+export const countOngoingProjects = (): number => {
+  return demoProjects.filter((project) => project.status === "Ongoing").length;
+};
+
+export const countActiveProjects = (): number => {
+  return demoProjects.filter((project) => project.status === "Active").length;
+};
+
+export const createProject = (newProject: Project): void => {
+  demoProjects.push(newProject);
 };

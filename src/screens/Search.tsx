@@ -1,53 +1,186 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  TextInput,
   StyleSheet,
   FlatList,
   TouchableOpacity,
 } from "react-native";
-
-interface SearchResult {
-  id: string;
-  name: string;
-}
+import { getAllDepartments } from "../api/deptApi"; // Import API for departments
+import { getAllProjects } from "../api/projectApi"; // Import API for projects
+import { getAllPrograms } from "../api/programApi"; // Import API for programs
+import { Searchbar } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../navigation/RootStackParams";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const SearchScreen: React.FC = () => {
-  const [query, setQuery] = useState<string>("");
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [departments, setDepartments] = useState<
+    { id: number; title: string; description?: string }[]
+  >([]);
+  const [projects, setProjects] = useState<
+    { id: number; title: string; description: string }[]
+  >([]);
+  const [programs, setPrograms] = useState<
+    { id: number; title: string; description: string }[]
+  >([]);
+  const [filteredResults, setFilteredResults] = useState<
+    { id: number; type: string; title: string; description: string }[]
+  >([]);
+  const [filterOption, setFilterOption] = useState<string>("All"); // Add filterOption state
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>(); // Access navigation with typed routes
 
-  const handleSearch = () => {
-    // Implement your search logic here
-    // For now, we'll just use a static list of results
-    const staticResults: SearchResult[] = [
-      { id: "1", name: "Result 1" },
-      { id: "2", name: "Result 2" },
-      { id: "3", name: "Result 3" },
-    ];
-    setResults(staticResults);
+  useEffect(() => {
+    // Fetch all departments, projects, and programs when the component mounts
+    const fetchData = async () => {
+      try {
+        const departmentsData = await getAllDepartments();
+        const projectsData = await getAllProjects();
+        const programsData = await getAllPrograms();
+
+        if (departmentsData?.data) {
+          setDepartments(
+            departmentsData.data.getAllDepartments.map((item: any) => ({
+              id: item.departmentid,
+              title: item.title || "",
+              description: item.description || "",
+              imageUrl: item.imageUrl || "",
+            }))
+          );
+        }
+        if (projectsData) {
+          setProjects(
+            projectsData.map((item: any) => ({
+              id: item.projectid,
+              title: item.title || "",
+              description: item.description || "",
+            }))
+          );
+        }
+        if (programsData) {
+          setPrograms(
+            programsData.map((item: any) => ({
+              id: item.programid,
+              title: item.name || "",
+              description: item.description || "",
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    // Filter results based on the search query and filter option
+    const query = searchQuery.toLowerCase();
+
+    let results: Array<{
+      id: number;
+      type: string;
+      title: string;
+      description: string;
+    }> = [];
+    if (filterOption === "All" || filterOption === "Departments") {
+      results = results.concat(
+        departments
+          .map((item) => ({
+            ...item,
+            type: "Department",
+            description: item.description || "",
+          }))
+          .filter((item) => item.title.toLowerCase().includes(query))
+      );
+    }
+    if (filterOption === "All" || filterOption === "Projects") {
+      results = results.concat(
+        projects
+          .map((item) => ({ ...item, type: "Project" }))
+          .filter((item) => item.title.toLowerCase().includes(query))
+      );
+    }
+    if (filterOption === "All" || filterOption === "Programs") {
+      results = results.concat(
+        programs
+          .map((item) => ({ ...item, type: "Program" }))
+          .filter((item) => item.title.toLowerCase().includes(query))
+      );
+    }
+
+    setFilteredResults(results);
+  }, [searchQuery, filterOption, departments, projects, programs]);
+
+  const handleItemPress = (item: {
+    id: number;
+    type: string;
+    title: string;
+    description: string;
+  }) => {
+    // Navigate to the appropriate screen based on the item's type
+    if (item.type === "Department") {
+      navigation.navigate("Department", {
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        imageUrl: "",
+      });
+    } else if (item.type === "Project") {
+      navigation.navigate("Project", { projectid: item.id });
+    } else if (item.type === "Program") {
+      navigation.navigate("Program", { programId: item.id });
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Search</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Type your query here..."
-        value={query}
-        onChangeText={setQuery}
-        onSubmitEditing={handleSearch}
+      <Searchbar
+        placeholder="Search"
+        onChangeText={setSearchQuery}
+        value={searchQuery}
       />
+
+      {/* Filter Options */}
+      <View style={styles.filterContainer}>
+        {["All", "Departments", "Projects", "Programs"].map((option) => (
+          <TouchableOpacity
+            key={option}
+            style={[
+              styles.filterButton,
+              filterOption === option && styles.activeFilterButton,
+            ]}
+            onPress={() => setFilterOption(option)}
+          >
+            <Text
+              style={[
+                styles.filterButtonText,
+                filterOption === option && styles.activeFilterButtonText,
+              ]}
+            >
+              {option}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Search Results */}
       <FlatList
-        data={results}
-        keyExtractor={(item) => item.id}
+        data={filteredResults}
+        keyExtractor={(item) => `${item.type}-${item.id}`} // Combine type and id for unique keys
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.resultItem}>
-            <Text style={styles.resultText}>{item.name}</Text>
+          <TouchableOpacity
+            style={styles.resultItem}
+            onPress={() => handleItemPress(item)}
+          >
+            <Text style={styles.resultText}>{item.title}</Text>
+            <Text style={styles.resultSubText}>{item.description}</Text>
           </TouchableOpacity>
         )}
         ListEmptyComponent={
-          <Text style={styles.noResults}>No results found</Text>
+          <Text style={styles.noResults}>No results found.</Text>
         }
       />
     </View>
@@ -60,18 +193,28 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#fff",
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 16,
   },
-  input: {
-    height: 40,
-    borderColor: "#ccc",
+  filterButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 8,
-    marginBottom: 16,
+    borderColor: "#ccc",
+  },
+  activeFilterButton: {
+    backgroundColor: "#6FBBB1",
+    borderColor: "#6FBBB1",
+  },
+  filterButtonText: {
+    fontSize: 14,
+    color: "#555",
+  },
+  activeFilterButtonText: {
+    color: "#fff",
   },
   resultItem: {
     padding: 16,
@@ -80,6 +223,11 @@ const styles = StyleSheet.create({
   },
   resultText: {
     fontSize: 16,
+    fontWeight: "bold",
+  },
+  resultSubText: {
+    fontSize: 14,
+    color: "#555",
   },
   noResults: {
     textAlign: "center",

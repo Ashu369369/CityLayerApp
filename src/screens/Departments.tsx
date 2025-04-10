@@ -112,6 +112,7 @@ const DepartmentScreen: React.FC = () => {
                     item.imageUrl ||
                     "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
                 }}
+                style={styles.cardImage}
               />
               <Card.Content style={styles.cardContent}>
                 <Title style={styles.title}>{item.title}</Title>
@@ -122,8 +123,9 @@ const DepartmentScreen: React.FC = () => {
               {role === 3 && (
                 <Card.Actions style={styles.cardActions}>
                   <Button
-                    mode="contained"
-                    style={styles.actionButton}
+                    mode="outlined"
+                    style={styles.editButton}
+                    labelStyle={styles.editButtonText}
                     onPress={() =>
                       navigation.navigate("Edit", {
                         type: "department",
@@ -135,7 +137,7 @@ const DepartmentScreen: React.FC = () => {
                   </Button>
                   <Button
                     mode="contained"
-                    style={styles.actionButton}
+                    style={styles.deleteButton}
                     onPress={() => showDialog(item.departmentid)}
                   >
                     Delete

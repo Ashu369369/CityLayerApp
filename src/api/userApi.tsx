@@ -52,6 +52,13 @@ export interface LoginUserResponse {
   };
 }
 
+export interface DeleteUserResponse {
+  deleteUser: {
+    success: boolean;
+    message: string;
+  };
+}
+
 export const createUser = async (
   data: CreateUserRequest
 ): Promise<GraphQLResponse<CreateUserResponse>> => {
@@ -145,5 +152,36 @@ export const loginUser = async (
   } catch (error: any) {
     console.log(error);
     throw new Error(error.response?.data?.message || "Error logging in");
+  }
+};
+
+export const deleteUser = async (
+  userId: number
+): Promise<GraphQLResponse<DeleteUserResponse>> => {
+  const mutation = `
+    mutation DeleteUser($id: ID!) {
+      deleteUser(id: $id) {
+        success
+        message
+      }
+    }
+  `;
+
+  const variables = {
+    id: userId,
+  };
+
+  try {
+    const response = await axiosInstance.post<
+      GraphQLResponse<DeleteUserResponse>
+    >(baseUrl, {
+      query: mutation,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error deleting user:", error);
+    throw new Error(error.response?.data?.message || "Error deleting user");
   }
 };

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -20,6 +21,7 @@ type EditScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
 
 type EditScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Edit'>;
 
+
 const EditScreen: React.FC = () => {
   const route = useRoute<EditScreenRouteProp>();
   const navigation = useNavigation<EditScreenNavigationProp>();
@@ -31,6 +33,7 @@ const EditScreen: React.FC = () => {
   const [description, setDescription] = useState('');
   const [imageurl, setImageurl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
 
   const fetchDepartmentData = async () => {
     try {
@@ -67,6 +70,7 @@ const EditScreen: React.FC = () => {
     fetchDepartmentData();
   }, []);
 
+
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
@@ -101,6 +105,7 @@ const EditScreen: React.FC = () => {
             title: $title
             description: $description
             imageUrl: $imageUrl
+
           ) {
             departmentid
             title
@@ -115,6 +120,7 @@ const EditScreen: React.FC = () => {
         title,
         description,
         imageUrl: imageurl || 'https://via.placeholder.com/300', // Default placeholder image URL
+
       };
 
       const response = await axios.post('http://192.168.1.76:4000/graphql', {
@@ -174,6 +180,7 @@ const EditScreen: React.FC = () => {
 
       {imageurl && <Image source={{ uri: imageurl }} style={styles.image} />}
 
+
       <TouchableOpacity
         style={styles.submitButton}
         onPress={handleSubmit}
@@ -183,6 +190,7 @@ const EditScreen: React.FC = () => {
           {loading ? 'Submitting...' : 'Submit Changes'}
         </Text>
       </TouchableOpacity>
+
     </ScrollView>
   );
 };
@@ -196,6 +204,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+
     marginBottom: 16,
   },
   label: {
@@ -234,6 +243,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 200,
+
     marginBottom: 16,
     borderRadius: 6,
   },
@@ -243,10 +253,12 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     alignItems: 'center',
   },
+
   submitButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+
   },
 });
 
