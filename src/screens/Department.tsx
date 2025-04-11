@@ -35,6 +35,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import styles from "../styles/Department";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import { getDepartment } from "../api/deptApi";
 
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
 type ProjectScreenRouteProp = StackNavigationProp<RootStackParamList>;
@@ -297,16 +298,17 @@ const Department: React.FC = () => {
                     : item.messageTitle}
                 </Title>
                 {/* Render description based on selected tab */}
+
                 {selectedTab == "projects" && (
-                  <Paragraph>
+                  <Paragraph style={styles.statusLabel}>
                     Status:{" "}
                     <Text
                       style={
                         item.status === "Active"
-                          ? { color: "green" }
+                          ? { color: "green", fontWeight: "bold" }
                           : item.status === "Pending"
-                          ? { color: "orange" }
-                          : { color: "red" }
+                          ? { color: "orange", fontWeight: "bold" }
+                          : { color: "red", fontWeight: "bold" }
                       }
                     >
                       {item.status}
@@ -323,10 +325,12 @@ const Department: React.FC = () => {
               </Card.Content>
               {role === 2 || role === 3 ? (
                 <Card.Actions>
-                  <EditButton
-                    type={selectedTab}
-                    id={item.projectid || item.programid}
-                  />
+                  {selectedTab !== "announcements" && (
+                    <EditButton
+                      type={selectedTab}
+                      id={item.projectid || item.programid}
+                    />
+                  )}
                   <DeleteButton
                     onDelete={() => {
                       handleDelete(

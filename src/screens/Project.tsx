@@ -91,7 +91,7 @@ const ProjectDetails: React.FC = () => {
         </Surface>
       </View>
 
-      <Divider style={styles.divider} />
+      {/* <Divider style={styles.divider} /> */}
 
       <View style={styles.detailsContainer}>
         <Text style={styles.detail}>
@@ -138,15 +138,11 @@ const ProjectDetails: React.FC = () => {
         updates.map((update) => (
           <View key={update.id} style={styles.updateCard}>
             <Text style={styles.updateDescription}>{update.description}</Text>
-            <Text style={styles.updateDate}>
-              {new Date(update.dateAndTime).toLocaleString()}
-            </Text>
-            <Text style={styles.updateBy}>Created By: {update.createdBy}</Text>
             <Text style={styles.updateLocation}>
               Location: {update.location}
             </Text>
 
-            <View style={[styles.updateFiles, { flexDirection: "column" }]}>
+            <View style={styles.mediaContainer}>
               {update.mediaFiles.map((file, index) => {
                 if (file.endsWith(".jpg") || file.endsWith(".png")) {
                   // For images, display the image
@@ -186,6 +182,12 @@ const ProjectDetails: React.FC = () => {
                   );
                 }
               })}
+            </View>
+            <View style={{ flexDirection: "row", marginTop: 10, justifyContent: "space-between" }}>
+              <Text style={styles.updateBy}>Created By: {update.createdBy}</Text>
+              <Text style={styles.updateDate}>
+                {new Date(update.dateAndTime).toLocaleString()}
+              </Text>
             </View>
           </View>
         ))

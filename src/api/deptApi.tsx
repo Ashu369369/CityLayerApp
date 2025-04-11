@@ -52,7 +52,7 @@ export const createDepartment = async (
   data: CreateDepartmentRequest
 ): Promise<GraphQLResponse<CreateDepartmentResponse>> => {
   const mutation = `
-    mutation ($title: String!, $description: String!, $imageUrl: String) {
+    mutation($title: String!, $description: String!, $imageUrl: String!) {
       createDepartment(title: $title, description: $description, imageUrl: $imageUrl) {
         departmentid
         title
@@ -76,7 +76,7 @@ export const createDepartment = async (
       query: mutation,
       variables,
     });
-
+    console.log("Response:", response.data); // Log the response data
     return response.data;
   } catch (error: any) {
     console.log(error);
@@ -91,7 +91,7 @@ export const getDepartment = async (
 ): Promise<GraphQLResponse<GetDepartmentResponse>> => {
   const query = `
     query GetDepartment($departmentid: ID!) {
-      getDepartment(departmentid: $departmentId) {
+      getDepartment(departmentid: $departmentid) {
         departmentid
         title
         description
@@ -103,7 +103,7 @@ export const getDepartment = async (
   `;
 
   const variables = {
-    departmentId,
+    departmentid: departmentId,
   };
 
   try {
@@ -113,7 +113,7 @@ export const getDepartment = async (
       query,
       variables,
     });
-
+    console.log("Response:", response.data); // Log the response data
     return response.data;
   } catch (error: any) {
     console.log(error);
@@ -196,6 +196,58 @@ export const deleteDepartment = async (
     console.error("Error deleting department:", error);
     throw new Error(
       error.response?.data?.message || "Error deleting department"
+    );
+  }
+};
+
+// make a update department function
+export const updateDepartment = async (
+  departmentId: number,
+  data: CreateDepartmentRequest
+): Promise<GraphQLResponse<CreateDepartmentResponse>> => {
+  const mutation = `
+        mutation EditDepartment(
+          $departmentId: ID!
+          $title: String!
+          $description: String!
+          $imageUrl: String!
+        ) {
+          editDepartment(
+            departmentId: $departmentId
+            title: $title
+            description: $description
+            imageUrl: $imageUrl
+          ) {
+            departmentid
+            title
+            description
+            imageUrl
+          }
+        }
+      `;
+
+  const variables = {
+    departmentId,
+    title: data.title,
+    description: data.description,
+    imageUrl:
+      data.imageUrl ||
+      "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
+  };
+
+  try {
+    const response = await axiosInstance.post<
+      GraphQLResponse<CreateDepartmentResponse>
+    >(baseUrl, {
+      query: mutation,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(
+      error.response?.data?.message || "Error updating department"
     );
   }
 };

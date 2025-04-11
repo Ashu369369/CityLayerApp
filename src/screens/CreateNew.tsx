@@ -26,6 +26,7 @@ import { createProgram } from "../api/programApi";
 import programs from "../demoData/programs";
 import { getProgramsByDepartmentId } from "../api/programApi";
 import { getDepartment } from "../api/deptApi";
+import type { Department } from "../api/deptApi"; // Import the Department type
 
 const CreateNewScreen: React.FC = (params) => {
   // const route = useRoute<CreateNewScreenRouteProp>(); // Access route params
@@ -51,7 +52,7 @@ const CreateNewScreen: React.FC = (params) => {
   const [createdat, setCreatedat] = useState("");
   const [createdby, setCreatedby] = useState("");
   const loggedInUser = useSelector((state: RootState) => state.user);
-  const navigation = useNavigation(); // Access navigation prop
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>(); // Properly type the navigation prop
 
   type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">;
 
@@ -73,40 +74,11 @@ const CreateNewScreen: React.FC = (params) => {
           Alert.alert("Error", "Title and description are required.");
           return;
         }
-
-        setLoading(true);
-
-        // const currentDate = new Date().toISOString();
-        try {
-          const response = await createDepartment({
-            title,
-            description,
-            imageUrl,
-          });
-
-          console.log("API Response:", response);
-
-          if (response?.data?.createDepartment) {
-            Alert.alert("Success", "Department created successfully!");
-            navigation.navigate("Departments" as never); // Navigate back to the Departments screen
-          } else if (response?.errors) {
-            console.error("API Errors:", response.errors);
-            Alert.alert(
-              "Error",
-              "Failed to create department. Please check the input and try again."
-            );
-          } else {
-            Alert.alert(
-              "Error",
-              "Unexpected error occurred while creating the department."
-            );
-          }
-        } catch (error: any) {
-          console.error("Error creating department:", error);
-          Alert.alert("Error", error.message || "An error occurred.");
-        } finally {
-          setLoading(false);
-        }
+        let response = await createDepartment({
+          title,
+          description,
+          imageUrl,
+        });
       } else if (type === "Project") {
         const newProject = {
           projectid: demoProjects.length + 1, // Generate a unique ID
@@ -163,8 +135,14 @@ const CreateNewScreen: React.FC = (params) => {
             try {
               const response = await getDepartment((id ?? 0).toString());
               if (response.data) {
-                const currentDepartment = response.data.getDepartment;
-              }
+                const currentDepartment = response.data
+                  .getDepartment as Department; // Cast to Department type
+                navigation.navigate("Department", {
+                  id: id ?? 0,
+                  title: currentDepartment.title,
+                  description: currentDepartment.description,
+                });
+              } else console.error("No data found in response.");
             } catch (error) {
               console.error("Error fetching current department:", error);
             }

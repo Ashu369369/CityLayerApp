@@ -1,33 +1,57 @@
-// filepath: d:\college\capstone\frontend\CityLayerApp\src\screens\EditScreen.tsx
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   Image,
   TouchableOpacity,
   ScrollView,
   Alert,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { RootStackParamList } from '../navigation/RootStackParams';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { getDepartment, updateDepartment } from '../api/deptApi';
+import Constants from "expo-constants";
 
 type EditScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
 
+type EditScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Edit'>;
+
 const EditScreen: React.FC = () => {
   const route = useRoute<EditScreenRouteProp>();
+  const navigation = useNavigation<EditScreenNavigationProp>();
+
   const { type, id } = route.params;
 
-  const [departmentid] = useState(id.toString()); // Not editable
+  const [departmentid] = useState(id); // Not editable
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [imageurl, setImageurl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const fetchDepartmentData = async () => {
+    try {
+      let response = await getDepartment(departmentid.toString());
+      console.log("response", response);
+      const data =  response.data?.getDepartment;
+
+      setTitle(data?.title ?? '');
+      setDescription(data?.description ?? '');
+      setImageurl(data?.imageUrl ?? null);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to load department data.');
+    }
+  };
+
+  useEffect(() => {
+    fetchDepartmentData();
+  }, []);
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -51,41 +75,22 @@ const EditScreen: React.FC = () => {
     try {
       setLoading(true);
 
-      const mutation = `
-        mutation EditDepartment(
-          $departmentid: ID!
-          $title: String!
-          $description: String!
-          $imageurl: String!
-        ) {
-          editDepartment(
-            departmentId: $departmentid
-            title: $title
-            description: $description
-            imageUrl: $imageurl
-          ) {
-            departmentid
-            title
-            description
-            imageUrl
-          }
-        }
-      `;
-
-      const variables = {
-        departmentid,
-        title,
-        description,
-        imageurl: imageurl || 'https://via.placeholder.com/300',
-      };
-
-      const response = await axios.post('http://192.168.1.76:4000/graphql', {
-        query: mutation,
-        variables,
+      let response = await updateDepartment(departmentid, {
+        title, description, imageUrl: imageurl ?? undefined,
       });
 
-      console.log('✅ Department updated:', response.data);
-      Alert.alert('Success', 'Department updated successfully!');
+      // Check if the response contains an error
+      if (response.errors || !response.data) {
+        throw new Error('Failed to update department');
+      }
+      Alert.alert('Success', 'Department updated successfully!', [
+        {
+          text: 'OK',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ]);
     } catch (error) {
       console.error('❌ Error updating department:', error);
       Alert.alert('Error', 'Failed to update department.');
@@ -101,7 +106,7 @@ const EditScreen: React.FC = () => {
       <Text style={styles.label}>Department ID (not editable)</Text>
       <TextInput
         style={[styles.input, styles.disabledInput]}
-        value={departmentid}
+        value={departmentid.toString()}
         editable={false}
       />
 
@@ -129,11 +134,15 @@ const EditScreen: React.FC = () => {
 
       {imageurl && <Image source={{ uri: imageurl }} style={styles.image} />}
 
-      <Button
-        title={loading ? 'Submitting...' : 'Submit Changes'}
+      <TouchableOpacity
+        style={styles.submitButton}
         onPress={handleSubmit}
         disabled={loading}
-      />
+      >
+        <Text style={styles.submitButtonText}>
+          {loading ? 'Submitting...' : 'Submit Changes'}
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -171,7 +180,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   imagePicker: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#81d5a6', // Sea Green
     padding: 10,
     borderRadius: 6,
     alignItems: 'center',
@@ -187,6 +196,17 @@ const styles = StyleSheet.create({
     height: 200,
     marginBottom: 16,
     borderRadius: 6,
+  },
+  submitButton: {
+    backgroundColor: '#81d5a6', // Sea Green
+    paddingVertical: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
