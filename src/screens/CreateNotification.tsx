@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button, Text, useTheme, Menu, Divider } from "react-native-paper";
 import notifications from "../demoData/notifications";
+import { DynamicTheme } from "../theme/theme";
 
 const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
-  const theme = useTheme(); // Access the theme
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [severity, setSeverity] = useState("general");
@@ -181,7 +184,7 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,

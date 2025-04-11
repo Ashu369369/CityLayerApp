@@ -11,7 +11,7 @@ import {
   Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { Route, RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">; // Define the route prop type for CreateNew screen
 import { useNavigation } from "@react-navigation/native";
@@ -22,12 +22,17 @@ import Constants from "expo-constants";
 import { createProject, getProjectsByDepartmentId } from "../api/projectApi";
 import { demoProjects } from "../demoData/projects";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useTheme } from "react-native-paper";
+import { DynamicTheme } from "../theme/theme";
 
 const CreateNewScreen: React.FC = (params) => {
   // const route = useRoute<CreateNewScreenRouteProp>(); // Access route params
   // const { type, id } = route.params; // Destructure type and id from route params
   // const type = route.type; // Get the type from route params
   // const [type, setType] = useState("Department");
+
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -75,7 +80,7 @@ const CreateNewScreen: React.FC = (params) => {
         let response = await createDepartment({
           title, description, imageUrl,
         });
-        
+
       } else if (type === "Project") {
         const newProject = {
           projectid: demoProjects.length + 1, // Generate a unique ID
@@ -352,7 +357,7 @@ const CreateNewScreen: React.FC = (params) => {
 
 export default CreateNewScreen;
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: "#f9f9f9",

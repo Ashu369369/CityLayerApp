@@ -10,9 +10,9 @@ import {
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { getProjectById, Project } from "../api/projectApi";
-import styles from "../styles/Project";
-import theme from "../theme/theme";
-import { Card, Divider, Surface } from "react-native-paper";
+import useStyles from "../styles/Project";
+import theme, { DynamicTheme } from "../theme/theme";
+import { Card, Divider, Surface, useTheme } from "react-native-paper";
 import { ProjectUpdate } from "../api/projectUpdatesApi";
 import { getProjectUpdatesByProjectId } from "../api/projectUpdatesApi";
 import { WebView } from "react-native-webview";
@@ -20,6 +20,9 @@ import { WebView } from "react-native-webview";
 type ProjectDetailsRouteProp = RouteProp<RootStackParamList, "Project">;
 
 const ProjectDetails: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<ProjectDetailsRouteProp>();
   const { projectid } = route.params;
   const [project, setProject] = useState<Project | null>(null);

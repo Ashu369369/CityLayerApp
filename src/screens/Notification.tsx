@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 import { View, FlatList, TouchableOpacity, Alert } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
 import notificationsData, { markNotificationAsRead } from "../demoData/notifications"; // Import the function
-import styles from "../styles/Notifications";
+import useStyles from "../styles/Notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { useFocusEffect } from "@react-navigation/native";
+import { DynamicTheme } from "../theme/theme";
 
 const NotificationsScreen: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const currentUserId = useSelector((state: RootState) => state.user.id); 
   const currentUserRole = useSelector((state: RootState) => state.user.role); // Get the user's role
 

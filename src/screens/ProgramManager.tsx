@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import programsData from "../demoData/programs"; // path to your demo data
+import { useTheme } from "react-native-paper";
+import { DynamicTheme } from "../theme/theme";
+// import useStyles from "../styles/ProgramManagerStyles"; // path to your styles
 
 
 const ProgramManager = () => {
+  
+  // const theme = useTheme();
+  // const styles = useStyles(theme as DynamicTheme);
   const [programs, setPrograms] = useState(programsData);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 

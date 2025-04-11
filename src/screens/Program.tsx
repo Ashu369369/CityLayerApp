@@ -4,17 +4,20 @@ import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { getProgramById, Program } from "../api/programApi";
 import { Text, useTheme, Card } from "react-native-paper";
-import styles from "../styles/ProgramStyles";
+import useStyles from "../styles/ProgramStyles";
 import programPosts from "../demoData/programPosts"; // Import demo data
+import { DynamicTheme } from "../theme/theme";
 
 type ProgramScreenRouteProp = RouteProp<RootStackParamList, "Program">;
 
 const ProgramScreen: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<ProgramScreenRouteProp>();
   const { programId } = route.params;
   const [program, setProgram] = useState<Program | null>(null);
   const [loading, setLoading] = useState(true);
-  const theme = useTheme();
 
   // Filter posts related to the current program
   const filteredPosts = programPosts.filter((post) => post.projectId === programId);

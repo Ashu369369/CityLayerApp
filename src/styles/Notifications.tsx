@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import theme from "../theme/theme";
+import { DynamicTheme } from "../theme/theme";
 
-const NotificationsStyles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.grey,
@@ -38,22 +38,22 @@ const NotificationsStyles = StyleSheet.create({
     borderLeftColor: theme.colors.placeholder, // Grey left border for other cases
   },
   notificationTitle: {
-    fontSize: theme.fonts.medium.fontSize,
+    // fontSize: theme.fonts.medium.fontSize,
     fontWeight: "bold",
     color: theme.colors.backdrop,
     marginBottom: 5,
   },
   notificationDescription: {
-    fontSize: theme.fonts.regular.fontSize,
+    // fontSize: theme.fonts.regular.fontSize,
     color: theme.colors.text,
     marginBottom: 10,
   },
   notificationMeta: {
-    fontSize: theme.fonts.small.fontSize,
+    // fontSize: theme.fonts.small.fontSize,
     color: theme.colors.placeholder,
   },
   noNotifications: {
-    fontSize: theme.fonts.medium.fontSize,
+    // fontSize: theme.fonts.medium.fontSize,
     color: theme.colors.text,
     textAlign: "center",
     marginTop: 20,
@@ -74,4 +74,4 @@ const NotificationsStyles = StyleSheet.create({
   },
 });
 
-export default NotificationsStyles;
+export default useStyles;

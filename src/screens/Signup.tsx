@@ -21,6 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { setUser } from "../state/slices/userSlice";
 import { setToken } from "../state/slices/authSlice";
+import { DynamicTheme } from "../theme/theme";
+import { useTheme } from "react-native-paper";
 
 type SignupScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -39,6 +41,9 @@ type FormData = {
 };
 
 const SignupPage: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const navigation = useNavigation<SignupScreenNavigationProp>();
 
   const dispatch = useDispatch();
@@ -269,7 +274,7 @@ const SignupPage: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",

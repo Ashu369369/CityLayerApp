@@ -31,16 +31,21 @@ import {
   TouchableRipple,
   Paragraph,
   Title,
+  useTheme,
 } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
-import styles from "../styles/Department";
+import useStyles from "../styles/Department";
 import { Colors } from "react-native/Libraries/NewAppScreen";
-import { getDepartment, getDepartmentById } from "../api/deptApi";
+import { getDepartment } from "../api/deptApi";
+import { DynamicTheme } from "../theme/theme";
 
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
 type ProjectScreenRouteProp = StackNavigationProp<RootStackParamList>;
 
 const Department: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<DepartmentScreenRouteProp>();
   const navigation = useNavigation<ProjectScreenRouteProp>();
 

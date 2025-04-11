@@ -10,6 +10,7 @@ import {
   Portal,
   Provider,
   TextInput,
+  useTheme,
 } from "react-native-paper";
 import {
   deleteDepartment,
@@ -23,7 +24,8 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import styles from "../styles/Departments";
+import useStyles from "../styles/Departments";
+import { DynamicTheme } from "../theme/theme";
 
 // 1. Define the correct type for your route params
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, 'Departments'>;
@@ -31,6 +33,9 @@ type DepartmentScreenRouteProp = RouteProp<RootStackParamList, 'Departments'>;
 type DepartmentScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Department'>;
 
 const DepartmentScreen: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const navigation = useNavigation<DepartmentScreenNavigationProp>();
 
   const [departments, setDepartments] = useState<Department[]>([]);

@@ -2,17 +2,20 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Switch, Image, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import theme from "../theme/theme";
+import theme, { DynamicTheme } from "../theme/theme";
 import { getAllDepartments } from "../api/deptApi";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { countPendingProjects, countOngoingProjects, countActiveProjects } from "../api/projectApi";
-import { Card, ProgressBar, List } from "react-native-paper";
+import { Card, ProgressBar, List, useTheme } from "react-native-paper";
 
 
 
 const PollutionHotspotsWidget = () => {
+  const theme = useTheme() as DynamicTheme; // Access the theme
+
+  const styles = useStyles(theme as DynamicTheme);
   // Pollution Hotspots data
   const pollutionData = [
     { zone: "Downtown", aqi: 180 },
@@ -46,6 +49,9 @@ const PollutionHotspotsWidget = () => {
 
 const UpcomingMaintenanceWidget = () => {
   // Upcoming Maintenance data
+  const theme = useTheme() as DynamicTheme;
+  const styles = useStyles(theme as DynamicTheme);
+
   const maintenanceEvents = [
     { id: 1, area: "Sector 5", task: "Water Pipeline Inspection", date: "Apr 4, 2025" },
     { id: 2, area: "Old Town", task: "Street Repaving", date: "Apr 6, 2025" },
@@ -71,6 +77,9 @@ const UpcomingMaintenanceWidget = () => {
 };
 
 const RecentCitizenReportsWidget = () => {
+  
+  const theme = useTheme() as DynamicTheme; // Access the theme
+  const styles = useStyles(theme as DynamicTheme);
   // Recent Citizen Reports data
   const citizenReports = [
     { id: 1, title: "Pothole on Main Street", date: "2025-04-02" },
@@ -99,6 +108,8 @@ const RecentCitizenReportsWidget = () => {
 };
 
 const DepartmentOverviewWidget = () => {
+  const theme = useTheme() as DynamicTheme; 
+  const styles = useStyles(theme as DynamicTheme);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [totalDepartments, setTotalDepartments] = useState<number | null>(null);
@@ -143,6 +154,8 @@ const DepartmentOverviewWidget = () => {
 };
 
 const ProjectStatusOverviewWidget = () => {
+  const theme = useTheme() as DynamicTheme; 
+  const styles = useStyles(theme as DynamicTheme);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [pendingCount, setPendingCount] = useState<number>(0);
@@ -184,7 +197,8 @@ const ProjectStatusOverviewWidget = () => {
 };
 
 const RealtimeDashboardWidget = () => {
-
+  const theme = useTheme() as DynamicTheme;
+  const styles = useStyles(theme as DynamicTheme);
   // Define all available dashboard items
   const allDashboardItems = [
     { id: 1, label: "🚨 Water Leak Detected at Zone : ", value: " 4", visible: true },
@@ -259,6 +273,9 @@ const RealtimeDashboardWidget = () => {
 };
 
 export const HomeScreen: React.FC = () => {
+  const theme = useTheme();
+
+  const styles = useStyles(theme as DynamicTheme);
 
   const userState = useSelector((state: RootState) => state.user);
   const [activeWidgets, setActiveWidgets] = useState(["RealtimeDashboard", "DepartmentOverview", "ProjectStatusOverview", "PollutionHotspotsWidget", "UpcomingMaintenanceWidget", "RecentCitizenReportsWidget"]);
@@ -346,7 +363,7 @@ export const HomeScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   flexRow: {
     flexDirection: "row",
     justifyContent: "space-between",

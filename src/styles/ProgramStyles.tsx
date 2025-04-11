@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import theme from "../theme/theme";
+import { DynamicTheme } from "../theme/theme";
 
-const ProgramStyles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -37,7 +37,7 @@ const ProgramStyles = StyleSheet.create({
     fontFamily: theme.fonts.regular.fontFamily,
   },
   date: {
-    fontSize: theme.fonts.small.fontSize,
+    // fontSize: theme.fonts.small.fontSize,
     color: theme.colors.text,
     fontFamily: theme.fonts.light.fontFamily,
     marginBottom: 10,
@@ -92,13 +92,13 @@ const ProgramStyles = StyleSheet.create({
     fontFamily: theme.fonts.medium.fontFamily,
   },
   postDate: {
-    fontSize: theme.fonts.small.fontSize,
+    // fontSize: theme.fonts.small.fontSize,
     color: theme.colors.text,
     fontFamily: theme.fonts.light.fontFamily,
     marginTop: 5,
   },
   postLocation: {
-    fontSize: theme.fonts.small.fontSize,
+    // fontSize: theme.fonts.small.fontSize,
     color: theme.colors.primary,
     fontFamily: theme.fonts.large.fontFamily,
   },
@@ -124,4 +124,4 @@ const ProgramStyles = StyleSheet.create({
   },
 });
 
-export default ProgramStyles;
+export default useStyles;

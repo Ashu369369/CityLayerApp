@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import theme from "../theme/theme";
+import { DynamicTheme } from "../theme/theme";
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.white,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     color: theme.colors.text,
-    fontFamily: theme.fonts.small.fontFamily,
+    // fontFamily: theme.fonts.small.fontFamily,
   },
   errorText: {
     fontSize: 16,
@@ -139,4 +139,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default useStyles;

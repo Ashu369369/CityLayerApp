@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
-import theme from "../theme/theme";
-const styles = StyleSheet.create({
+import { DynamicTheme } from "../theme/theme";
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: theme.colors.background, // Use theme background
@@ -136,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default useStyles;

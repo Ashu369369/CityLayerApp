@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { View, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Card, Text, Avatar } from "react-native-paper";
+import { Button, Card, Text, Avatar, Switch, useTheme } from "react-native-paper";
 import { RootState } from "../state/store";
-import theme from "../theme/theme";
+import theme, { DynamicTheme } from "../theme/theme";
 import { clearUser } from "../state/slices/userSlice";
 import { deleteUser } from "../api/userApi";
-import { useNavigation } from "@react-navigation/native";
+import { Theme, useNavigation } from "@react-navigation/native";
 import Feedback from "../component/Feedback";
+import { Picker } from "@react-native-picker/picker";
+import { setFontSize, toggleHighContrast } from "../state/slices/preferencesSlice";
 
 const ProfileScreen: React.FC = () => {
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const dispatch = useDispatch();
   const [isFeedbackVisible, setFeedbackVisible] = useState(false);
   const navigation = useNavigation();
+  const fontSize = useSelector((state: RootState) => state.preferences.fontSize);
+  const highContrast = useSelector((state: RootState) => state.preferences.highContrast);
 
   let user = useSelector((state: RootState) => state.user) as {
     id: string | null;
@@ -144,14 +150,14 @@ const ProfileScreen: React.FC = () => {
         <Button
           mode="contained"
           onPress={handleLogout}
-          style={[styles.button, { backgroundColor: theme.colors.primary }]}
+          style={[styles.button]}
         >
           Logout
         </Button>
         <Button
           mode="contained"
           onPress={handleDeleteAccount}
-          style={[styles.button, { backgroundColor: theme.colors.accent }]}
+          style={[styles.button]}
         >
           Delete Account
         </Button>
@@ -181,11 +187,34 @@ const ProfileScreen: React.FC = () => {
           View Feedbacks
         </Button>
       )}
+
+<View style={styles.container}>
+      <Text style={styles.label}>Font Size</Text>
+      <Picker
+        selectedValue={fontSize}
+        onValueChange={(value) => dispatch(setFontSize(value))}
+        style={styles.picker}
+      >
+        <Picker.Item label="Small" value="small" />
+        <Picker.Item label="Medium" value="medium" />
+        <Picker.Item label="Large" value="large" />
+      </Picker>
+
+      <View style={styles.switchContainer}>
+        <Text style={styles.label}>High Contrast Mode</Text>
+        <Switch
+          value={highContrast}
+          onValueChange={(value) => {
+            dispatch(toggleHighContrast(value));
+          }}
+        />
+      </View>
+    </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
@@ -249,6 +278,25 @@ const styles = StyleSheet.create({
   buttonText: {
     color: theme.colors.surface,
     fontSize: 16,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  picker: {
+    marginBottom: 20,
+    height: 50,
+    backgroundColor: "#f9f9f9",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  switchContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 20,
   },
 });
 
