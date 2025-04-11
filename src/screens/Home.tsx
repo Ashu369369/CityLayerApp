@@ -10,6 +10,8 @@ import { RootStackParamList } from "../navigation/RootStackParams";
 import { countPendingProjects, countOngoingProjects, countActiveProjects } from "../api/projectApi";
 import { Card, ProgressBar, List } from "react-native-paper";
 
+
+
 const PollutionHotspotsWidget = () => {
   // Pollution Hotspots data
   const pollutionData = [

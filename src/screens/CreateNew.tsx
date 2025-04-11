@@ -72,26 +72,10 @@ const CreateNewScreen: React.FC = (params) => {
           );
           return;
         }
-        const query = `
-          mutation($title: String!, $description: String!, $imageUrl: String!) {
-            createDepartment(title: $title, description: $description, imageUrl: $imageUrl) {
-              departmentid title
-            }
-          }
-        `;
-        const variables = { title, description, imageUrl };
-        const response = await fetch(GRAPHQL_ENDPOINT!, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query, variables }),
+        let response = await createDepartment({
+          title, description, imageUrl,
         });
-        const json = await response.json();
-        if (json.errors) throw new Error(json.errors[0].message);
-        Alert.alert("Success", `Department created successfully!`);
-        navigation.dispatch({
-          type: "NAVIGATE",
-          payload: { name: "Departments", params: { refresh: true } },
-        });
+        
       } else if (type === "Project") {
         const newProject = {
           projectid: demoProjects.length + 1, // Generate a unique ID

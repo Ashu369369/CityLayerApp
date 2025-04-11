@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, RefreshControl, Text } from "react-native";
+import { View, FlatList, RefreshControl, Text, Alert } from "react-native";
 import {
   Card,
   Title,
@@ -9,6 +9,7 @@ import {
   Dialog,
   Portal,
   Provider,
+  TextInput,
 } from "react-native-paper";
 import {
   deleteDepartment,
@@ -30,15 +31,17 @@ type DepartmentScreenRouteProp = RouteProp<RootStackParamList, 'Departments'>;
 type DepartmentScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Department'>;
 
 const DepartmentScreen: React.FC = () => {
+  const navigation = useNavigation<DepartmentScreenNavigationProp>();
+
   const [departments, setDepartments] = useState<Department[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | null>(null);
-  const navigation = useNavigation<DepartmentScreenNavigationProp>();
+  const [isFabOpen, setIsFabOpen] = useState(false); // State to control FAB group visibility
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
+  const [departmentIdInput, setDepartmentIdInput] = useState<string>("");
 
-  // 2. Use the correct type for route
-  const route = useRoute<DepartmentScreenRouteProp>(); 
-  const refresh = route.params?.refresh;
+  const route = useRoute<DepartmentScreenRouteProp>();
 
   const role = useSelector((state: RootState) => state.user.role);
 
@@ -68,6 +71,41 @@ const DepartmentScreen: React.FC = () => {
         console.error("Error deleting department:", error);
       }
     }
+  };
+
+  const handleFabAction = (actionType: string) => {
+    if (actionType === "program" || actionType === "project" || actionType === "announcement") {
+      setSelectedAction(actionType); // Store the selected action
+      setDialogVisible(true); // Show the dialog
+    } else {
+      navigation.navigate("CreateNew", { type: actionType });
+    }
+  };
+
+  const handleDialogSubmit = () => {
+    try {
+
+      if (departmentIdInput.trim() === "") {
+        Alert.alert("Error", "Please enter a valid department ID.");
+        return;
+      }
+
+      if (selectedAction) {
+        navigation.navigate("CreateNew", {
+          type: selectedAction,
+          id: parseInt(departmentIdInput, 10),
+        });
+      } else {
+        Alert.alert("Error", "No action selected.");
+      }
+    } catch (error) {
+      console.error("Error handling dialog submit:", error);
+    }
+
+    // Reset dialog state
+    setDialogVisible(false);
+    setDepartmentIdInput("");
+    setSelectedAction(null);
   };
 
   const handleRefresh = async () => {
@@ -152,11 +190,61 @@ const DepartmentScreen: React.FC = () => {
             </View>
           }
         />
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() => navigation.navigate("AddDepartment")}
+        {/* FAB Group */}
+        <FAB.Group
+          visible={true} // Ensure the FAB.Group is visible
+          open={isFabOpen}
+          icon={isFabOpen ? "close" : "plus"} // Change icon based on state
+          actions={[
+            {
+              icon: "office-building",
+              label: "Create Department",
+              onPress: () => handleFabAction("department"),
+            },
+            {
+              icon: "briefcase",
+              label: "Create Project",
+              onPress: () => handleFabAction("project"),
+            },
+            {
+              icon: "calendar",
+              label: "Create Program",
+              onPress: () => handleFabAction("program"),
+            },
+            {
+              icon: "alert",
+              label: "Create Announcement",
+              onPress: () => handleFabAction("announcement"),
+            },
+            {
+              icon: "bell",
+              label: "Create Notification",
+              onPress: () => navigation.navigate("CreateNotification"),
+            },
+          ]}
+          onStateChange={({ open }) => setIsFabOpen(open)} // Toggle FAB group visibility
+          style={styles.fabGroup}
         />
+
+        {/* Dialog for creating program/project/announcement */}
+        <Portal>
+          <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
+            <Dialog.Title>Enter Department ID</Dialog.Title>
+            <Dialog.Content>
+              <TextInput
+                label="Department ID"
+                value={departmentIdInput}
+                onChangeText={(text) => setDepartmentIdInput(text)}
+                style={styles.textInput}
+                keyboardType="numeric"
+              />
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setDialogVisible(false)}>Cancel</Button>
+              <Button onPress={handleDialogSubmit}>Submit</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
 
         {/* Confirmation Dialog */}
         <Portal>

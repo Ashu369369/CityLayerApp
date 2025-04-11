@@ -3,7 +3,7 @@ export type RootStackParamList = {
   Signup: undefined;
   Search: undefined;
   Login: undefined;
-  Departments: { refresh?: boolean };
+  Departments: undefined;
   Profile: undefined;
   Department: {
     id: number;
@@ -23,13 +23,9 @@ export type RootStackParamList = {
     id?: number;
   };
   MainNavBar: undefined;
-
   Program: { programId: number };
-  // Programs: undefined;
-  AddDepartment: undefined;
   Notifications: undefined;
   CreateNotification: undefined;
   Feedback: { onSubmit: () => void; onCancel: () => void };
   Feedbacks: undefined;
-  // Departments: { refresh: boolean };
 };
