@@ -87,7 +87,7 @@ const ProfileScreen: React.FC = () => {
                 Alert.alert(
                   "Error",
                   response.data?.deleteUser.message ||
-                    "Failed to delete account"
+                  "Failed to delete account"
                 );
               }
             } catch (error) {
@@ -167,7 +167,7 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.buttonText}>Give Feedback</Text>
         </Button>
       )}
-      ;
+
       {isFeedbackVisible && (
         <Feedback
           onSubmit={handleFeedbackSubmit}
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   role: {
     textAlign: "center",
     color: theme.colors.placeholder,
-    marginBottom:0,
+    marginBottom: 0,
   },
   buttonContainer: {
     marginTop: 20,

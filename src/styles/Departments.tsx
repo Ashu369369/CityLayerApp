@@ -101,6 +101,16 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.regular.fontFamily,
     marginBottom: 4,
   },
+
+  fabGroup: {
+    position: "absolute",
+    right: 16,
+    bottom: 16,
+  },
+   textInput: {
+    marginBottom: 10,
+    backgroundColor: "white",
+  },
 });
 
 export default styles;
