@@ -327,10 +327,10 @@ export const HomeScreen: React.FC = () => {
             onPress={() => setIsEditing(!isEditing)}
           >
             <Text style={styles.editButtonText}>
-              {isEditing ? "Done" : "Widgets "}
+              {isEditing ? "Done " : "Edit "}
             </Text>
-            <Image
-              source={require("../../assets/pencil.png")}
+            <Image  
+              source={isEditing ? require("../../assets/check.png") : require("../../assets/pencil.png")}
               style={styles.editIcontTwo}
             />
           </TouchableOpacity>

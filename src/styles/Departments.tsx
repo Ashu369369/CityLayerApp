@@ -4,15 +4,17 @@ import { DynamicTheme } from "../theme/theme";
 const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.white,
-    paddingVertical: 10,
+    backgroundColor: theme.colors.grey,
   },
   card: {
     marginVertical: 10,
-    marginHorizontal: 16,
-    borderRadius: 20,
+    marginHorizontal: 10,
     elevation: 5,
-    backgroundColor: theme.colors.backdrop,
+    borderRadius: 10,
+    // borderColor: theme.colors.background,
+    boxShadow: "0px 0px 5px rgba(255, 255, 255, 0.2)",
+    // borderWidth: 1,
+    backgroundColor: theme.colors.backdrop, 
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -22,6 +24,7 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
     height: 180,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    borderRadius: 0,
     width: "100%",
   },
   cardContent: {
@@ -66,8 +69,8 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   },
   deleteButton: {
     marginLeft: 8,
-    backgroundColor: theme.colors.surface,
-    opacity: 0.5,
+    backgroundColor: theme.colors.error,
+    opacity: 1,
     borderRadius: 5,
     color: theme.colors.primary,
   },
@@ -104,8 +107,10 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
 
   fabGroup: {
     position: "absolute",
-    right: 16,
-    bottom: 16,
+    paddingBottom: 5,
+    paddingRight: 5,
+    // right: 16,
+    // bottom: 16,
   },
    textInput: {
     marginBottom: 10,

@@ -29,7 +29,7 @@ export const getAllPrograms = (): Program[] => {
 // Get programs by department ID
 export const getProgramsByDepartmentId = (departmentId: number): Program[] => {
   return programStore.filter(
-    (program) => program.departmentId === departmentId
+    (program) => program.departmentId == departmentId
   );
 };
 
