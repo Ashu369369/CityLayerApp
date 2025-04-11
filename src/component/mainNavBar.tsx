@@ -46,40 +46,60 @@ const HomeStack = () => {
   );
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen name="Home" component={HomeScreen} options={({ navigation }) => ({
-        headerRight: () => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Notifications", { type: "Department" })}
-            style={{ marginRight: 10 }}
-          >
-            <Image
-              source={
-                hasUnreadNotifications
-                  ? require("../../assets/bellnoti.png") // Icon for unread notifications
-                  : require("../../assets/bell.png")}
-              style={{ width: 24, height: 24 }}
-            />
-          </TouchableOpacity>
-        ),
-      })} />
-      {role === 3 ?
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={({ navigation }) => ({
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Notifications", { type: "Department" })
+              }
+              style={{ marginRight: 10 }}
+            >
+              <Image
+                source={
+                  hasUnreadNotifications
+                    ? require("../../assets/bellnoti.png") // Icon for unread notifications
+                    : require("../../assets/bell.png")
+                }
+                style={{ width: 24, height: 24 }}
+              />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      {role === 3 ? (
         //if admin
-        <Stack.Screen name="Notifications" component={NotificationsScreen}
+        <Stack.Screen
+          name="Notifications"
+          component={NotificationsScreen}
           options={({ navigation }) => ({
             headerRight: () => (
               <TouchableOpacity
                 onPress={() => navigation.navigate("CreateNotification")}
-                style={{ margin: 10, padding: 10, backgroundColor: "blue", borderRadius: 5 }}
+                style={{
+                  margin: 10,
+                  padding: 10,
+                  backgroundColor: "blue",
+                  borderRadius: 5,
+                }}
               >
-                <Text style={{ color: "white", textAlign: "center" }}>Create Notification</Text>
+                <Text style={{ color: "white", textAlign: "center" }}>
+                  Create Notification
+                </Text>
               </TouchableOpacity>
-
             ),
-          })} /> :
+          })}
+        />
+      ) : (
         //if not admin
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
-      }
-      <Stack.Screen name="CreateNotification" component={CreateNotificationScreen} />
+      )}
+      <Stack.Screen
+        name="CreateNotification"
+        component={CreateNotificationScreen}
+      />
     </Stack.Navigator>
   );
 };
@@ -103,16 +123,16 @@ const DepartmentStack = () => {
           name="Departments"
           component={DepartmentScreen}
           options={({ navigation }) => ({
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("CreateNew", { type: "Department" })
-                }
-                style={{ marginRight: 10 }}
-              >
-                <Text style={{ color: "blue" }}>Create Department</Text>
-              </TouchableOpacity>
-            ),
+            // headerRight: () => (
+            //   <TouchableOpacity
+            //     onPress={() =>
+            //       navigation.navigate("CreateNew", { type: "Department" })
+            //     }
+            //     style={{ marginRight: 10 }}
+            //   >
+            //     <Text style={{ color: "blue" }}>Create Department</Text>
+            //   </TouchableOpacity>
+            // ),
           })}
         />
       ) : (
@@ -125,20 +145,20 @@ const DepartmentStack = () => {
             name="Department"
             component={Department}
             options={({ navigation, route }) => ({
-              headerRight: () => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("CreateNew", {
-                      type: "Project",
-                      id: (route as RouteProp<RootStackParamList, "Department">)
-                        .params?.id,
-                    })
-                  }
-                  style={{ marginRight: 10 }}
-                >
-                  <Text style={{ color: "blue" }}>Create Project</Text>
-                </TouchableOpacity>
-              ),
+              // headerRight: () => (
+              //   <TouchableOpacity
+              //     onPress={() =>
+              //       navigation.navigate("CreateNew", {
+              //         type: "Project",
+              //         id: (route as RouteProp<RootStackParamList, "Department">)
+              //           .params?.id,
+              //       })
+              //     }
+              //     style={{ marginRight: 10 }}
+              //   >
+              //     <Text style={{ color: "blue" }}>Create Project</Text>
+              //   </TouchableOpacity>
+              // ),
             })}
           />
           <Stack.Screen name="CreateNew" component={CreateNewScreen} />

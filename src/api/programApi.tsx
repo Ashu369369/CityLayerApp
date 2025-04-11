@@ -28,9 +28,7 @@ export const getAllPrograms = (): Program[] => {
 
 // Get programs by department ID
 export const getProgramsByDepartmentId = (departmentId: number): Program[] => {
-  return programStore.filter(
-    (program) => program.departmentId === departmentId
-  );
+  return programStore.filter((program) => program.departmentId == departmentId);
 };
 
 // Get programs by creator ID

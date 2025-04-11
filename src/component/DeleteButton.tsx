@@ -27,18 +27,19 @@ const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
 const styles = StyleSheet.create({
   button: {
     position: "absolute",
-    top: 10,
-    right: 50,
+    top: -1,
+    right: 0,
     padding: 10,
-    backgroundColor: "rgba(255, 0, 0, 1)",
+    backgroundColor: "rgba(150, 150, 150, 0.19)",
     borderRadius: 20,
   },
   image: {
-    position: "relative",
-    left: 1,
-    width: 10,
-    height: 10,
+    width: 17,
+    height: 17,
     tintColor: "#fff",
+    position: "relative",
+    left: 1.5,
+    // color: "black",
   },
 });
 
