@@ -35,7 +35,6 @@ import {
 } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import useStyles from "../styles/Department";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { getDepartment } from "../api/deptApi";
 
 import { DynamicTheme } from "../theme/theme";
@@ -88,6 +87,7 @@ const Department: React.FC = () => {
     try {
       const fetchedPrograms = await getProgramsByDepartmentId(departmentId);
       setPrograms(fetchedPrograms);
+      // console.log(fetchedPrograms);
     } catch (error) {
       console.error("Error fetching programs:", error);
     }

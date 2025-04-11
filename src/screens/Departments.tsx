@@ -79,7 +79,7 @@ const DepartmentScreen: React.FC = () => {
   };
 
   const handleFabAction = (actionType: string) => {
-    if (actionType === "program" || actionType === "project" || actionType === "announcement") {
+    if (actionType === "Program" || actionType === "Project" || actionType === "Announcement") {
       setSelectedAction(actionType); // Store the selected action
       setDialogVisible(true); // Show the dialog
     } else {
@@ -204,22 +204,22 @@ const DepartmentScreen: React.FC = () => {
             {
               icon: "office-building",
               label: "Create Department",
-              onPress: () => handleFabAction("department"),
+              onPress: () => handleFabAction("Department"),
             },
             {
               icon: "briefcase",
               label: "Create Project",
-              onPress: () => handleFabAction("project"),
+              onPress: () => handleFabAction("Project"),
             },
             {
               icon: "calendar",
               label: "Create Program",
-              onPress: () => handleFabAction("program"),
+              onPress: () => handleFabAction("Program"),
             },
             {
               icon: "alert",
               label: "Create Announcement",
-              onPress: () => handleFabAction("announcement"),
+              onPress: () => handleFabAction("Announcement"),
             },
             {
               icon: "bell",

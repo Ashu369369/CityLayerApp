@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { View, FlatList, TouchableOpacity, Alert } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
-import notificationsData, { markNotificationAsRead } from "../demoData/notifications"; // Import the function
+import notificationsData, { markNotificationAsRead } from "../demoData/notifications";
 import useStyles from "../styles/Notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { useFocusEffect } from "@react-navigation/native";
 import { DynamicTheme } from "../theme/theme";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const NotificationsScreen: React.FC = () => {
-  
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
-  const currentUserId = useSelector((state: RootState) => state.user.id); 
-  const currentUserRole = useSelector((state: RootState) => state.user.role); // Get the user's role
+  const currentUserId = useSelector((state: RootState) => state.user.id);
+  const currentUserRole = useSelector((state: RootState) => state.user.role);
 
-  // Sort notifications by createdAt in descending order (latest first)
   const [notifications, setNotifications] = useState(
     [...notificationsData].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   );
 
-  // Function to delete a notification
+  const [severityFilter, setSeverityFilter] = useState("");
+
+  const filteredNotifications = notifications.filter((notification) => {
+    if (severityFilter === "") return true; // Show all notifications if no filter is selected
+    return notification.severity === severityFilter.toLowerCase(); // Match severity
+  });
+
   const handleDeleteNotification = (notificationId: number) => {
     Alert.alert(
       "Delete Notification",
@@ -34,25 +39,24 @@ const NotificationsScreen: React.FC = () => {
             const updatedNotifications = notifications.filter(
               (notification) => notification.notificationId !== notificationId
             );
-            setNotifications(updatedNotifications); // Update the local state
+            setNotifications(updatedNotifications);
           },
         },
       ]
     );
   };
 
-  // Mark notifications as read on unmount
   useFocusEffect(
     React.useCallback(() => {
       return () => {
         notificationsData.forEach((notification) => {
           if (!notification.readBy.includes(currentUserId ? currentUserId : 0)) {
-            markNotificationAsRead(notification.notificationId, currentUserId ? currentUserId : 0); // Mark as read if not already
+            markNotificationAsRead(notification.notificationId, currentUserId ? currentUserId : 0);
           }
         });
         setNotifications(
           [...notificationsData].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        ); // Update the local state and sort by latest first
+        );
       };
     }, [currentUserId])
   );
@@ -69,9 +73,21 @@ const NotificationsScreen: React.FC = () => {
         return styles.severityDefault;
     }
   };
+  const getSeverityColor = (severity: string) => {
+    switch (severity.toLowerCase()) {
+      case "important":
+        return theme.colors.error || "red"; // Use theme color or fallback
+      case "warning":
+        return "#FFA500";
+      case "general":
+        return theme.colors.primary || "blue"; // Use theme color or fallback
+      default:
+        return "gray";
+    }
+  };
 
   const renderNotification = ({ item }: { item: typeof notificationsData[0] }) => {
-    const isRead = item.readBy.includes(currentUserId ? currentUserId : 0); // Check if the notification is read by the current user
+    const isRead = item.readBy.includes(currentUserId ? currentUserId : 0);
     const severityStyle = getSeverityStyle(item.severity);
 
     return (
@@ -79,7 +95,7 @@ const NotificationsScreen: React.FC = () => {
         style={[
           styles.notificationCard,
           severityStyle,
-          !isRead && styles.unreadNotification, // Apply background color for unread notifications
+          !isRead && styles.unreadNotification,
         ]}
       >
         <Card.Content>
@@ -92,7 +108,6 @@ const NotificationsScreen: React.FC = () => {
           <Text variant="bodySmall" style={styles.notificationMeta}>
             Created At: {new Date(item.createdAt).toLocaleDateString()}
           </Text>
-          {/* Conditionally render the delete button for admins */}
           {currentUserRole === 3 && (
             <TouchableOpacity
               onPress={() => handleDeleteNotification(item.notificationId)}
@@ -108,8 +123,39 @@ const NotificationsScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.filterContainer}>
+        {["Important", "Warning", "General"].map((level) => (
+          <TouchableOpacity
+            key={level}
+            style={[
+              styles.filterButton,
+              severityFilter === level && styles.activeFilterButton,
+            ]}
+            onPress={() =>
+              setSeverityFilter(severityFilter === level ? "" : level) // Toggle filter
+            }
+          >
+            <View style={styles.filterItem}>
+              <View
+                style={[
+                  styles.severityDot,
+                  { backgroundColor: getSeverityColor(level) },
+                ]}
+              />
+              <Text
+                style={[
+                  styles.filterButtonText,
+                  severityFilter === level && styles.activeFilterButtonText,
+                ]}
+              >
+                {level}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
       <FlatList
-        data={notifications}
+        data={filteredNotifications}
         keyExtractor={(item) => item.notificationId.toString()}
         renderItem={renderNotification}
         ListEmptyComponent={
