@@ -26,10 +26,11 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
     backgroundColor: theme.colors.surface,
   },
   severityImportant: {
+    color: theme.colors.error,
     borderLeftColor: theme.colors.error, // Red left border for important severity
   },
   severityWarning: {
-    borderLeftColor: "#A88905", // Yellow left border for warning severity
+    borderLeftColor: "#FFA500", // Yellow left border for warning severity
   },
   severityGeneral: {
     borderLeftColor: theme.colors.primary, // Blue left border for general severity
@@ -71,6 +72,42 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   deleteButtonText: {
     color: "grey",
     fontWeight: "bold",
+  },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+    backgroundColor: theme.colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.backdrop,
+  },
+  filterButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 5,
+    borderWidth: 0,
+  },
+  activeFilterButton: {
+    backgroundColor: "#000",
+    borderColor: "#6FBBB1",
+  },
+  filterButtonText: {
+    fontSize: 14,
+    color: "#555",
+  },
+  activeFilterButtonText: {
+    color: "#fff",
+  },
+  filterItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  severityDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 0,
+    marginRight: 8,
+    color: "#000",
   },
 });
 

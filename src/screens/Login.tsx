@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import ErrorBox from "../component/ErrorBox"; // Import the ErrorBox component
+import ErrorBox from "../component/ErrorBox";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../state/slices/userSlice";
 import { setToken } from "../state/slices/authSlice";
