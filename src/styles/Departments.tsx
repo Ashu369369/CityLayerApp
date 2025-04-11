@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import { DynamicTheme } from "../theme/theme";
 
+
 const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
@@ -104,18 +105,15 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
     // fontFamily: theme.fonts.regular.fontFamily,
     marginBottom: 4,
   },
-
   fabGroup: {
-    position: "absolute",
-    paddingBottom: 5,
-    paddingRight: 5,
-    // right: 16,
-    // bottom: 16,
-  },
-   textInput: {
-    marginBottom: 10,
-    backgroundColor: "white",
-  },
+      position: "absolute",
+      paddingBottom: 5,
+      paddingRight: 5,
+    },
+    textInput: {
+      marginBottom: 10,
+      backgroundColor: "white",
+    },
 });
 
 export default useStyles;

@@ -28,14 +28,9 @@ import { createProgram } from "../api/programApi";
 import programs from "../demoData/programs";
 import { getProgramsByDepartmentId } from "../api/programApi";
 import { getDepartment } from "../api/deptApi";
-import type { Department } from "../api/deptApi"; 
+import type { Department } from "../api/deptApi";
 
 const CreateNewScreen: React.FC = (params) => {
-  // const route = useRoute<CreateNewScreenRouteProp>(); // Access route params
-  // const { type, id } = route.params; // Destructure type and id from route params
-  // const type = route.type; // Get the type from route params
-  // const [type, setType] = useState("Department");
-
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const [loading, setLoading] = useState(false);
@@ -61,15 +56,8 @@ const CreateNewScreen: React.FC = (params) => {
 
   type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">;
 
-  // type DepartmentScreenNavigationProp = StackNavigationProp<
-  //   RootStackParamList,
-  //   "Department"
-  // >;
-
   const route = useRoute<CreateNewScreenRouteProp>();
   const { type, id } = route.params;
-
-  // const GRAPHQL_ENDPOINT = `http://${Constants.expoConfig?.extra?.config}:4000/graphql`;
 
   const handleSubmit = async () => {
     setLoading(true); // Show loading indicator
@@ -84,7 +72,6 @@ const CreateNewScreen: React.FC = (params) => {
           description,
           imageUrl,
         });
-
       } else if (type === "Project") {
         const newProject = {
           projectid: demoProjects.length + 1, // Generate a unique ID
@@ -102,14 +89,26 @@ const CreateNewScreen: React.FC = (params) => {
           departmentid: id ?? 0, // Ensure departmentid is a number, default to 0 if undefined
         };
         createProject(newProject);
-        // Removed incorrect fetch call as demoProjects is an array and not a valid argument for fetch
-        getProjectsByDepartmentId(id ?? 0); // Fetch projects by department ID
-        const departmentNavigation =
-          navigation as unknown as StackNavigationProp<
-            RootStackParamList,
-            "Department"
-          >;
-        // Navigate back with required parameters
+        getProgramsByDepartmentId(id ?? 0); // Fetch programs by department ID
+
+        const fetchDepartment = async () => {
+          try {
+            const response = await getDepartment((id ?? 0).toString());
+            if (response.data) {
+              const currentDepartment = response.data
+                .getDepartment as Department; // Cast to Department type
+              navigation.navigate("Department", {
+                id: id ?? 0,
+                title: currentDepartment.title,
+                description: currentDepartment.description,
+              });
+            } else console.error("No data found in response.");
+          } catch (error) {
+            console.error("Error fetching current department:", error);
+          }
+        };
+
+        fetchDepartment(); // Fetch department by ID
 
         Alert.alert("Success", "Project created successfully!");
       } else if (type === "Program") {
@@ -155,25 +154,6 @@ const CreateNewScreen: React.FC = (params) => {
           };
 
           fetchDepartment(); // Fetch department by ID
-
-          // const currentDepartment = await getDepartment((id ?? 0).toString()); // Fetch department by ID
-          // console.log(currentDepartment);
-          // const department = currentDepartment.data;
-          // console.log(department);
-
-          // navigation.navigate("Department", {
-          //   id: id ?? 0,
-          //   title: department.title,
-          //   description: department.description,
-          //   imageUrl: department.imageUrl,
-          // });
-
-          // navigationToDepartment.navigate("Department", {
-          //   id: id ?? 0,
-          //   title: title || "Default Title",
-          //   description: description || "Default Description",
-          //   imageUrl: imageUrl ||x` "",
-          // });
         } catch (error: any) {
           console.error("Error creating program:", error);
           Alert.alert("Error", error.message || "An error occurred.");
@@ -186,10 +166,6 @@ const CreateNewScreen: React.FC = (params) => {
       setLoading(false); // Hide loading indicator
     }
   };
-
-  // function setCreatedby(arg0: string): void {
-  //   throw new Error("Function not implemented.");
-  // }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -412,43 +388,44 @@ const CreateNewScreen: React.FC = (params) => {
 
 export default CreateNewScreen;
 
-const useStyles = (theme: DynamicTheme) => StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: "#f9f9f9",
-    flexGrow: 1,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#333",
-  },
-  picker: {
-    marginBottom: 20,
-    height: Platform.OS === "ios" ? 200 : 50, // iOS picker height
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#ccc",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 15,
-    backgroundColor: "#fff",
-    fontSize: 16,
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: "top",
-  },
-  label: {
-    marginBottom: 5,
-    fontWeight: "600",
-    color: "#555",
-  },
-});
+const useStyles = (theme: DynamicTheme) =>
+  StyleSheet.create({
+    container: {
+      padding: 20,
+      backgroundColor: "#f9f9f9",
+      flexGrow: 1,
+    },
+    title: {
+      fontSize: 24,
+      marginBottom: 20,
+      fontWeight: "bold",
+      textAlign: "center",
+      color: "#333",
+    },
+    picker: {
+      marginBottom: 20,
+      height: Platform.OS === "ios" ? 200 : 50, // iOS picker height
+      backgroundColor: "#fff",
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: "#ccc",
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: "#ccc",
+      borderRadius: 8,
+      padding: 10,
+      marginBottom: 15,
+      backgroundColor: "#fff",
+      fontSize: 16,
+    },
+    textArea: {
+      height: 100,
+      textAlignVertical: "top",
+    },
+    label: {
+      marginBottom: 5,
+      fontWeight: "600",
+      color: "#555",
+    },
+  });

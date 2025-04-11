@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Card, Text, Avatar, Switch, useTheme } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Text,
+  Avatar,
+  Switch,
+  useTheme,
+} from "react-native-paper";
 import { RootState } from "../state/store";
 import theme, { DynamicTheme } from "../theme/theme";
 import { clearUser } from "../state/slices/userSlice";
@@ -9,7 +16,10 @@ import { deleteUser } from "../api/userApi";
 import { Theme, useNavigation } from "@react-navigation/native";
 import Feedback from "../component/Feedback";
 import { Picker } from "@react-native-picker/picker";
-import { setFontSize, toggleHighContrast } from "../state/slices/preferencesSlice";
+import {
+  setFontSize,
+  toggleHighContrast,
+} from "../state/slices/preferencesSlice";
 
 const ProfileScreen: React.FC = () => {
   const theme = useTheme();
@@ -17,8 +27,12 @@ const ProfileScreen: React.FC = () => {
   const dispatch = useDispatch();
   const [isFeedbackVisible, setFeedbackVisible] = useState(false);
   const navigation = useNavigation();
-  const fontSize = useSelector((state: RootState) => state.preferences.fontSize);
-  const highContrast = useSelector((state: RootState) => state.preferences.highContrast);
+  const fontSize = useSelector(
+    (state: RootState) => state.preferences.fontSize
+  );
+  const highContrast = useSelector(
+    (state: RootState) => state.preferences.highContrast
+  );
 
   let user = useSelector((state: RootState) => state.user) as {
     id: string | null;
@@ -42,7 +56,7 @@ const ProfileScreen: React.FC = () => {
   const role = useSelector((state: RootState) => state.user.role);
   const navigateToFeedbacks = () => {
     navigation.navigate("Feedbacks" as never);
-  }
+  };
   //format date
   const formatDate = (dateString: string | null | undefined): string => {
     if (!dateString) return "N/A";
@@ -93,7 +107,7 @@ const ProfileScreen: React.FC = () => {
                 Alert.alert(
                   "Error",
                   response.data?.deleteUser.message ||
-                  "Failed to delete account"
+                    "Failed to delete account"
                 );
               }
             } catch (error) {
@@ -114,11 +128,21 @@ const ProfileScreen: React.FC = () => {
       {/* User Profile Card */}
       <Card style={styles.card}>
         <Card.Content>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
             <View style={styles.avatarContainer}>
               <Avatar.Text
                 size={80}
-                label={user.firstName ? user.firstName.charAt(0) : "U"}
+                label={
+                  user.firstName ? user.firstName.charAt(0).toUpperCase() : "U"
+                }
+                labelStyle={{
+                  position: "relative",
+                  top: 2,
+                  left: 1,
+                  paddingBottom: 40,
+                }}
                 style={styles.avatar}
               />
             </View>
@@ -140,18 +164,14 @@ const ProfileScreen: React.FC = () => {
             Date of Birth: {formatDate(user.dob) || "N/A"}
           </Text>
           <Text variant="bodySmall" style={styles.role}>
-
-            Role: {user.role === 1 ? "User" : user.role === 2 ? "Employee" : "Admin"}
+            Role:{" "}
+            {user.role === 1 ? "User" : user.role === 2 ? "Employee" : "Admin"}
           </Text>
         </Card.Content>
       </Card>
       {/* Logout and Delete Account Buttons */}
       <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
-          onPress={handleLogout}
-          style={[styles.button]}
-        >
+        <Button mode="contained" onPress={handleLogout} style={[styles.button]}>
           Logout
         </Button>
         <Button
@@ -165,9 +185,7 @@ const ProfileScreen: React.FC = () => {
       {/* Conditionally render the button based on the user's role */}
       {role !== 3 && (
         <Button
-
           style={[styles.button, { backgroundColor: theme.colors.primary }]}
-
           onPress={() => setFeedbackVisible(true)}
         >
           <Text style={styles.buttonText}>Give Feedback</Text>
@@ -181,123 +199,131 @@ const ProfileScreen: React.FC = () => {
         />
       )}
       {role === 3 && (
-
-        <Button style={[styles.button, { backgroundColor: theme.colors.primary }]} onPress={navigateToFeedbacks}>
-
+        <Button
+          style={[styles.button, { backgroundColor: theme.colors.primary }]}
+          onPress={navigateToFeedbacks}
+        >
           View Feedbacks
         </Button>
       )}
 
-<View style={styles.container}>
-      <Text style={styles.label}>Font Size</Text>
-      <Picker
-        selectedValue={fontSize}
-        onValueChange={(value) => dispatch(setFontSize(value))}
-        style={styles.picker}
-      >
-        <Picker.Item label="Small" value="small" />
-        <Picker.Item label="Medium" value="medium" />
-        <Picker.Item label="Large" value="large" />
-      </Picker>
+      <View style={styles.container}>
+        <Text style={styles.label}>Font Size</Text>
+        <Picker
+          selectedValue={fontSize}
+          onValueChange={(value) => dispatch(setFontSize(value))}
+          style={styles.picker}
+        >
+          <Picker.Item label="Small" value="small" />
+          <Picker.Item label="Medium" value="medium" />
+          <Picker.Item label="Large" value="large" />
+        </Picker>
 
-      <View style={styles.switchContainer}>
-        <Text style={styles.label}>High Contrast Mode</Text>
-        <Switch
-          value={highContrast}
-          onValueChange={(value) => {
-            dispatch(toggleHighContrast(value));
-          }}
-        />
+        <View style={styles.switchContainer}>
+          <Text style={styles.label}>High Contrast Mode</Text>
+          <Switch
+            value={highContrast}
+            onValueChange={(value) => {
+              dispatch(toggleHighContrast(value));
+            }}
+          />
+        </View>
       </View>
-    </View>
     </View>
   );
 };
 
-const useStyles = (theme: DynamicTheme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: theme.colors.white,
-  },
-  card: {
-    marginBottom: 20,
-    padding: 20,
-    paddingBottom: 0,
-    backgroundColor: theme.colors.surface,
-    borderRadius: 10,
-    elevation: 2,
-  },
-  avatarContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  avatar: {
-    backgroundColor: theme.colors.primary,
-  },
-  name: {
-    textAlign: "center",
-    fontWeight: "bold",
-    color: theme.colors.text,
-    marginBottom: 0,
-  },
-  email: {
-    textAlign: "left",
-    color: theme.colors.text,
-    marginBottom: 20,
-  },
-  username: {
-    textAlign: "left",
-    color: theme.colors.text,
-    marginBottom: 0,
-  },
-  dob: {
-    textAlign: "left",
-    color: theme.colors.text,
-    marginBottom: 30,
-  },
-  role: {
-    textAlign: "center",
-    color: theme.colors.placeholder,
-    marginBottom: 0,
-  },
-  buttonContainer: {
-    marginTop: 20,
-  },
-  button: {
-    backgroundColor: theme.colors.primary,
-    marginTop: 10,
-    marginBottom: 10,
-    padding: 10,
-    borderRadius: 5,
-  },
-  text: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: theme.colors.surface,
-    fontSize: 16,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  picker: {
-    marginBottom: 20,
-    height: 50,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#ccc",
-  },
-  switchContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 20,
-  },
-});
+const useStyles = (theme: DynamicTheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: theme.colors.white,
+    },
+    card: {
+      marginBottom: 20,
+      padding: 20,
+      paddingBottom: 0,
+      backgroundColor: theme.colors.surface,
+      borderRadius: 10,
+      elevation: 2,
+    },
+    avatarContainer: {
+      marginBottom: 20,
+    },
+    avatar: {
+      backgroundColor: theme.colors.primary,
+      alignItems: "center", // Center horizontally
+      justifyContent: "center",
+      position: "relative",
+      top: -1,
+
+      // paddingBottom: 20,
+      // marginBottom: 20,
+    },
+    name: {
+      textAlign: "center",
+      fontWeight: "bold",
+      color: theme.colors.text,
+      marginBottom: 0,
+    },
+    email: {
+      textAlign: "left",
+      color: theme.colors.text,
+      marginBottom: 20,
+    },
+    username: {
+      textAlign: "left",
+      color: theme.colors.text,
+      marginBottom: 0,
+    },
+    dob: {
+      textAlign: "left",
+      color: theme.colors.text,
+      marginBottom: 30,
+    },
+    role: {
+      textAlign: "center",
+      color: theme.colors.placeholder,
+      marginBottom: 0,
+    },
+    buttonContainer: {
+      marginTop: 20,
+    },
+    button: {
+      backgroundColor: theme.colors.primary,
+      marginTop: 10,
+      marginBottom: 10,
+      padding: 10,
+      borderRadius: 5,
+    },
+    text: {
+      fontSize: 24,
+      marginBottom: 20,
+    },
+    buttonText: {
+      color: theme.colors.surface,
+      fontSize: 16,
+    },
+    label: {
+      fontSize: 16,
+      fontWeight: "bold",
+      marginBottom: 10,
+    },
+    picker: {
+      marginBottom: 20,
+      height: 50,
+      backgroundColor: "#f9f9f9",
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: "#ccc",
+    },
+    switchContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginTop: 20,
+    },
+  });
 
 export default ProfileScreen;

@@ -39,12 +39,10 @@ import { getDepartment } from "../api/deptApi";
 
 import { DynamicTheme } from "../theme/theme";
 
-
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
 type ProjectScreenRouteProp = StackNavigationProp<RootStackParamList>;
 
 const Department: React.FC = () => {
-  
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<DepartmentScreenRouteProp>();
