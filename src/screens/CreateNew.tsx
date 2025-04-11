@@ -13,7 +13,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
-type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">; // Define the route prop type for CreateNew screen
+// type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">; // Define the route prop type for CreateNew screen
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
@@ -24,6 +24,11 @@ import { demoProjects } from "../demoData/projects";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useTheme } from "react-native-paper";
 import { DynamicTheme } from "../theme/theme";
+import { createProgram } from "../api/programApi";
+import programs from "../demoData/programs";
+import { getProgramsByDepartmentId } from "../api/programApi";
+import { getDepartment } from "../api/deptApi";
+import type { Department } from "../api/deptApi"; 
 
 const CreateNewScreen: React.FC = (params) => {
   // const route = useRoute<CreateNewScreenRouteProp>(); // Access route params
@@ -52,33 +57,32 @@ const CreateNewScreen: React.FC = (params) => {
   const [createdat, setCreatedat] = useState("");
   const [createdby, setCreatedby] = useState("");
   const loggedInUser = useSelector((state: RootState) => state.user);
-  const navigation = useNavigation(); // Access navigation prop
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>(); // Properly type the navigation prop
 
   type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">;
 
-  type DepartmentScreenNavigationProp = StackNavigationProp<
-    RootStackParamList,
-    "Department"
-  >;
+  // type DepartmentScreenNavigationProp = StackNavigationProp<
+  //   RootStackParamList,
+  //   "Department"
+  // >;
 
   const route = useRoute<CreateNewScreenRouteProp>();
   const { type, id } = route.params;
 
-  const GRAPHQL_ENDPOINT = `http://${Constants.expoConfig?.extra?.config}:4000/graphql`;
+  // const GRAPHQL_ENDPOINT = `http://${Constants.expoConfig?.extra?.config}:4000/graphql`;
 
   const handleSubmit = async () => {
     setLoading(true); // Show loading indicator
     try {
       if (type === "Department") {
         if (!title || !description) {
-          Alert.alert(
-            "Error",
-            "Please fill out all department fields with valid image URL"
-          );
+          Alert.alert("Error", "Title and description are required.");
           return;
         }
         let response = await createDepartment({
-          title, description, imageUrl,
+          title,
+          description,
+          imageUrl,
         });
 
       } else if (type === "Project") {
@@ -111,17 +115,69 @@ const CreateNewScreen: React.FC = (params) => {
       } else if (type === "Program") {
         // Add the new program to the hardcoded array
         const newProgram = {
-          id: Math.random(), // Generate a unique ID
-          title,
+          programid: programs.length + 1, // Generate a unique ID
+          name: title,
           description,
-          startDate,
-          duration,
-          repeat,
+          startDate: startDate,
+          duration: duration ? parseInt(duration, 10) : 0, // Convert to number or provide default value
+          endDate: dueDate || null, // Optional end date
+          isRepeat: repeat === "Yes",
+          repeatType: repeat === "Yes" ? customStatus : null,
+          repeatAfter:
+            repeat === "Yes" && customStatus === "Custom"
+              ? { type: "Custom", value: parseInt(timeline, 10) || 0 }
+              : null,
+          createdBy: createdby ? parseInt(createdby, 10) : 0, // Convert to number or provide default value
           createdAt: createdat || new Date().toISOString(),
+          departmentId: id ?? 0, // Convert to number or provide default value
         };
+        try {
+          createProgram(newProgram);
 
-        console.log("New Program:", newProgram);
-        Alert.alert("Success", "Program created successfully!");
+          getProgramsByDepartmentId(id ?? 0); // Fetch programs by department ID
+          Alert.alert("Success", "Program created successfully!");
+
+          const fetchDepartment = async () => {
+            try {
+              const response = await getDepartment((id ?? 0).toString());
+              if (response.data) {
+                const currentDepartment = response.data
+                  .getDepartment as Department; // Cast to Department type
+                navigation.navigate("Department", {
+                  id: id ?? 0,
+                  title: currentDepartment.title,
+                  description: currentDepartment.description,
+                });
+              } else console.error("No data found in response.");
+            } catch (error) {
+              console.error("Error fetching current department:", error);
+            }
+          };
+
+          fetchDepartment(); // Fetch department by ID
+
+          // const currentDepartment = await getDepartment((id ?? 0).toString()); // Fetch department by ID
+          // console.log(currentDepartment);
+          // const department = currentDepartment.data;
+          // console.log(department);
+
+          // navigation.navigate("Department", {
+          //   id: id ?? 0,
+          //   title: department.title,
+          //   description: department.description,
+          //   imageUrl: department.imageUrl,
+          // });
+
+          // navigationToDepartment.navigate("Department", {
+          //   id: id ?? 0,
+          //   title: title || "Default Title",
+          //   description: description || "Default Description",
+          //   imageUrl: imageUrl ||x` "",
+          // });
+        } catch (error: any) {
+          console.error("Error creating program:", error);
+          Alert.alert("Error", error.message || "An error occurred.");
+        }
       }
     } catch (error) {
       console.error("Error creating item:", error);
@@ -283,11 +339,11 @@ const CreateNewScreen: React.FC = (params) => {
               marginBottom: 15,
             }}
           >
-            <Text style={styles.label}>Is Repeat:</Text>
+            <Text style={[styles.label, { flex: 1 }]}>Is Repeat:</Text>
             <Picker
               selectedValue={repeat}
               onValueChange={(value) => setRepeat(value)}
-              style={styles.picker}
+              style={[styles.picker, { flex: 2 }]}
             >
               <Picker.Item label="No" value="No" />
               <Picker.Item label="Yes" value="Yes" />
@@ -301,8 +357,9 @@ const CreateNewScreen: React.FC = (params) => {
                 onValueChange={(value) => setCustomStatus(value)}
                 style={styles.picker}
               >
-                <Picker.Item label="Weekly" value="Weekly" />
-                <Picker.Item label="Monthly" value="Monthly" />
+                <Picker.Item label="Weekly" value="weekly" />
+                <Picker.Item label="Monthly" value="monthly" />
+                <Picker.Item label="Yearly" value="yearly" />
                 <Picker.Item label="Custom" value="Custom" />
               </Picker>
               {customStatus === "Custom" && (
@@ -314,30 +371,28 @@ const CreateNewScreen: React.FC = (params) => {
                   keyboardType="numeric"
                 />
               )}
+              {customStatus === "monthly" && (
+                <TextInput
+                  style={styles.input}
+                  placeholder="Day of the Month (1-31)"
+                  value={timeline}
+                  onChangeText={setTimeline}
+                  keyboardType="numeric"
+                />
+              )}
+              {customStatus === "yearly" && (
+                <TextInput
+                  style={styles.input}
+                  placeholder="Date (MM-DD)"
+                  value={timeline}
+                  onChangeText={setTimeline}
+                />
+              )}
             </>
           )}
-          <TextInput
-            style={styles.input}
-            placeholder="Created By (User ID)"
-            value={createdby}
-            onChangeText={setCreatedby}
-            keyboardType="numeric"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Created At (optional, YYYY-MM-DD)"
-            value={createdat}
-            onChangeText={setCreatedat}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Department ID"
-            value={workforce}
-            onChangeText={setWorkforce}
-            keyboardType="numeric"
-          />
         </>
       )}
+
       {loading && (
         <ActivityIndicator
           size="large"

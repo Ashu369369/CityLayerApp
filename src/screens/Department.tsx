@@ -37,7 +37,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import useStyles from "../styles/Department";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { getDepartment } from "../api/deptApi";
+
 import { DynamicTheme } from "../theme/theme";
+
 
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Department">;
 type ProjectScreenRouteProp = StackNavigationProp<RootStackParamList>;
@@ -90,7 +92,7 @@ const Department: React.FC = () => {
       console.error("Error fetching programs:", error);
     }
   };
-  
+
   useEffect(() => {
     if (selectedTab === "announcements") {
       fetchAnnouncements();
@@ -169,7 +171,7 @@ const Department: React.FC = () => {
             "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
         }}
         style={styles.imageBackground}
-      // imageStyle={styles.image}
+        // imageStyle={styles.image}
       >
         <LinearGradient
           colors={["rgba(0,0,0,0.5)", "rgba(0,0,0,1)"]}
@@ -253,8 +255,8 @@ const Department: React.FC = () => {
               {selectedTab === "projects"
                 ? "Project"
                 : selectedTab === "programs"
-                  ? "Program"
-                  : "Announcement"}
+                ? "Program"
+                : "Announcement"}
             </Button>
           )}
         </View>
@@ -275,8 +277,8 @@ const Department: React.FC = () => {
           selectedTab === "announcements"
             ? item.announcementId.toString() // Use announcementId for announcements
             : item.projectid
-              ? item.projectid.toString()
-              : item.programid.toString()
+            ? item.projectid.toString()
+            : item.programid.toString()
         } // Dynamic key based on type
         ListHeaderComponent={renderHeader}
         renderItem={({ item }) => (
@@ -299,32 +301,43 @@ const Department: React.FC = () => {
                   {selectedTab === "projects"
                     ? item.title
                     : selectedTab === "programs"
-                      ? item.name
-                      : item.messageTitle}
+                    ? item.name
+                    : item.messageTitle}
                 </Title>
                 {/* Render description based on selected tab */}
 
-                {
-                  selectedTab == "projects" &&
+                {selectedTab == "projects" && (
                   <Paragraph style={styles.statusLabel}>
-                    Status: <Text style={item.status === "Active" ? { color: "green", fontWeight: "bold" } : (item.status === "Pending" ? { color: "orange", fontWeight: "bold" } : { color: "red", fontWeight: "bold" })}>{item.status}</Text>
+                    Status:{" "}
+                    <Text
+                      style={
+                        item.status === "Active"
+                          ? { color: "green", fontWeight: "bold" }
+                          : item.status === "Pending"
+                          ? { color: "orange", fontWeight: "bold" }
+                          : { color: "red", fontWeight: "bold" }
+                      }
+                    >
+                      {item.status}
+                    </Text>
                   </Paragraph>
-                }
+                )}
                 <Paragraph style={styles.projectDescription}>
                   {selectedTab === "projects"
                     ? item.description
                     : selectedTab === "programs"
-                      ? item.description
-                      : item.messageBody}
+                    ? item.description
+                    : item.messageBody}
                 </Paragraph>
               </Card.Content>
               {role === 2 || role === 3 ? (
                 <Card.Actions>
-                  {selectedTab !== "announcements" &&
+                  {selectedTab !== "announcements" && (
                     <EditButton
                       type={selectedTab}
                       id={item.projectid || item.programid}
-                    />}
+                    />
+                  )}
                   <DeleteButton
                     onDelete={() => {
                       handleDelete(
