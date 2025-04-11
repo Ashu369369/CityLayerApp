@@ -52,14 +52,11 @@ export const createDepartment = async (
   data: CreateDepartmentRequest
 ): Promise<GraphQLResponse<CreateDepartmentResponse>> => {
   const mutation = `
-    mutation CreateDepartment($title: String!, $description: String!, $imageUrl: String) {
+    mutation ($title: String!, $description: String!, $imageUrl: String) {
       createDepartment(title: $title, description: $description, imageUrl: $imageUrl) {
         departmentid
         title
         description
-        imageUrl
-        createdAt
-        updatedAt
       }
     }
   `;
@@ -84,7 +81,7 @@ export const createDepartment = async (
   } catch (error: any) {
     console.log(error);
     throw new Error(
-      error.response?.data?.message || "Error creating department"
+      error.response?.data?.message || "Error creating department,dd"
     );
   }
 };
@@ -93,8 +90,8 @@ export const getDepartment = async (
   departmentId: string
 ): Promise<GraphQLResponse<GetDepartmentResponse>> => {
   const query = `
-    query GetDepartment($departmentId: String!) {
-      getDepartment(departmentId: $departmentId) {
+    query GetDepartment($departmentid: ID!) {
+      getDepartment(departmentid: $departmentId) {
         departmentid
         title
         description
