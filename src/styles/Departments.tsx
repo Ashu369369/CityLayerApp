@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import theme from "../theme/theme";
+import { DynamicTheme } from "../theme/theme";
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.white,
@@ -39,13 +39,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: theme.colors.primary,
-    fontFamily: theme.fonts.medium.fontFamily,
+    // fontFamily: theme.fonts.medium.fontFamily,
   },
   cardDescription: {
     fontSize: 14,
     color: theme.colors.white,
     marginTop: 6,
-    fontFamily: theme.fonts.regular.fontFamily,
+    // fontFamily: theme.fonts.regular.fontFamily,
     lineHeight: 20,
   },
   cardActions: {
@@ -86,19 +86,19 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: theme.colors.placeholder,
-    fontFamily: theme.fonts.light.fontFamily,
+    // fontFamily: theme.fonts.light.fontFamily,
   },
   title: {
     fontSize: 22,
     fontWeight: "bold",
     color: theme.colors.primary,
-    fontFamily: theme.fonts.medium.fontFamily,
+    // fontFamily: theme.fonts.medium.fontFamily,
     marginBottom: 6,
   },
   subtitle: {
     fontSize: 14,
     color: theme.colors.surface,
-    fontFamily: theme.fonts.regular.fontFamily,
+    // fontFamily: theme.fonts.regular.fontFamily,
     marginBottom: 4,
   },
 
@@ -113,4 +113,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default useStyles;

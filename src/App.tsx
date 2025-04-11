@@ -9,24 +9,32 @@ import SignupPage from "./screens/Signup";
 // import Project from "./screens/Project";
 
 export default function App() {
+  // const fontSize = useSelector((state: RootState) => state.preferences.fontSize);
+  // const highContrast = useSelector((state: RootState) => state.preferences.highContrast);
+
+
   return (
-    <PaperProvider theme={theme}>
-      <Provider store={store}>
-        <NavigationContainer>
-          <AppContent />
-        </NavigationContainer>
-      </Provider>
-    </PaperProvider>
+    <Provider store={store}>
+      <NavigationContainer>
+        <AppContent />
+      </NavigationContainer>
+    </Provider>
   );
 }
 
 const AppContent: React.FC = () => {
   const loggedIn = useSelector((state: RootState) => state.user.id) != null;
+  //for theme
+  const fontSize = useSelector((state: RootState) => state.preferences.fontSize);
+  const highContrast = useSelector((state: RootState) => state.preferences.highContrast);
+  const theme = getDynamicTheme(fontSize, highContrast); // Generate the dynamic theme
 
   return (
     <>
-      {loggedIn ? <MainNavBar /> : <AuthNavigator />}
-      <StatusBar style="auto" />
+      <PaperProvider theme={theme}>
+        {loggedIn ? <MainNavBar /> : <AuthNavigator />}
+        <StatusBar style="auto" />
+      </PaperProvider>
     </>
   );
 };
@@ -34,6 +42,7 @@ const AppContent: React.FC = () => {
 import { createStackNavigator } from "@react-navigation/stack";
 import { PaperProvider } from "react-native-paper";
 import theme from "./theme/theme";
+import getDynamicTheme from "./theme/theme";
 const AuthStack = createStackNavigator();
 
 const AuthNavigator: React.FC = () => (

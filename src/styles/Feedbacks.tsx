@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import theme from "../theme/theme";
+import { DynamicTheme } from "../theme/theme";
 
-export const styles = StyleSheet.create({
+export const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
@@ -44,13 +44,13 @@ export const styles = StyleSheet.create({
     marginBottom: 2,
   },
   comment: {
-    fontSize: theme.fonts.small.fontSize,
+    // fontSize: theme.fonts.small.fontSize,
     color: theme.colors.secondary,
     marginTop: 6,
     lineHeight: 18,
   },
   user: {
-    fontSize: theme.fonts.small.fontSize,
+    // fontSize: theme.fonts.small.fontSize,
     color: theme.colors.accent,
     marginTop: 4,
     fontStyle: "italic",

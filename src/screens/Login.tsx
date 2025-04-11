@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../state/slices/userSlice";
 import { setToken } from "../state/slices/authSlice";
 import { loginUser, LoginUserResponse, GraphQLResponse } from "../api/userApi";
+import { useTheme } from "react-native-paper";
+import { DynamicTheme } from "../theme/theme";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -28,6 +30,9 @@ type FormData = {
 };
 
 const LoginPage: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const dispatch = useDispatch();
@@ -179,7 +184,7 @@ const LoginPage: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",

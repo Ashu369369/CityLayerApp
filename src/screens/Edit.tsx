@@ -17,12 +17,17 @@ import { RootStackParamList } from '../navigation/RootStackParams';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getDepartment, updateDepartment } from '../api/deptApi';
 import Constants from "expo-constants";
+import { useTheme } from 'react-native-paper';
+import { DynamicTheme } from '../theme/theme';
 
 type EditScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
 
 type EditScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Edit'>;
 
 const EditScreen: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<EditScreenRouteProp>();
   const navigation = useNavigation<EditScreenNavigationProp>();
 
@@ -147,7 +152,7 @@ const EditScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     padding: 16,
     backgroundColor: '#fff',

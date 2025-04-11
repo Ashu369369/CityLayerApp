@@ -9,12 +9,16 @@ import {
 import { getAllDepartments } from "../api/deptApi"; // Import API for departments
 import { getAllProjects } from "../api/projectApi"; // Import API for projects
 import { getAllPrograms } from "../api/programApi"; // Import API for programs
-import { Searchbar } from "react-native-paper";
+import { Searchbar, useTheme } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { DynamicTheme } from "../theme/theme";
 
 const SearchScreen: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const [searchQuery, setSearchQuery] = useState("");
   const [departments, setDepartments] = useState<
     { id: number; title: string; description?: string }[]
@@ -187,7 +191,7 @@ const SearchScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,

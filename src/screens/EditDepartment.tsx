@@ -16,10 +16,15 @@ import { useRoute, RouteProp } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { RootStackParamList } from "../navigation/RootStackParams";
+import { useTheme } from "react-native-paper";
+import { DynamicTheme } from "../theme/theme";
 
 type EditScreenRouteProp = RouteProp<RootStackParamList, "Edit">;
 
 const EditScreen: React.FC = () => {
+  
+  const theme = useTheme();
+  const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<EditScreenRouteProp>();
   const { type, id } = route.params;
 
@@ -138,7 +143,7 @@ const EditScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: DynamicTheme) => StyleSheet.create({
   container: {
     padding: 16,
     backgroundColor: "#fff",
