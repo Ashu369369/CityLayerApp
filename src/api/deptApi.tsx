@@ -57,9 +57,6 @@ export const createDepartment = async (
         departmentid
         title
         description
-        imageUrl
-        createdAt
-        updatedAt
       }
     }
   `;
@@ -84,7 +81,7 @@ export const createDepartment = async (
   } catch (error: any) {
     console.log(error);
     throw new Error(
-      error.response?.data?.message || "Error creating department"
+      error.response?.data?.message || "Error creating department,dd"
     );
   }
 };
@@ -253,4 +250,4 @@ export const updateDepartment = async (
       error.response?.data?.message || "Error updating department"
     );
   }
-}
+};
