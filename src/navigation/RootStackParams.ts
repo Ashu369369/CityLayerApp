@@ -22,6 +22,10 @@ export type RootStackParamList = {
     type: string;
     id?: number;
   };
+  CreatePost: {
+    id: number;
+    type: string;
+  };
   MainNavBar: undefined;
   Program: { programId: number };
   Notifications: undefined;

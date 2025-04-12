@@ -27,3 +27,11 @@ export const deleteProjectUpdate = (id: number): void => {
     projectUpdates.splice(index, 1);
   }
 };
+
+export const createProjectUpdate = (newUpdate: ProjectUpdate): void => {
+  const newId = projectUpdates.length +1;
+  const updateWithId = { ...newUpdate, id: newId };
+
+  projectUpdates.push(updateWithId);
+  console.log("New Project Update Created:", projectUpdates);
+};

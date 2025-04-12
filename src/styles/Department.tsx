@@ -118,6 +118,16 @@ const useStyles = (theme: DynamicTheme) =>
       justifyContent: "flex-end",
       backgroundColor: theme.colors.grey,
     },
+    sortByList:{
+      top: -25,
+      borderRadius: 5,
+      backgroundColor: theme.colors.backdrop,
+      borderWidth: 1,
+      borderColor: theme.colors.accent,
+    },
+    soryByListItem:{
+      color: theme.colors.surface
+    },
     CardsContainer: {
       backgroundColor: theme.colors.grey,
     },
