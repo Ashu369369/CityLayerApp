@@ -6,6 +6,7 @@ import store, { RootState } from "./state/store";
 import MainNavBar from "./component/mainNavBar";
 import LoginPage from "./screens/Login";
 import SignupPage from "./screens/Signup";
+import { KeyboardAvoidingView, Platform } from "react-native";
 // import Project from "./screens/Project";
 
 export default function App() {
@@ -31,10 +32,16 @@ const AppContent: React.FC = () => {
 
   return (
     <>
-      <PaperProvider theme={theme}>
-        {loggedIn ? <MainNavBar /> : <AuthNavigator />}
-        <StatusBar style="auto" />
-      </PaperProvider>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0} // tweak this offset depending on your header/nav
+      >
+        <PaperProvider theme={theme}>
+          {loggedIn ? <MainNavBar /> : <AuthNavigator />}
+          <StatusBar style="auto" />
+        </PaperProvider>
+      </KeyboardAvoidingView>
     </>
   );
 };

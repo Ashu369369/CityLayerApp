@@ -2,6 +2,11 @@ import { StyleSheet } from "react-native";
 import { DynamicTheme } from "../theme/theme";
 
 const useStyles = (theme: DynamicTheme) => StyleSheet.create({
+  rowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -15,6 +20,14 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
     color: theme.colors.white,
     borderWidth: 0,
 
+  },
+  createPostButton: {
+    backgroundColor: "transparent",
+    borderRadius: 5,
+    margin: 20,
+  },
+  createPostButtonLabel: {
+    color: "blue",
   },
   title: {
     padding: 20,
@@ -121,6 +134,18 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
     flexDirection: "row",
     gap: 20,
     justifyContent: "space-around",
+  },
+  mediaImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  mediaVideo: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
   },
 });
 

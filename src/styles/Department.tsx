@@ -127,6 +127,16 @@ const useStyles = (theme: DynamicTheme) =>
       backgroundColor: theme.colors.grey,
       color: "white",
     },
+    sortByList:{
+      top: -25,
+      borderRadius: 5,
+      backgroundColor: theme.colors.backdrop,
+      borderWidth: 1,
+      borderColor: theme.colors.accent,
+    },
+    soryByListItem:{
+      color: theme.colors.surface
+    },
     CardsContainer: {
       backgroundColor: theme.colors.grey,
     },

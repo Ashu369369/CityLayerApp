@@ -7,21 +7,25 @@ import {
   Image,
   Linking,
 } from "react-native";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { getProjectById, Project } from "../api/projectApi";
 import useStyles from "../styles/Project";
 import theme, { DynamicTheme } from "../theme/theme";
-import { Card, Divider, Surface, useTheme } from "react-native-paper";
+import { Button, Card, Divider, Surface, useTheme } from "react-native-paper";
 import { ProjectUpdate } from "../api/projectUpdatesApi";
 import { getProjectUpdatesByProjectId } from "../api/projectUpdatesApi";
 import { WebView } from "react-native-webview";
-// import styles from "../styles/Project";
+
+import { StackNavigationProp } from "@react-navigation/stack";
 
 type ProjectDetailsRouteProp = RouteProp<RootStackParamList, "Project">;
+type ProgramScreenRouteProp = RouteProp<RootStackParamList, "Program">;
 
 const ProjectDetails: React.FC = () => {
+
   const theme = useTheme();
+  const navigate = useNavigation<StackNavigationProp<RootStackParamList>>();
   const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<ProjectDetailsRouteProp>();
   const { projectid } = route.params;
@@ -55,7 +59,7 @@ const ProjectDetails: React.FC = () => {
 
     fetchProject();
     fetchProjectUpdates();
-  }, [projectid]);
+  }, []);
 
   if (loading) {
     return (
@@ -135,7 +139,17 @@ const ProjectDetails: React.FC = () => {
       </View>
 
       <Divider style={styles.divider} />
-      <Text style={styles.subTitle}>Project Updates</Text>
+      <View style={styles.rowContainer}>
+        <Text style={styles.subTitle}>Project Updates</Text>
+        <Button
+          mode="contained"
+          onPress={() => navigate.navigate("CreatePost", { id: projectid, type: "project" })}
+          style={styles.createPostButton}
+          labelStyle={styles.createPostButtonLabel}
+        >
+          Create Post
+        </Button>
+      </View>
 
       {updates.length > 0 ? (
         updates.map((update) => (

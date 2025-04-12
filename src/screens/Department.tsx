@@ -33,6 +33,7 @@ import {
   Paragraph,
   Title,
   useTheme,
+  IconButton,
 } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 import useStyles from "../styles/Department";
@@ -259,24 +260,47 @@ const Department: React.FC = () => {
             anchor={
               <Button onPress={() => setSortMenuVisible(true)}>Sort by</Button>
             }
+            contentStyle={styles.sortByList}
+            
           >
-            <Menu.Item
-              onPress={() => handleSort("title-asc")}
-              title="Name (Asc)"
-            />
-            <Menu.Item
-              onPress={() => handleSort("title-desc")}
-              title="Name (Desc)"
-            />
-            <Divider />
-            <Menu.Item
-              onPress={() => handleSort("createdAt-asc")}
-              title="Date (Asc)"
-            />
-            <Menu.Item
-              onPress={() => handleSort("createdAt-desc")}
-              title="Date (Desc)"
-            />
+              <Menu.Item
+                onPress={() => handleSort("title-asc")}
+                title={
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text style={styles.soryByListItem}>Name</Text>
+                    <IconButton icon="arrow-up" size={16} iconColor={theme.colors.surface} />
+                  </View>
+                }
+                
+              />
+              <Menu.Item
+                onPress={() => handleSort("title-desc")}
+                title={
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text style={styles.soryByListItem}>Name</Text>
+                    <IconButton icon="arrow-down" size={16} iconColor={theme.colors.surface} />
+                  </View>
+                }
+              />
+              <Divider />
+              <Menu.Item
+                onPress={() => handleSort("createdAt-asc")}
+                title={
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text style={styles.soryByListItem}>Date</Text>
+                    <IconButton icon="arrow-up" size={16} iconColor={theme.colors.surface} />
+                  </View>
+                }
+              />
+              <Menu.Item
+                onPress={() => handleSort("createdAt-desc")}
+                title={
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text style={styles.soryByListItem}>Date</Text>
+                    <IconButton icon="arrow-down" size={16} iconColor={theme.colors.surface} />
+                  </View>
+                }
+              />
           </Menu>
           {role >= 2 && (
             <Button onPress={() => handleCreateNew(selectedTab)}>
