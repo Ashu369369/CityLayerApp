@@ -16,6 +16,7 @@ import { Button, Card, Divider, Surface, useTheme } from "react-native-paper";
 import { ProjectUpdate } from "../api/projectUpdatesApi";
 import { getProjectUpdatesByProjectId } from "../api/projectUpdatesApi";
 import { WebView } from "react-native-webview";
+
 import { StackNavigationProp } from "@react-navigation/stack";
 
 type ProjectDetailsRouteProp = RouteProp<RootStackParamList, "Project">;
@@ -199,8 +200,16 @@ const ProjectDetails: React.FC = () => {
                 }
               })}
             </View>
-            <View style={{ flexDirection: "row", marginTop: 10, justifyContent: "space-between" }}>
-              <Text style={styles.updateBy}>Created By: {update.createdBy}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 10,
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={styles.updateBy}>
+                Created By: {update.createdBy}
+              </Text>
               <Text style={styles.updateDate}>
                 {new Date(update.dateAndTime).toLocaleString()}
               </Text>

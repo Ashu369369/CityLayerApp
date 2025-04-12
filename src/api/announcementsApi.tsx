@@ -35,3 +35,15 @@ export const deleteAnnouncement = (announcementId: number): void => {
     announcements.splice(index, 1);
   }
 };
+export const createAnnouncement = (newAnnouncement: Announcement): void => {
+  const nextId = announcements.length + 1;
+  announcements.push({
+    ...newAnnouncement,
+    announcementId: nextId,
+    departmentId: newAnnouncement.departmentId ?? 0,
+    targetRoles: newAnnouncement.targetroles || { roles: [] },
+    targetArea: newAnnouncement.targetarea || "",
+    createdBy: newAnnouncement.createdby || 0,
+    createdAt: newAnnouncement.createdat || new Date().toISOString(),
+  });
+};
