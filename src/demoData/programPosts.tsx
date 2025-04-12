@@ -2,31 +2,31 @@ const projectUpdates = [
   // Project 1 updates
   {
     updateId: 1,
-    projectId: 1,
+    programId: 1,
     leaderId: 101,
     textContent: "Project kickoff meeting held successfully.",
     location: "New York, USA",
-    mediaFiles: [{ type: "image", url: "https://example.com/kickoff.jpg" }],
+    mediaFiles: [{ type: "image", url: "https://images.pexels.com/photos/31370382/pexels-photo-31370382/free-photo-of-couple-walking-on-serene-beach-in-overcast-weather.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" }],
     createdAt: "2024-03-01T09:00:00Z",
     createdBy: 201,
   },
   {
     updateId: 2,
-    projectId: 1,
+    programId: 1,
     leaderId: 101,
     textContent: "Requirement gathering completed.",
     location: "New York, USA",
-    mediaFiles: [{ type: "document", url: "https://example.com/requirements.docx" }],
+    mediaFiles: [{ type: "image", url: "https://images.pexels.com/photos/20065970/pexels-photo-20065970/free-photo-of-blue-hour-moments.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" }],
     createdAt: "2024-03-05T14:15:00Z",
     createdBy: 202,
   },
   {
     updateId: 3,
-    projectId: 1,
+    programId: 1,
     leaderId: 101,
     textContent: "Initial wireframes and designs are ready.",
     location: "New York, USA",
-    mediaFiles: [{ type: "image", url: "https://example.com/wireframe.png" }],
+    mediaFiles: [{ type: "image", url: "https://images.pexels.com/photos/31545794/pexels-photo-31545794/free-photo-of-hand-reaching-towards-sky-in-open-field.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" }],
     createdAt: "2024-03-10T11:45:00Z",
     createdBy: 203,
   },
@@ -34,7 +34,7 @@ const projectUpdates = [
   // Project 2 updates
   {
     updateId: 4,
-    projectId: 2,
+    programId: 2,
     leaderId: 102,
     textContent: "Database schema finalized.",
     location: "Los Angeles, USA",
@@ -44,7 +44,7 @@ const projectUpdates = [
   },
   {
     updateId: 5,
-    projectId: 2,
+    programId: 2,
     leaderId: 102,
     textContent: "Backend API development started.",
     location: "Los Angeles, USA",
@@ -54,7 +54,7 @@ const projectUpdates = [
   },
   {
     updateId: 6,
-    projectId: 2,
+    programId: 2,
     leaderId: 102,
     textContent: "Testing environment set up successfully.",
     location: "Los Angeles, USA",
@@ -66,7 +66,7 @@ const projectUpdates = [
   // Project 3 updates
   {
     updateId: 7,
-    projectId: 3,
+    programId: 3,
     leaderId: 103,
     textContent: "Front-end UI development has begun.",
     location: "Toronto, Canada",
@@ -76,7 +76,7 @@ const projectUpdates = [
   },
   {
     updateId: 8,
-    projectId: 3,
+    programId: 3,
     leaderId: 103,
     textContent: "Login and authentication module completed.",
     location: "Toronto, Canada",
@@ -86,7 +86,7 @@ const projectUpdates = [
   },
   {
     updateId: 9,
-    projectId: 3,
+    programId: 3,
     leaderId: 103,
     textContent: "First round of QA testing completed.",
     location: "Toronto, Canada",
@@ -98,7 +98,7 @@ const projectUpdates = [
   // Project 4 updates
   {
     updateId: 10,
-    projectId: 4,
+    programId: 4,
     leaderId: 104,
     textContent: "Deployment server configured successfully.",
     location: "London, UK",
@@ -108,7 +108,7 @@ const projectUpdates = [
   },
   {
     updateId: 11,
-    projectId: 4,
+    programId: 4,
     leaderId: 104,
     textContent: "Security audit conducted and passed.",
     location: "London, UK",
@@ -118,7 +118,7 @@ const projectUpdates = [
   },
   {
     updateId: 12,
-    projectId: 4,
+    programId: 4,
     leaderId: 104,
     textContent: "Final documentation completed.",
     location: "London, UK",
@@ -130,7 +130,7 @@ const projectUpdates = [
   // Project 5 updates
   {
     updateId: 13,
-    projectId: 5,
+    programId: 5,
     leaderId: 105,
     textContent: "Beta version released for testing.",
     location: "Berlin, Germany",
@@ -140,7 +140,7 @@ const projectUpdates = [
   },
   {
     updateId: 14,
-    projectId: 5,
+    programId: 5,
     leaderId: 105,
     textContent: "User feedback collected and analyzed.",
     location: "Berlin, Germany",
@@ -150,7 +150,7 @@ const projectUpdates = [
   },
   {
     updateId: 15,
-    projectId: 5,
+    programId: 5,
     leaderId: 105,
     textContent: "Final release prepared for production.",
     location: "Berlin, Germany",

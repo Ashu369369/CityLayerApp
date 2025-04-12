@@ -2,6 +2,11 @@ import { StyleSheet } from "react-native";
 import { DynamicTheme } from "../theme/theme";
 
 const useStyles = (theme: DynamicTheme) => StyleSheet.create({
+  rowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.white,
@@ -11,6 +16,14 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.colors.background,
+  },
+  createPostButton: {
+    backgroundColor: "transparent",
+    borderRadius: 5,
+    margin: 20,
+  },
+  createPostButtonLabel: {
+    color: "blue",
   },
   projectCard: {
     backgroundColor: theme.colors.white,

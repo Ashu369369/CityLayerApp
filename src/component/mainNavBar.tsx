@@ -25,6 +25,7 @@ import CreateNotificationScreen from "../screens/CreateNotification";
 
 import Feedback from "../component/Feedback";
 import Feedbacks from "../screens/Feedbacks";
+import CreatePostScreen from "../screens/CreatePost";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -169,6 +170,7 @@ const DepartmentStack = () => {
 
       <Stack.Screen name="Project" component={ProjectDetails} />
       <Stack.Screen name="Program" component={ProgramScreen} />
+      <Stack.Screen name="CreatePost" component={CreatePostScreen} />
       <Stack.Screen name="Edit" component={EditScreen} />
     </Stack.Navigator>
   );

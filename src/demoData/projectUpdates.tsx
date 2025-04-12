@@ -7,7 +7,6 @@ export const projectUpdates = [
     createdBy: "John Doe",
     mediaFiles: [
       "https://plus.unsplash.com/premium_photo-1674940593973-f520ef5054bc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8", // Image URL
-      "document1.pdf", // PDF file
     ],
     location: "New York",
   },

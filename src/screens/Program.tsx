@@ -1,17 +1,20 @@
+// import { Video } from "expo-av"; // Import Video from expo-av
 import React, { useEffect, useState } from "react";
-import { View, ActivityIndicator, FlatList } from "react-native";
-import { useRoute, RouteProp } from "@react-navigation/native";
+import { View, ActivityIndicator, FlatList, Image } from "react-native";
+import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { getProgramById, Program } from "../api/programApi";
-import { Text, useTheme, Card } from "react-native-paper";
+import { Text, useTheme, Card, Button } from "react-native-paper";
 import useStyles from "../styles/ProgramStyles";
 import programPosts from "../demoData/programPosts"; // Import demo data
 import { DynamicTheme } from "../theme/theme";
+import { StackNavigationProp } from "@react-navigation/stack";
+import WebView from "react-native-webview";
 
 type ProgramScreenRouteProp = RouteProp<RootStackParamList, "Program">;
 
 const ProgramScreen: React.FC = () => {
-  
+  const navigate = useNavigation<StackNavigationProp<RootStackParamList>>();
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<ProgramScreenRouteProp>();
@@ -20,7 +23,7 @@ const ProgramScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   // Filter posts related to the current program
-  const filteredPosts = programPosts.filter((post) => post.projectId === programId);
+  const filteredPosts = programPosts.filter((post) => post.programId === programId);
 
   useEffect(() => {
     const fetchProgram = async () => {
@@ -46,6 +49,7 @@ const ProgramScreen: React.FC = () => {
     );
   }
 
+
   const renderPost = ({ item }: { item: typeof programPosts[0] }) => (
     <Card style={styles.postCard}>
       <Card.Content>
@@ -53,15 +57,45 @@ const ProgramScreen: React.FC = () => {
           {item.textContent}
         </Text>
         <View style={styles.PostmediaContainer}>
+          {/* Render media files */}
+          {item.mediaFiles.map((media, index) => {
+            if (media.type === "image") {
+              return (
+                <Image
+                  key={index}
+                  source={{ uri: media.url }}
+                  style={styles.mediaImage}
+                  resizeMode="cover"
+                />
+              );
+            } else if (media.type === "video") {
+              return (
+                <WebView
+                  key={index}
+                  source={{ uri: media.url }}
+                  style={{ width: "100%", height: 200 }}
+                />
+              );
+            } else if (media.type === "document") {
+              return (
+                <WebView
+                  key={index}
+                  source={{ uri: media.url }}
+                  style={{ width: "100%", height: 200 }}
+                />
+              )
+            }
+            return null;
+          })}
 
-        <Text variant="bodySmall" style={styles.postDate}>
-          Posted on: {new Date(item.createdAt).toLocaleDateString()}
-        </Text>
-        {item.location && (
-          <Text variant="bodySmall" style={styles.postLocation}>
-            Location: {item.location}
+          <Text variant="bodySmall" style={styles.postDate}>
+            Posted on: {new Date(item.createdAt).toLocaleDateString()}
           </Text>
-        )}
+          {item.location && (
+            <Text variant="bodySmall" style={styles.postLocation}>
+              Location: {item.location}
+            </Text>
+          )}
         </View>
       </Card.Content>
     </Card>
@@ -102,9 +136,19 @@ const ProgramScreen: React.FC = () => {
               {program.description}
             </Text>
           </View>
-          <Text variant="headlineSmall" style={styles.postsTitle}>
-            Posts
-          </Text>
+          <View style={styles.rowContainer}>
+            <Text variant="headlineSmall" style={styles.postsTitle}>
+              Posts
+            </Text>
+            <Button
+              mode="contained"
+              onPress={() => navigate.navigate("CreatePost", { id: programId, type: "program" })}
+              style={styles.createPostButton}
+              labelStyle={styles.createPostButtonLabel}
+            >
+              Create Post
+            </Button>
+          </View>
         </>
       }
       data={filteredPosts}

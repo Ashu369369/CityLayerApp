@@ -209,12 +209,6 @@ const CreateNewScreen: React.FC = (params) => {
             onChangeText={setCreatedby}
             keyboardType="numeric"
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Created At (optional, YYYY-MM-DD)"
-            value={createdat}
-            onChangeText={setCreatedat}
-          />
         </>
       )}
 
@@ -265,12 +259,6 @@ const CreateNewScreen: React.FC = (params) => {
               onChangeText={setCustomStatus}
             />
           )}
-          <TextInput
-            style={styles.input}
-            placeholder="Created At (optional, YYYY-MM-DD)"
-            value={createdat}
-            onChangeText={setCreatedat}
-          />
         </>
       )}
 

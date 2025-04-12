@@ -17,6 +17,7 @@ export interface Project {
   updatedat: string;
 }
 
+
 export const getAllProjects = (): Project[] => {
   return demoProjects;
 };
