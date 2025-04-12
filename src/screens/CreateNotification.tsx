@@ -3,6 +3,8 @@ import { View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button, Text, useTheme, Menu, Divider } from "react-native-paper";
 import notifications from "../demoData/notifications";
 import { DynamicTheme } from "../theme/theme";
+import saveOfflineData from "../Tools/offlineMode";
+import NetInfo from "@react-native-community/netinfo";
 
 const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
   
@@ -16,7 +18,9 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
   const [menuVisible, setMenuVisible] = useState(false); // For Tagged For dropdown
   const [severityMenuVisible, setSeverityMenuVisible] = useState(false); // For Severity dropdown
 
-  const handleCreateNotification = () => {
+  const handleCreateNotification = async () => {
+    
+    const netInfo = await NetInfo.fetch();
     if (!title || !description) {
       Alert.alert("Error", "Please fill in all required fields.");
       return;
@@ -40,9 +44,16 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
       createdAt: new Date().toISOString(),
       readBy: [], // Initially no one has read the notification
     };
-
-    notifications.push(newNotification); // Add the new notification to the list
+    if (netInfo.isConnected) {
+    notifications.push(newNotification); 
     Alert.alert("Success", "Notification created successfully!");
+    }else{
+      await saveOfflineData("create_notifications", newNotification);
+      Alert.alert(
+        "Offline",
+        "No internet connection. Notification saved offline and will sync later."
+      );
+    }
     navigation.goBack(); // Navigate back to the previous screen
   };
 

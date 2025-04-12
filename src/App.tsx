@@ -12,12 +12,15 @@ import { KeyboardAvoidingView, Platform } from "react-native";
 export default function App() {
   // const fontSize = useSelector((state: RootState) => state.preferences.fontSize);
   // const highContrast = useSelector((state: RootState) => state.preferences.highContrast);
-
+  React.useEffect(()=>{
+    backgroundSyncService()
+  },[])
 
   return (
     <Provider store={store}>
       <NavigationContainer>
         <AppContent />
+        <Toast/>
       </NavigationContainer>
     </Provider>
   );
@@ -50,6 +53,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { PaperProvider } from "react-native-paper";
 import theme from "./theme/theme";
 import getDynamicTheme from "./theme/theme";
+import { backgroundSyncService } from "./Tools/offlineMode";
+import Toast from "react-native-toast-message";
 const AuthStack = createStackNavigator();
 
 const AuthNavigator: React.FC = () => (

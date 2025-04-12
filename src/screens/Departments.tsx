@@ -20,20 +20,21 @@ import {
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from '@react-navigation/native';
+import NetInfo from "@react-native-community/netinfo";
 
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import useStyles from "../styles/Departments";
 import { DynamicTheme } from "../theme/theme";
+import saveOfflineData from "../Tools/offlineMode";
 
-// 1. Define the correct type for your route params
-type DepartmentScreenRouteProp = RouteProp<RootStackParamList, 'Departments'>;
 
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 type DepartmentScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Department'>;
 
 const DepartmentScreen: React.FC = () => {
-  
+
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const navigation = useNavigation<DepartmentScreenNavigationProp>();
@@ -41,12 +42,11 @@ const DepartmentScreen: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [deleteDialogVisibile, setDeleteDialogVisibile] = useState(false);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | null>(null);
   const [isFabOpen, setIsFabOpen] = useState(false); // State to control FAB group visibility
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [departmentIdInput, setDepartmentIdInput] = useState<string>("");
-
-  const route = useRoute<DepartmentScreenRouteProp>();
 
   const role = useSelector((state: RootState) => state.user.role);
 
@@ -67,13 +67,29 @@ const DepartmentScreen: React.FC = () => {
     }, []) // Only fetch on focus, no dependencies here
   );
   const handleDelete = async () => {
+
+    const netInfo = await NetInfo.fetch();
+
     if (selectedDepartmentId !== null) {
-      try {
-        await deleteDepartment(selectedDepartmentId);
-        fetchDepartments();
-        setDialogVisible(false); // Close the dialog after deletion
-      } catch (error) {
-        console.error("Error deleting department:", error);
+      if (netInfo.isConnected) {
+        try {
+          let response = await deleteDepartment(selectedDepartmentId);
+          if (response.success) {
+            Alert.alert("success", "Department deleted successfully");
+          }
+          fetchDepartments();
+          setDialogVisible(false);
+          setDeleteDialogVisibile(false);
+        } catch (error) {
+          console.error("Error deleting department:", error);
+        }
+      } else {
+        await saveOfflineData("delete_departments", selectedDepartmentId);
+        Alert.alert(
+          "Offline",
+          "No internet connection. Action saved offline and will sync later."
+        );
+        navigation.goBack();
       }
     }
   };
@@ -82,6 +98,8 @@ const DepartmentScreen: React.FC = () => {
     if (actionType === "Program" || actionType === "Project" || actionType === "Announcement") {
       setSelectedAction(actionType); // Store the selected action
       setDialogVisible(true); // Show the dialog
+    } else if (actionType === "Notification") {
+      navigation.navigate("CreateNotification")
     } else {
       navigation.navigate("CreateNew", { type: actionType });
     }
@@ -130,11 +148,12 @@ const DepartmentScreen: React.FC = () => {
 
   const showDialog = (departmentId: number) => {
     setSelectedDepartmentId(departmentId);
-    setDialogVisible(true);
+    setDeleteDialogVisibile(true);
   };
 
   const hideDialog = () => {
     setDialogVisible(false);
+    setDeleteDialogVisibile(false);
     setSelectedDepartmentId(null);
   };
 
@@ -253,7 +272,7 @@ const DepartmentScreen: React.FC = () => {
 
         {/* Confirmation Dialog */}
         <Portal>
-          <Dialog visible={dialogVisible} onDismiss={hideDialog}>
+          <Dialog visible={deleteDialogVisibile} onDismiss={hideDialog}>
             <Dialog.Title>Confirm Deletion</Dialog.Title>
             <Dialog.Content>
               <Paragraph>
