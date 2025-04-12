@@ -1,4 +1,3 @@
-// import { Video } from "expo-av"; // Import Video from expo-av
 import React, { useEffect, useState } from "react";
 import { View, ActivityIndicator, FlatList, Image } from "react-native";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
@@ -10,12 +9,16 @@ import programPosts from "../demoData/programPosts"; // Import demo data
 import { DynamicTheme } from "../theme/theme";
 import { StackNavigationProp } from "@react-navigation/stack";
 import WebView from "react-native-webview";
+import { formatDate } from "../Tools/formatDate";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 type ProgramScreenRouteProp = RouteProp<RootStackParamList, "Program">;
 
 const ProgramScreen: React.FC = () => {
   const navigate = useNavigation<StackNavigationProp<RootStackParamList>>();
   const theme = useTheme();
+  const dateFormat = useSelector((state: RootState)=> state.preferences.dateFormat)
   const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<ProgramScreenRouteProp>();
   const { programId } = route.params;
@@ -89,7 +92,7 @@ const ProgramScreen: React.FC = () => {
           })}
 
           <Text variant="bodySmall" style={styles.postDate}>
-            Posted on: {new Date(item.createdAt).toLocaleDateString()}
+            Posted on: {formatDate(item.createdAt, dateFormat)}
           </Text>
           {item.location && (
             <Text variant="bodySmall" style={styles.postLocation}>
@@ -115,11 +118,11 @@ const ProgramScreen: React.FC = () => {
             <View style={styles.durationContainer}>
               <View>
                 <Text variant="bodySmall" style={styles.date}>
-                  Start Date: {new Date(program.startDate).toLocaleDateString()}
+                  Start Date: {formatDate(program.startDate, dateFormat)}
                 </Text>
                 {program.endDate && (
                   <Text variant="bodySmall" style={styles.date}>
-                    End Date: {new Date(program.endDate).toLocaleDateString()}
+                    End Date: {formatDate(program.endDate, dateFormat)}
                   </Text>
                 )}
               </View>
@@ -166,7 +169,7 @@ const ProgramScreen: React.FC = () => {
               Created by: User {program.createdBy}
             </Text>
             <Text variant="bodySmall" style={styles.date}>
-              Created at: {new Date(program.createdAt).toLocaleDateString()}
+              Created at: {formatDate(program.createdAt, dateFormat)}
             </Text>
           </View>
         </View>

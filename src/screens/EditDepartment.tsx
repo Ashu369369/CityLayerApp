@@ -9,6 +9,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import getDynamicTheme, { DynamicTheme } from "../theme/theme";
 import { RootState } from "../state/store";
+import NetInfo from "@react-native-community/netinfo";
 
 // Import any additional APIs or actions you need
 

@@ -159,6 +159,7 @@ export const getAllDepartments = async (): Promise<
 export const deleteDepartment = async (
   departmentId: number
 ): Promise<{ success: boolean; message: string }> => {
+
   const mutation = `
     mutation DeleteDepartment($departmentId: ID!) {
       deleteDepartment(departmentId: $departmentId) {
@@ -177,7 +178,6 @@ export const deleteDepartment = async (
       query: mutation,
       variables,
     });
-
     const data = response.data as GraphQLResponse<{
       deleteDepartment: { success: boolean; message: string };
     }>;

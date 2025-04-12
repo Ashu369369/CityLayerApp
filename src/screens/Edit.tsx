@@ -12,20 +12,20 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import axios from 'axios';
 import { RootStackParamList } from '../navigation/RootStackParams';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getDepartment, updateDepartment } from '../api/deptApi';
-import Constants from "expo-constants";
 import { useTheme } from 'react-native-paper';
 import { DynamicTheme } from '../theme/theme';
+import NetInfo from "@react-native-community/netinfo";
+import saveOfflineData from '../Tools/offlineMode';
 
 type EditScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
 
 type EditScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Edit'>;
 
 const EditScreen: React.FC = () => {
-  
+
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<EditScreenRouteProp>();
@@ -43,7 +43,7 @@ const EditScreen: React.FC = () => {
     try {
       let response = await getDepartment(departmentid.toString());
       console.log("response", response);
-      const data =  response.data?.getDepartment;
+      const data = response.data?.getDepartment;
 
       setTitle(data?.title ?? '');
       setDescription(data?.description ?? '');
@@ -77,31 +77,44 @@ const EditScreen: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      setLoading(true);
+    const netInfo = await NetInfo.fetch();
+    setLoading(true);
+    if (netInfo.isConnected) {
+      try {
+        let response = await updateDepartment(departmentid, {
+          title, description, imageUrl: imageurl ?? undefined,
+        });
 
-      let response = await updateDepartment(departmentid, {
-        title, description, imageUrl: imageurl ?? undefined,
-      });
-
-      // Check if the response contains an error
-      if (response.errors || !response.data) {
-        throw new Error('Failed to update department');
-      }
-      Alert.alert('Success', 'Department updated successfully!', [
-        {
-          text: 'OK',
-          onPress: () => {
-            navigation.goBack();
+        // Check if the response contains an error
+        if (response.errors || !response.data) {
+          throw new Error('Failed to update department');
+        }
+        Alert.alert('Success', 'Department updated successfully!', [
+          {
+            text: 'OK',
+            onPress: () => {
+              navigation.goBack();
+            },
           },
-        },
-      ]);
-    } catch (error) {
-      console.error('❌ Error updating department:', error);
-      Alert.alert('Error', 'Failed to update department.');
-    } finally {
-      setLoading(false);
+        ]);
+      } catch (error) {
+        console.error('❌ Error updating department:', error);
+        Alert.alert('Error', 'Failed to update department.');
+      }
+    } else {
+      await saveOfflineData("edit_departments", {
+        departmentid, data: {
+          title, description, imageUrl: imageurl,
+        }
+      });
+      Alert.alert(
+        "Offline",
+        "No internet connection. Notification saved offline and will sync later."
+      );
     }
+    setLoading(false);
+    navigation.goBack();
+
   };
 
   return (
