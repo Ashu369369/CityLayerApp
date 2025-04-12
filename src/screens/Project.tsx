@@ -18,6 +18,9 @@ import { getProjectUpdatesByProjectId } from "../api/projectUpdatesApi";
 import { WebView } from "react-native-webview";
 
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
+import { formatDate } from "../Tools/formatDate";
 
 type ProjectDetailsRouteProp = RouteProp<RootStackParamList, "Project">;
 type ProgramScreenRouteProp = RouteProp<RootStackParamList, "Program">;
@@ -26,6 +29,7 @@ const ProjectDetails: React.FC = () => {
 
   const theme = useTheme();
   const navigate = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const dateFormat = useSelector((state: RootState) => state.preferences.dateFormat);
   const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<ProjectDetailsRouteProp>();
   const { projectid } = route.params;
@@ -103,11 +107,11 @@ const ProjectDetails: React.FC = () => {
       <View style={styles.detailsContainer}>
         <Text style={styles.detail}>
           <Text style={styles.detailLabel}>Start Date: </Text>
-          {project.startdate}
+          {formatDate(project.startdate, dateFormat)}
         </Text>
         <Text style={styles.detail}>
           <Text style={styles.detailLabel}>Due Date: </Text>
-          {project.duedate}
+          {formatDate(project.duedate, dateFormat)}
         </Text>
         <Text style={styles.detail}>
           <Text style={styles.detailLabel}>Status: </Text>
@@ -134,7 +138,7 @@ const ProjectDetails: React.FC = () => {
         </Text>
         <Text style={styles.detail}>
           <Text style={styles.detailLabel}>Created At: </Text>
-          {project.createdat}
+          {formatDate(project.createdat, dateFormat)}
         </Text>
       </View>
 
@@ -211,7 +215,7 @@ const ProjectDetails: React.FC = () => {
                 Created By: {update.createdBy}
               </Text>
               <Text style={styles.updateDate}>
-                {new Date(update.dateAndTime).toLocaleString()}
+                {formatDate(update.dateAndTime, dateFormat)}
               </Text>
             </View>
           </View>

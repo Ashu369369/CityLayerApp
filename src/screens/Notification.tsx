@@ -8,9 +8,11 @@ import { RootState } from "../state/store";
 import { useFocusEffect } from "@react-navigation/native";
 import { DynamicTheme } from "../theme/theme";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { formatDate } from "../Tools/formatDate";
 
 const NotificationsScreen: React.FC = () => {
   const theme = useTheme();
+  const dateFormat = useSelector((state : RootState) => state.preferences.dateFormat);
   const styles = useStyles(theme as DynamicTheme);
   const currentUserId = useSelector((state: RootState) => state.user.id);
   const currentUserRole = useSelector((state: RootState) => state.user.role);
@@ -106,7 +108,7 @@ const NotificationsScreen: React.FC = () => {
             {item.description}
           </Text>
           <Text variant="bodySmall" style={styles.notificationMeta}>
-            Created At: {new Date(item.createdAt).toLocaleDateString()}
+            Created At: {formatDate(item.createdAt, dateFormat)}
           </Text>
           {currentUserRole === 3 && (
             <TouchableOpacity

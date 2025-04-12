@@ -10,10 +10,12 @@ import { clearUser } from "../state/slices/userSlice";
 import { deleteUser } from "../api/userApi";
 import Feedback from "../component/Feedback";
 import {
+  setDateFormat,
   setFontSize,
   toggleHighContrast,
 } from "../state/slices/preferencesSlice";
 import getDynamicTheme, { DynamicTheme } from "../theme/theme";
+import { formatDate } from "../Tools/formatDate";
 
 const ProfileScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -25,6 +27,9 @@ const ProfileScreen: React.FC = () => {
   );
   const highContrast = useSelector(
     (state: RootState) => state.preferences.highContrast
+  );
+  const dateFormat = useSelector(
+    (state: RootState) => state.preferences.dateFormat
   );
 
   // Generate dynamic theme based on preferences
@@ -55,20 +60,20 @@ const ProfileScreen: React.FC = () => {
   };
 
   // Format the date to a user-friendly format
-  const formatDate = (dateString: string | null | undefined): string => {
-    if (!dateString) return "N/A";
-    try {
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }).format(date);
-    } catch (error) {
-      console.error("Error formatting date:", error);
-      return "Invalid Date";
-    }
-  };
+  // const formatDate = (dateString: string | null | undefined): string => {
+  //   if (!dateString) return "N/A";
+  //   try {
+  //     const date = new Date(dateString);
+  //     return new Intl.DateTimeFormat("en-US", {
+  //       year: "numeric",
+  //       month: "long",
+  //       day: "numeric",
+  //     }).format(date);
+  //   } catch (error) {
+  //     console.error("Error formatting date:", error);
+  //     return "Invalid Date";
+  //   }
+  // };
 
   // Logout handler
   const handleLogout = () => {
@@ -104,7 +109,7 @@ const ProfileScreen: React.FC = () => {
                 Alert.alert(
                   "Error",
                   response.data?.deleteUser.message ||
-                    "Failed to delete account"
+                  "Failed to delete account"
                 );
               }
             } catch (error) {
@@ -152,15 +157,15 @@ const ProfileScreen: React.FC = () => {
               </View>
             </View>
             <Text style={styles.dob}>
-              Date of Birth: {formatDate(user.dob)}
+              Date of Birth: {formatDate(user.dob, dateFormat)}
             </Text>
             <Text style={styles.role}>
               Role:{" "}
               {user.role === 1
                 ? "User"
                 : user.role === 2
-                ? "Employee"
-                : "Admin"}
+                  ? "Employee"
+                  : "Admin"}
             </Text>
           </Card.Content>
         </Card>
@@ -190,6 +195,22 @@ const ProfileScreen: React.FC = () => {
             />
           </View>
         </View>
+        <View style={{flexDirection:"row", marginTop: 20}}>
+
+          <Text style={styles.label}>Date Format</Text>
+          <View style={[styles.pickerContainer, {flex: 1, marginLeft: 20}]}>
+            <Picker
+              selectedValue={dateFormat}
+              onValueChange={(value) => dispatch(setDateFormat(value))}
+              style={styles.picker}
+            >
+              <Picker.Item label="MM-DD-YYYY" value="MM-DD-YYYY" />
+              <Picker.Item label="YYYY-MM-DD" value="YYYY-MM-DD" />
+              <Picker.Item label="DD-MM-YYYY" value="DD-MM-YYYY" />
+            </Picker>
+          </View>
+        </View>
+
       </ScrollView>
 
       {/* Logout and Delete Buttons fixed at bottom */}

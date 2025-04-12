@@ -129,25 +129,12 @@ const DepartmentStack = () => {
           <Stack.Screen
             name="Department"
             component={Department}
-            options={({ navigation, route }) => ({
-              // Example: add a "Create Project" button if you want:
-              // headerRight: () => (
-              //   <TouchableOpacity
-              //     onPress={() =>
-              //       navigation.navigate("CreateNew", {
-              //         type: "Project",
-              //         id: (route as RouteProp<RootStackParamList, "Department">)
-              //           .params?.id,
-              //       })
-              //     }
-              //     style={{ marginRight: 10 }}
-              //   >
-              //     <Text style={{ color: "blue" }}>Create Project</Text>
-              //   </TouchableOpacity>
-              // ),
-            })}
           />
           <Stack.Screen name="CreateNew" component={CreateNewScreen} />
+          <Stack.Screen
+            name="CreateNotification"
+            component={CreateNotificationScreen}
+          />
         </>
       ) : (
         <Stack.Screen name="Department" component={Department} />
@@ -224,18 +211,18 @@ const MainNavBar: React.FC = () => {
       }}
     >
       <Tab.Screen
-        name="Home"
+        name="HomeTab"
         options={{ headerShown: false }}
         component={HomeStack}
       />
       <Tab.Screen name="Search" component={SearchStack} />
       <Tab.Screen
-        name="Departments"
+        name="DepartmentsTab"
         options={{ headerShown: false }}
         component={DepartmentStack}
       />
       <Tab.Screen
-        name="Profile"
+        name="ProfileTab"
         options={{ headerShown: false }}
         component={ProfileStack}
       />

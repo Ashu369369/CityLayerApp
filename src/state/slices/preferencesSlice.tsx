@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface PreferencesState {
   fontSize: "small" | "medium" | "large";
   highContrast: boolean;
+  dateFormat: "MM-DD-YYYY" | "YYYY-MM-DD" | "DD-MM-YYYY";
 }
 
 const initialState: PreferencesState = {
   fontSize: "medium",
   highContrast: false,
+  dateFormat: "MM-DD-YYYY",
 };
 
 const preferencesSlice = createSlice({
@@ -21,9 +23,12 @@ const preferencesSlice = createSlice({
     toggleHighContrast(state, action: PayloadAction<boolean>) {
       state.highContrast = action.payload;
     },
+    setDateFormat(state, action: PayloadAction<"MM-DD-YYYY" | "YYYY-MM-DD" | "DD-MM-YYYY">) {
+      state.dateFormat = action.payload;
+    },
   },
 });
 
-export const { setFontSize, toggleHighContrast } = preferencesSlice.actions;
+export const { setFontSize, toggleHighContrast, setDateFormat } = preferencesSlice.actions;
 
 export default preferencesSlice.reducer;
