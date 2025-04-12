@@ -1,7 +1,16 @@
 import React from "react";
 import { TouchableOpacity, Image, Alert, StyleSheet } from "react-native";
+import { useTheme } from "react-native-paper";
+import { DynamicTheme } from "../theme/theme";
 
-const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
+type Props = {
+  onDelete: () => void;
+};
+
+const DeleteButton: React.FC<Props> = ({ onDelete }) => {
+  const theme = useTheme() as DynamicTheme;
+  const styles = useStyles(theme);
+
   const handleDelete = () => {
     Alert.alert(
       "Confirm Deletion",
@@ -17,30 +26,28 @@ const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
     <TouchableOpacity onPress={handleDelete} style={styles.button}>
       <Image
         source={require("../../assets/bin.png")}
-        style={styles.image}
+        style={styles.icon}
         resizeMode="contain"
       />
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    position: "absolute",
-    top: -1,
-    right: 0,
-    padding: 10,
-    backgroundColor: "rgba(150, 150, 150, 0.19)",
-    borderRadius: 20,
-  },
-  image: {
-    width: 17,
-    height: 17,
-    tintColor: "#fff",
-    position: "relative",
-    left: 1.5,
-    // color: "black",
-  },
-});
+const useStyles = (theme: DynamicTheme) =>
+  StyleSheet.create({
+    button: {
+      position: "absolute",
+      top: 4,
+      right: 4,
+      padding: 8,
+      backgroundColor: theme.colors.accent + "33", // semi‑transparent accent
+      borderRadius: 16,
+    },
+    icon: {
+      width: 18,
+      height: 18,
+      tintColor: theme.colors.error, // red icon in both modes
+    },
+  });
 
 export default DeleteButton;

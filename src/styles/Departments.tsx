@@ -3,19 +3,24 @@ import { DynamicTheme } from "../theme/theme";
 
 const useStyles = (theme: DynamicTheme) =>
   StyleSheet.create({
+    // Main container: use theme.colors.grey so that in default mode (F7F7F7) it is lighter than card;
+    // in high contrast, grey is "#333333" (lighter) compared to backdrop.
     container: {
       flex: 1,
       backgroundColor: theme.colors.grey,
+      paddingHorizontal: 16,
     },
+    // Card style: If in high contrast mode (background is "#000000"), then use theme.colors.backdrop;
+    // otherwise, use theme.colors.background.
     card: {
       marginVertical: 10,
       marginHorizontal: 10,
       elevation: 5,
-      borderRadius: 20,
-      // borderColor: theme.colors.background,
-      boxShadow: "0px 0px 5px rgba(255, 255, 255, 0.2)",
-      // borderWidth: 1,
-      backgroundColor: theme.colors.backdrop,
+      borderRadius: 10,
+      backgroundColor:
+        theme.colors.background === "#000000"
+          ? theme.colors.backdrop
+          : theme.colors.grey,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
@@ -23,14 +28,16 @@ const useStyles = (theme: DynamicTheme) =>
     },
     cardImage: {
       height: 180,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
       borderRadius: 0,
+      borderTopLeftRadius: 5,
+      borderTopRightRadius: 5,
       width: "100%",
+      backgroundColor: theme.colors.surface,
     },
     cardContent: {
       padding: 16,
     },
+    // Right content area inside the card (if needed)
     cardRightContent: {
       flex: 1,
       justifyContent: "space-between",
@@ -43,13 +50,11 @@ const useStyles = (theme: DynamicTheme) =>
       fontSize: 20,
       fontWeight: "700",
       color: theme.colors.primary,
-      // fontFamily: theme.fonts.medium.fontFamily,
     },
     cardDescription: {
       fontSize: 14,
       color: theme.colors.white,
       marginTop: 6,
-      // fontFamily: theme.fonts.regular.fontFamily,
       lineHeight: 20,
     },
     cardActions: {
@@ -60,19 +65,16 @@ const useStyles = (theme: DynamicTheme) =>
     },
     editButton: {
       marginLeft: 8,
-      // backgroundColor: theme.colors.surface,
-      // opacity: 0.5,
       borderRadius: 5,
     },
     editButtonText: {
-      color: theme.colors.white,
+      color: theme.colors.text,
+      fontWeight: "bold",
     },
     deleteButton: {
       marginLeft: 8,
       backgroundColor: theme.colors.error,
-      opacity: 1,
       borderRadius: 5,
-      color: theme.colors.primary,
     },
     fab: {
       position: "absolute",
@@ -89,19 +91,16 @@ const useStyles = (theme: DynamicTheme) =>
     emptyText: {
       fontSize: 16,
       color: theme.colors.placeholder,
-      // fontFamily: theme.fonts.light.fontFamily,
     },
     title: {
       fontSize: 22,
       fontWeight: "bold",
       color: theme.colors.primary,
-      // fontFamily: theme.fonts.medium.fontFamily,
       marginBottom: 6,
     },
     subtitle: {
       fontSize: 14,
-      color: theme.colors.surface,
-      // fontFamily: theme.fonts.regular.fontFamily,
+      color: theme.colors.text,
       marginBottom: 4,
     },
     fabGroup: {
@@ -111,7 +110,7 @@ const useStyles = (theme: DynamicTheme) =>
     },
     textInput: {
       marginBottom: 10,
-      backgroundColor: "white",
+      backgroundColor: theme.colors.white,
     },
   });
 

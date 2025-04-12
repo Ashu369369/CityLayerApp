@@ -1,15 +1,16 @@
 import { StyleSheet } from "react-native";
 import { DynamicTheme } from "../theme/theme";
+import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
+
 const useStyles = (theme: DynamicTheme) =>
   StyleSheet.create({
     container: {
       flexGrow: 1,
-      backgroundColor: theme.colors.background, // Use theme background
+      backgroundColor: theme.colors.background,
     },
     imageBackground: {
       width: "100%",
-      minHeight: 200, // Ensures a minimum height
-      maxHeight: "auto", // Expands dynamically
+      minHeight: 200,
       justifyContent: "center",
       alignItems: "center",
     },
@@ -22,20 +23,20 @@ const useStyles = (theme: DynamicTheme) =>
       flexGrow: 1,
       width: "100%",
       justifyContent: "flex-end",
-      paddingBottom: 20,
-      // backgroundColor: "rgba(0, 0, 0, 0.3)", // Subtle overlay effect
+      backgroundColor: theme.colors.backdrop + "88",
     },
     title: {
       marginTop: 100,
       padding: 20,
       fontSize: 28,
       fontWeight: "bold",
-      color: theme.colors.white, // Use theme text color
+      // -     color: theme.colors.white, // keep
+      color: theme.colors.white,
       textAlign: "center",
       fontFamily: theme.fonts.medium.fontFamily,
     },
     content: {
-      backgroundColor: theme.colors.background, // Use theme surface color
+      backgroundColor: theme.colors.surface,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
       marginTop: -20,
@@ -49,7 +50,7 @@ const useStyles = (theme: DynamicTheme) =>
     },
     description: {
       fontSize: 16,
-      color: theme.colors.background, // Use theme text color
+      color: theme.colors.white,
       textAlign: "left",
       lineHeight: 22,
       marginTop: 50,
@@ -59,22 +60,29 @@ const useStyles = (theme: DynamicTheme) =>
     buttonRow: {
       flexDirection: "row",
       justifyContent: "space-between",
-      backgroundColor: theme.colors.backdrop, // Use theme primary color
+      backgroundColor: theme.colors.surface,
       paddingVertical: 0,
     },
     button: {
       flexGrow: 1,
-      backgroundColor: theme.colors.grey, // Use theme text color
+      backgroundColor: theme.colors.grey,
       borderRadius: 0,
+      color: theme.colors.oppositeText,
     },
     focusedButton: {
-      backgroundColor: theme.colors.primary, // Use primary color for focused state
+      backgroundColor: theme.colors.primary,
     },
     buttonText: {
-      color: theme.colors.text, // Use theme text color
+      color: theme.colors.text,
       fontSize: 16,
       fontWeight: "bold",
       fontFamily: theme.fonts.medium.fontFamily,
+    },
+    headerText: {
+      color: theme.colors.text,
+    },
+    focusedHeaderText: {
+      color: theme.colors.oppositeText,
     },
     announcements: {
       padding: 20,
@@ -90,10 +98,10 @@ const useStyles = (theme: DynamicTheme) =>
       paddingTop: 25,
       paddingBottom: 35,
       borderBottomWidth: 0,
-      backgroundColor: theme.colors.backdrop,
+      backgroundColor: theme.colors.surface,
       borderRadius: 8,
       marginVertical: 5,
-      borderColor: theme.colors.white,
+      borderColor: theme.colors.placeholder,
       borderTopWidth: 1,
       borderLeftWidth: 1,
       borderRightWidth: 1,
@@ -108,15 +116,16 @@ const useStyles = (theme: DynamicTheme) =>
     projectDescription: {
       fontSize: theme.fonts.light.fontSize,
       fontFamily: theme.fonts.light.fontFamily,
-      color: theme.colors.surface,
+      color: theme.colors.text,
     },
     statusLabel: {
-      color: theme.colors.white,
+      color: theme.colors.text,
     },
     sortFilterBar: {
       flexDirection: "row",
       justifyContent: "flex-end",
       backgroundColor: theme.colors.grey,
+      color: "white",
     },
     CardsContainer: {
       backgroundColor: theme.colors.grey,
@@ -125,9 +134,7 @@ const useStyles = (theme: DynamicTheme) =>
       marginHorizontal: 10,
       marginVertical: 5,
       padding: 15,
-      // paddingBottom: 30,
-      borderRadius: 10,
-      backgroundColor: theme.colors.grey,
+      backgroundColor: theme.colors.surface,
       tintColor: "#ffffff",
     },
     emptyCard: {

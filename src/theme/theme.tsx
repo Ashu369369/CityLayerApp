@@ -15,22 +15,36 @@ const getDynamicTheme = (
     large: 20,
   };
 
-  // Return the modified theme
   return {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
+      // In default mode, use your usual colors.
+      // In high contrast mode: use a dark background and light text.
+      primary: highContrast ? "#6FBBB1" : "#4D9A90",
+      accent: highContrast ? "#FF4500" : "#A7D7D1",
+      background: highContrast ? "#000000" : "#EAEAEA",
+      white: "#FFFFFF",
+      grey: highContrast ? "#333333" : "#F7F7F7",
+      button: highContrast ? "#333333" : "#FFFFFF",
+      buttonText: highContrast ? "#FFFFFF" : "#4D9A90",
+      text: highContrast ? "#FFFFFF" : "#333333",
+      oppositeText: highContrast ? "#333333" : "#FFFFFF",
+      // Use a lighter color for the text in high contrast mode
+      disabled: highContrast ? "#AAAAAA" : "#C0C0C0",
+      placeholder: highContrast ? "#CCCCCC" : "#A0A0A0",
+      backdrop: highContrast ? "#111111" : "#1e1e1e",
+      // For cards or surfaces, provide a slight variation in high-contrast mode
+      surface: highContrast ? "#222222" : "#FFFFFF",
 
-      // In high contrast, use stark, pure colors for maximal difference
-      primary: highContrast ? "#000000" : "#6FBBB1", // High contrast primary is pure black
-      accent: highContrast ? "#FF4500" : "#A7D7D1", // Use a bold OrangeRed in high contrast mode
-      background: highContrast ? "#FFFFFF" : "#EAEAEA", // Keep background white in high contrast mode
-      white: "#FFFFFF", // Always pure white
-      grey: highContrast ? "#EEEEEE" : "#F7F7F7", // A very light grey for subtle divisions
-      text: highContrast ? "#000000" : "#333333", // Text is pure black in high contrast
-      disabled: highContrast ? "#CCCCCC" : "#C0C0C0", // A noticeable light gray for disabled elements
-      placeholder: highContrast ? "#AAAAAA" : "#A0A0A0", // Distinct mid-grey for placeholders
-      backdrop: highContrast ? "#222222" : "#1e1e1e", // A very dark shade for backdrops in high contrast
+      card: highContrast ? "#444444" : "#FAFAFA", // Card background: darker in high contrast
+      header: highContrast ? "#6FBBB1" : "#4D9A90", // Header background or accent; can be customized
+      footer: highContrast ? "#222222" : "#DDDDDD", // Footer background
+      error: highContrast ? "#FF5555" : "#D32F2F", // Error state
+      warning: highContrast ? "#FFA500" : "#FBC02D", // Warning state
+      success: highContrast ? "#66BB6A" : "#388E3C", // Success state
+      info: highContrast ? "#29B6F6" : "#1976D2", // Informational state
+      link: highContrast ? "#81D4FA" : "#1976D2",
     },
     fonts: {
       ...DefaultTheme.fonts,
