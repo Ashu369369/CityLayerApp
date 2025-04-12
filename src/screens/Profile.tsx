@@ -15,6 +15,7 @@ import {
   toggleHighContrast,
 } from "../state/slices/preferencesSlice";
 import getDynamicTheme, { DynamicTheme } from "../theme/theme";
+import useStyles from "../styles/Profile";
 import { formatDate } from "../Tools/formatDate";
 
 const ProfileScreen: React.FC = () => {
@@ -234,115 +235,115 @@ const ProfileScreen: React.FC = () => {
   );
 };
 
-const useStyles = (theme: DynamicTheme) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-    },
-    scrollContent: {
-      padding: 20,
-      paddingBottom: 120, // Reserve space for bottom buttons
-    },
-    card: {
-      backgroundColor: theme.colors.surface,
-      borderRadius: 12,
-      elevation: 3,
-      marginBottom: 20,
-      padding: 10,
-    },
-    profileHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 15,
-    },
-    avatarContainer: {
-      marginRight: 15,
-    },
-    avatar: {
-      backgroundColor: theme.colors.primary,
-    },
-    avatarLabel: {
-      fontSize: theme.fonts.xlarge.fontSize,
-    },
-    userInfo: {
-      flex: 1,
-    },
-    name: {
-      fontSize: theme.fonts.medium.fontSize,
-      fontWeight: "bold",
-      color: theme.colors.text,
-      marginBottom: 5,
-    },
-    username: {
-      fontSize: theme.fonts.regular.fontSize,
-      color: theme.colors.text,
-      marginBottom: 3,
-    },
-    email: {
-      fontSize: theme.fonts.regular.fontSize,
-      color: theme.colors.text,
-    },
-    dob: {
-      fontSize: theme.fonts.regular.fontSize,
-      color: theme.colors.text,
-      marginBottom: 10,
-    },
-    role: {
-      fontSize: theme.fonts.light.fontSize,
-      color: theme.colors.placeholder,
-      textAlign: "center",
-      marginBottom: 5,
-    },
-    settingsContainer: {
-      paddingVertical: 10,
-    },
-    label: {
-      fontSize: theme.fonts.medium.fontSize,
-      fontWeight: "bold",
-      color: theme.colors.text,
-      marginBottom: 5,
-    },
-    pickerContainer: {
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: theme.colors.placeholder,
-      overflow: "hidden",
-      marginBottom: 20,
-    },
-    picker: {
-      backgroundColor: theme.colors.white,
-      ...Platform.select({
-        ios: {
-          height: 180,
-          marginTop: -40, // iOS alignment adjustment
-        },
-        android: {
-          height: 50,
-        },
-      }),
-    },
-    switchContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    fixedBottom: {
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: theme.colors.background,
-      borderTopWidth: 1,
-      borderTopColor: theme.colors.placeholder,
-      padding: 10,
-      flexDirection: "row",
-      justifyContent: "space-around",
-    },
-    iconBtn: {
-      margin: 5,
-    },
-  });
+// const useStyles = (theme: DynamicTheme) =>
+//   StyleSheet.create({
+//     container: {
+//       flex: 1,
+//       backgroundColor: theme.colors.background,
+//     },
+//     scrollContent: {
+//       padding: 20,
+//       paddingBottom: 120, // Reserve space for bottom buttons
+//     },
+//     card: {
+//       backgroundColor: theme.colors.surface,
+//       borderRadius: 12,
+//       elevation: 3,
+//       marginBottom: 20,
+//       padding: 10,
+//     },
+//     profileHeader: {
+//       flexDirection: "row",
+//       justifyContent: "space-between",
+//       alignItems: "center",
+//       marginBottom: 15,
+//     },
+//     avatarContainer: {
+//       marginRight: 15,
+//     },
+//     avatar: {
+//       backgroundColor: theme.colors.primary,
+//     },
+//     avatarLabel: {
+//       fontSize: theme.fonts.xlarge.fontSize,
+//     },
+//     userInfo: {
+//       flex: 1,
+//     },
+//     name: {
+//       fontSize: theme.fonts.medium.fontSize,
+//       fontWeight: "bold",
+//       color: theme.colors.text,
+//       marginBottom: 5,
+//     },
+//     username: {
+//       fontSize: theme.fonts.regular.fontSize,
+//       color: theme.colors.text,
+//       marginBottom: 3,
+//     },
+//     email: {
+//       fontSize: theme.fonts.regular.fontSize,
+//       color: theme.colors.text,
+//     },
+//     dob: {
+//       fontSize: theme.fonts.regular.fontSize,
+//       color: theme.colors.text,
+//       marginBottom: 10,
+//     },
+//     role: {
+//       fontSize: theme.fonts.light.fontSize,
+//       color: theme.colors.placeholder,
+//       textAlign: "center",
+//       marginBottom: 5,
+//     },
+//     settingsContainer: {
+//       paddingVertical: 10,
+//     },
+//     label: {
+//       fontSize: theme.fonts.medium.fontSize,
+//       fontWeight: "bold",
+//       color: theme.colors.text,
+//       marginBottom: 5,
+//     },
+//     pickerContainer: {
+//       borderRadius: 8,
+//       borderWidth: 1,
+//       borderColor: theme.colors.placeholder,
+//       overflow: "hidden",
+//       marginBottom: 20,
+//     },
+//     picker: {
+//       backgroundColor: theme.colors.white,
+//       ...Platform.select({
+//         ios: {
+//           height: 180,
+//           marginTop: -40, // iOS alignment adjustment
+//         },
+//         android: {
+//           height: 50,
+//         },
+//       }),
+//     },
+//     switchContainer: {
+//       flexDirection: "row",
+//       justifyContent: "space-between",
+//       alignItems: "center",
+//     },
+//     fixedBottom: {
+//       position: "absolute",
+//       bottom: 0,
+//       left: 0,
+//       right: 0,
+//       backgroundColor: theme.colors.background,
+//       borderTopWidth: 1,
+//       borderTopColor: theme.colors.placeholder,
+//       padding: 10,
+//       flexDirection: "row",
+//       justifyContent: "space-around",
+//     },
+//     iconBtn: {
+//       margin: 5,
+//     },
+//   });
 
 export default ProfileScreen;

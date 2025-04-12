@@ -1,9 +1,11 @@
-// filepath: d:\college\capstone\frontend\CityLayerApp\src\components\EditButton.tsx
+// filepath: src/components/EditButton.tsx
 import React from "react";
 import { TouchableOpacity, Image, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useTheme } from "react-native-paper";
 import { RootStackParamList } from "../navigation/RootStackParams";
+import { DynamicTheme } from "../theme/theme";
 
 type EditButtonNavigationProp = StackNavigationProp<RootStackParamList, "Edit">;
 
@@ -14,6 +16,8 @@ interface EditButtonProps {
 
 const EditButton: React.FC<EditButtonProps> = ({ type, id }) => {
   const navigation = useNavigation<EditButtonNavigationProp>();
+  const theme = useTheme() as DynamicTheme;
+  const styles = useStyles(theme);
 
   const handlePress = () => {
     navigation.navigate("Edit", { type, id });
@@ -21,25 +25,30 @@ const EditButton: React.FC<EditButtonProps> = ({ type, id }) => {
 
   return (
     <TouchableOpacity style={styles.button} onPress={handlePress}>
-      <Image source={require("../../assets/pencil.png")} style={styles.image} />
+      <Image
+        source={require("../../assets/pencil.png")}
+        style={styles.icon}
+        resizeMode="contain"
+      />
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    position: "absolute",
-    top: -1,
-    right: 45,
-    padding: 10,
-    backgroundColor: "rgba(150, 150, 150, 0.19)",
-    borderRadius: 20,
-  },
-  image: {
-    width: 17,
-    height: 17,
-    tintColor: "#fff",
-  },
-});
+const useStyles = (theme: DynamicTheme) =>
+  StyleSheet.create({
+    button: {
+      position: "absolute",
+      top: 4,
+      right: 48,
+      padding: 8,
+      backgroundColor: theme.colors.accent + "33", // semi-transparent accent
+      borderRadius: 16,
+    },
+    icon: {
+      width: 16,
+      height: 16,
+      tintColor: theme.colors.primary, // primary color for the pencil icon
+    },
+  });
 
 export default EditButton;

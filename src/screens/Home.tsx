@@ -20,7 +20,13 @@ import {
   countOngoingProjects,
   countActiveProjects,
 } from "../api/projectApi";
-import { Card, ProgressBar, List, useTheme } from "react-native-paper";
+import {
+  Card,
+  ProgressBar,
+  List,
+  useTheme,
+  IconButton,
+} from "react-native-paper";
 import useStyles from "../styles/Home";
 
 const PollutionHotspotsWidget = () => {
@@ -170,15 +176,12 @@ const DepartmentOverviewWidget = () => {
       <View style={styles.flexRow}>
         <View>
           <Text style={styles.dashboardText}>
-            Total Departments operating at this point:
-          </Text>
-          <Text style={styles.dashboardDescription}>
-            This is the total number of departments active.
+            {"Total Departments operating at this point: "}
+            <Text style={styles.dashboardTextValue}>
+              {totalDepartments !== null ? totalDepartments : "Loading..."}
+            </Text>
           </Text>
         </View>
-        <Text style={styles.dashboardCount}>
-          {totalDepartments !== null ? totalDepartments : "Loading..."}
-        </Text>
       </View>
       <TouchableOpacity
         style={styles.viewAllButton}
@@ -408,13 +411,21 @@ export const HomeScreen: React.FC = () => {
             <Text style={styles.editButtonText}>
               {isEditing ? "Done " : "Edit "}
             </Text>
-            <Image
+            {/* <Image
               source={
                 isEditing
                   ? require("../../assets/check.png")
                   : require("../../assets/pencil.png")
               }
               style={styles.editIcontTwo}
+            /> */}
+            <IconButton
+              // mode="contained"
+              icon={isEditing ? "check" : "pencil"}
+              style={styles.editIcon}
+              size={18}
+              iconColor={theme.colors.primary}
+              onPress={() => setIsEditing(!isEditing)}
             />
           </TouchableOpacity>
         </View>

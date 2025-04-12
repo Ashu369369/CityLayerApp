@@ -143,7 +143,7 @@ const SearchScreen: React.FC = () => {
         onChangeText={setSearchQuery}
         value={searchQuery}
         style={styles.searchBar}
-        inputStyle={{ color: theme.colors.text }}
+        inputStyle={{ color: "#000" }}
       />
 
       {/* Filter Options */}
@@ -197,8 +197,11 @@ const useStyles = (theme: DynamicTheme) =>
       padding: 16,
     },
     searchBar: {
+      color: theme.colors.text,
       marginBottom: 16,
       backgroundColor: theme.colors.white,
+      borderWidth: 1,
+      borderColor: theme.colors.placeholder,
     },
     filterContainer: {
       flexDirection: "row",
@@ -209,25 +212,27 @@ const useStyles = (theme: DynamicTheme) =>
       paddingVertical: 8,
       paddingHorizontal: 16,
       borderRadius: 20,
-      borderWidth: 1,
-      borderColor: theme.colors.placeholder,
+      // borderWidth: 1,
+      // borderColor: theme.colors.accent,
       backgroundColor: theme.colors.white,
+      // color: theme.colors.text,
     },
     activeFilterButton: {
       backgroundColor: theme.colors.primary,
-      borderColor: theme.colors.primary,
+      // borderColor: theme.colors.primary,
     },
     filterButtonText: {
       fontSize: theme.fonts.regular.fontSize,
-      color: theme.colors.text,
+      color: "#000",
     },
     activeFilterButtonText: {
-      color: theme.colors.white,
+      color: theme.colors.oppositeText,
     },
     resultItem: {
       padding: 16,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.placeholder,
+      // backgroundColor: theme.colors.surface,
     },
     resultText: {
       fontSize: theme.fonts.medium.fontSize,
@@ -237,13 +242,13 @@ const useStyles = (theme: DynamicTheme) =>
     },
     resultSubText: {
       fontSize: theme.fonts.regular.fontSize,
-      color: theme.colors.placeholder,
+      color: theme.colors.text,
     },
     noResults: {
       marginTop: 16,
       textAlign: "center",
       fontSize: theme.fonts.regular.fontSize,
-      color: theme.colors.placeholder,
+      color: theme.colors.disabled,
     },
   });
 

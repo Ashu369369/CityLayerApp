@@ -200,7 +200,16 @@ const Department: React.FC = () => {
               selectedTab === "announcements" ? styles.focusedButton : null, // Apply when focused
             ]}
           >
-            Announcements
+            <Text
+              style={
+                (styles.headerText,
+                selectedTab === "announcements"
+                  ? styles.focusedHeaderText
+                  : null)
+              }
+            >
+              Announcements
+            </Text>
           </Button>
           {/* Projects Button */}
           <Button
@@ -211,7 +220,16 @@ const Department: React.FC = () => {
               selectedTab === "projects" ? styles.focusedButton : null, // Apply when focused
             ]}
           >
-            Projects
+            <Text
+              style={
+                (styles.headerText,
+                selectedTab === "announcements"
+                  ? styles.focusedHeaderText
+                  : null)
+              }
+            >
+              Projects
+            </Text>
           </Button>
           {/* Programs Button */}
           <Button
@@ -222,7 +240,16 @@ const Department: React.FC = () => {
               selectedTab === "programs" ? styles.focusedButton : null, // Apply when focused
             ]}
           >
-            Programs
+            <Text
+              style={
+                (styles.headerText,
+                selectedTab === "announcements"
+                  ? styles.focusedHeaderText
+                  : null)
+              }
+            >
+              Programs
+            </Text>
           </Button>
         </View>
         {/* Sort and Filter Bar */}

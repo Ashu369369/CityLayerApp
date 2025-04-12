@@ -17,8 +17,13 @@ import {
   Department,
   getAllDepartments,
 } from "../api/deptApi";
-import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
+import {
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+
 import { RouteProp } from '@react-navigation/native';
 import NetInfo from "@react-native-community/netinfo";
 
@@ -29,6 +34,16 @@ import useStyles from "../styles/Departments";
 import { DynamicTheme } from "../theme/theme";
 import saveOfflineData from "../Tools/offlineMode";
 
+
+// 1. Define the correct type for your route params
+type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Departments">;
+
+type DepartmentScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Department"
+>;
+
+const DepartmentScreen: React.FC = () => {
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 type DepartmentScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Department'>;
@@ -42,6 +57,7 @@ const DepartmentScreen: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
+
   const [deleteDialogVisibile, setDeleteDialogVisibile] = useState(false);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | null>(null);
   const [isFabOpen, setIsFabOpen] = useState(false); // State to control FAB group visibility
@@ -95,7 +111,11 @@ const DepartmentScreen: React.FC = () => {
   };
 
   const handleFabAction = (actionType: string) => {
-    if (actionType === "Program" || actionType === "Project" || actionType === "Announcement") {
+    if (
+      actionType === "Program" ||
+      actionType === "Project" ||
+      actionType === "Announcement"
+    ) {
       setSelectedAction(actionType); // Store the selected action
       setDialogVisible(true); // Show the dialog
     } else if (actionType === "Notification") {
@@ -107,7 +127,6 @@ const DepartmentScreen: React.FC = () => {
 
   const handleDialogSubmit = () => {
     try {
-
       if (departmentIdInput.trim() === "") {
         Alert.alert("Error", "Please enter a valid department ID.");
         return;
@@ -167,7 +186,10 @@ const DepartmentScreen: React.FC = () => {
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
           renderItem={({ item }) => (
-            <Card style={styles.card} onPress={() => handleDepartmentPress(item)}>
+            <Card
+              style={styles.card}
+              onPress={() => handleDepartmentPress(item)}
+            >
               <Card.Cover
                 source={{
                   uri:
@@ -252,7 +274,10 @@ const DepartmentScreen: React.FC = () => {
 
         {/* Dialog for creating program/project/announcement */}
         <Portal>
-          <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
+          <Dialog
+            visible={dialogVisible}
+            onDismiss={() => setDialogVisible(false)}
+          >
             <Dialog.Title>Enter Department ID</Dialog.Title>
             <Dialog.Content>
               <TextInput
