@@ -6,37 +6,37 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { getAllDepartments } from "../api/deptApi"; // Import API for departments
-import { getAllProjects } from "../api/projectApi"; // Import API for projects
-import { getAllPrograms } from "../api/programApi"; // Import API for programs
-import { Searchbar, useTheme } from "react-native-paper";
+import { getAllDepartments } from "../api/deptApi";
+import { getAllProjects } from "../api/projectApi";
+import { getAllPrograms } from "../api/programApi";
+import { Searchbar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { DynamicTheme } from "../theme/theme";
+import { useSelector } from "react-redux";
+import getDynamicTheme, { DynamicTheme } from "../theme/theme";
+import { RootState } from "../state/store";
 
 const SearchScreen: React.FC = () => {
-  
-  const theme = useTheme();
-  const styles = useStyles(theme as DynamicTheme);
+  const fontSize = useSelector(
+    (state: RootState) => state.preferences.fontSize
+  );
+  const highContrast = useSelector(
+    (state: RootState) => state.preferences.highContrast
+  );
+  const theme: DynamicTheme = getDynamicTheme(fontSize, highContrast);
+  const styles = useStyles(theme);
+
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [departments, setDepartments] = useState<
-    { id: number; title: string; description?: string }[]
-  >([]);
-  const [projects, setProjects] = useState<
-    { id: number; title: string; description: string }[]
-  >([]);
-  const [programs, setPrograms] = useState<
-    { id: number; title: string; description: string }[]
-  >([]);
-  const [filteredResults, setFilteredResults] = useState<
-    { id: number; type: string; title: string; description: string }[]
-  >([]);
-  const [filterOption, setFilterOption] = useState<string>("All"); // Add filterOption state
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>(); // Access navigation with typed routes
+  const [departments, setDepartments] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [programs, setPrograms] = useState<any[]>([]);
+  const [filteredResults, setFilteredResults] = useState<any[]>([]);
+  const [filterOption, setFilterOption] = useState<string>("All");
 
   useEffect(() => {
-    // Fetch all departments, projects, and programs when the component mounts
     const fetchData = async () => {
       try {
         const departmentsData = await getAllDepartments();
@@ -75,20 +75,18 @@ const SearchScreen: React.FC = () => {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
   }, []);
 
   useEffect(() => {
-    // Filter results based on the search query and filter option
     const query = searchQuery.toLowerCase();
-
     let results: Array<{
       id: number;
       type: string;
       title: string;
       description: string;
     }> = [];
+
     if (filterOption === "All" || filterOption === "Departments") {
       results = results.concat(
         departments
@@ -124,7 +122,6 @@ const SearchScreen: React.FC = () => {
     title: string;
     description: string;
   }) => {
-    // Navigate to the appropriate screen based on the item's type
     if (item.type === "Department") {
       navigation.navigate("Department", {
         id: item.id,
@@ -145,6 +142,8 @@ const SearchScreen: React.FC = () => {
         placeholder="Search"
         onChangeText={setSearchQuery}
         value={searchQuery}
+        style={styles.searchBar}
+        inputStyle={{ color: theme.colors.text }}
       />
 
       {/* Filter Options */}
@@ -170,10 +169,9 @@ const SearchScreen: React.FC = () => {
         ))}
       </View>
 
-      {/* Search Results */}
       <FlatList
         data={filteredResults}
-        keyExtractor={(item) => `${item.type}-${item.id}`} // Combine type and id for unique keys
+        keyExtractor={(item) => `${item.type}-${item.id}`}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.resultItem}
@@ -191,54 +189,62 @@ const SearchScreen: React.FC = () => {
   );
 };
 
-const useStyles = (theme: DynamicTheme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  filterContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 16,
-  },
-  filterButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#ccc",
-  },
-  activeFilterButton: {
-    backgroundColor: "#6FBBB1",
-    borderColor: "#6FBBB1",
-  },
-  filterButtonText: {
-    fontSize: 14,
-    color: "#555",
-  },
-  activeFilterButtonText: {
-    color: "#fff",
-  },
-  resultItem: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  resultText: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  resultSubText: {
-    fontSize: 14,
-    color: "#555",
-  },
-  noResults: {
-    textAlign: "center",
-    marginTop: 16,
-    fontSize: 16,
-    color: "#888",
-  },
-});
+const useStyles = (theme: DynamicTheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+      padding: 16,
+    },
+    searchBar: {
+      marginBottom: 16,
+      backgroundColor: theme.colors.white,
+    },
+    filterContainer: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      marginBottom: 16,
+    },
+    filterButton: {
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: theme.colors.placeholder,
+      backgroundColor: theme.colors.white,
+    },
+    activeFilterButton: {
+      backgroundColor: theme.colors.primary,
+      borderColor: theme.colors.primary,
+    },
+    filterButtonText: {
+      fontSize: theme.fonts.regular.fontSize,
+      color: theme.colors.text,
+    },
+    activeFilterButtonText: {
+      color: theme.colors.white,
+    },
+    resultItem: {
+      padding: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.placeholder,
+    },
+    resultText: {
+      fontSize: theme.fonts.medium.fontSize,
+      color: theme.colors.text,
+      fontWeight: "bold",
+      marginBottom: 4,
+    },
+    resultSubText: {
+      fontSize: theme.fonts.regular.fontSize,
+      color: theme.colors.placeholder,
+    },
+    noResults: {
+      marginTop: 16,
+      textAlign: "center",
+      fontSize: theme.fonts.regular.fontSize,
+      color: theme.colors.placeholder,
+    },
+  });
 
 export default SearchScreen;

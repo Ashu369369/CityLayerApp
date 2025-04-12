@@ -19,6 +19,7 @@ import { RootState } from "../state/store";
 import DeleteButton from "../component/DeleteButton";
 import {
   Announcement,
+  deleteAnnouncement,
   getAnnouncementsByDepartmentId,
 } from "../api/announcementsApi";
 import { sortItems } from "../Tools/sortFunction";
@@ -128,6 +129,9 @@ const Department: React.FC = () => {
     } else if (type === "programs") {
       await deleteProgram(id);
       fetchPrograms();
+    } else if (type === "announcements") {
+      await deleteAnnouncement(id);
+      fetchAnnouncements();
     }
   };
 
@@ -340,7 +344,7 @@ const Department: React.FC = () => {
                     onDelete={() => {
                       handleDelete(
                         selectedTab,
-                        item.projectid || item.programid
+                        item.projectid || item.programid || item.announcementId
                       );
                     }}
                   />

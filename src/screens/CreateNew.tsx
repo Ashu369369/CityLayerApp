@@ -18,7 +18,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { createDepartment } from "../api/deptApi";
-import Constants from "expo-constants";
 import { createProject, getProjectsByDepartmentId } from "../api/projectApi";
 import { demoProjects } from "../demoData/projects";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -28,7 +27,9 @@ import { createProgram } from "../api/programApi";
 import programs from "../demoData/programs";
 import { getProgramsByDepartmentId } from "../api/programApi";
 import { getDepartment } from "../api/deptApi";
+import { createAnnouncement, Announcement } from "../api/announcementsApi"; // Adjust the path as needed
 import type { Department } from "../api/deptApi";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const CreateNewScreen: React.FC = (params) => {
   const theme = useTheme();
@@ -80,7 +81,7 @@ const CreateNewScreen: React.FC = (params) => {
           startdate: startDate,
           duedate: dueDate,
           status: status === "Custom" ? customStatus : status,
-          createdat: createdat || new Date().toISOString(),
+          createdat: new Date().toISOString(),
           updatedat: new Date().toISOString(), // Add updatedat property
           assignedto: assignedTo ? parseInt(assignedTo, 10) : 0, // Convert to number or provide default value
           budget: budget ? parseFloat(budget) : 0, // Convert to number or provide default value
@@ -89,7 +90,7 @@ const CreateNewScreen: React.FC = (params) => {
           departmentid: id ?? 0, // Ensure departmentid is a number, default to 0 if undefined
         };
         createProject(newProject);
-        getProgramsByDepartmentId(id ?? 0); // Fetch programs by department ID
+        getProjectsByDepartmentId(id ?? 0); // Fetch programs by department ID
 
         const fetchDepartment = async () => {
           try {
@@ -127,7 +128,7 @@ const CreateNewScreen: React.FC = (params) => {
               ? { type: "Custom", value: parseInt(timeline, 10) || 0 }
               : null,
           createdBy: createdby ? parseInt(createdby, 10) : 0, // Convert to number or provide default value
-          createdAt: createdat || new Date().toISOString(),
+          createdAt: new Date().toISOString(),
           departmentId: id ?? 0, // Convert to number or provide default value
         };
         try {
@@ -156,6 +157,29 @@ const CreateNewScreen: React.FC = (params) => {
           fetchDepartment(); // Fetch department by ID
         } catch (error: any) {
           console.error("Error creating program:", error);
+          Alert.alert("Error", error.message || "An error occurred.");
+        }
+      } else if (type === "Announcement") {
+        if (!messageTitle || !messageBody) {
+          Alert.alert("Error", "Message title and body are required.");
+          return;
+        }
+
+        const newAnnouncement = {
+          announcementId: Date.now(), // Generate a unique ID
+          messageTitle: messageTitle,
+          messageBody: messageBody,
+          createdBy: createdby ? parseInt(createdby, 10) : loggedInUser.id,
+          createdAt: new Date().toISOString(),
+          departmentId: id ?? 0, // Ensure departmentId is a number, default to 0 if undefined
+        };
+
+        try {
+          await createAnnouncement(newAnnouncement as Announcement);
+          Alert.alert("Success", "Announcement created successfully!");
+          navigation.goBack(); // Navigate back to the previous screen
+        } catch (error: any) {
+          console.error("Error creating announcement:", error);
           Alert.alert("Error", error.message || "An error occurred.");
         }
       }
@@ -209,12 +233,6 @@ const CreateNewScreen: React.FC = (params) => {
             onChangeText={setCreatedby}
             keyboardType="numeric"
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Created At (optional, YYYY-MM-DD)"
-            value={createdat}
-            onChangeText={setCreatedat}
-          />
         </>
       )}
 
@@ -265,12 +283,6 @@ const CreateNewScreen: React.FC = (params) => {
               onChangeText={setCustomStatus}
             />
           )}
-          <TextInput
-            style={styles.input}
-            placeholder="Created At (optional, YYYY-MM-DD)"
-            value={createdat}
-            onChangeText={setCreatedat}
-          />
         </>
       )}
 

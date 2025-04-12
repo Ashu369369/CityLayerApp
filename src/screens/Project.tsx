@@ -16,11 +16,11 @@ import { Card, Divider, Surface, useTheme } from "react-native-paper";
 import { ProjectUpdate } from "../api/projectUpdatesApi";
 import { getProjectUpdatesByProjectId } from "../api/projectUpdatesApi";
 import { WebView } from "react-native-webview";
+// import styles from "../styles/Project";
 
 type ProjectDetailsRouteProp = RouteProp<RootStackParamList, "Project">;
 
 const ProjectDetails: React.FC = () => {
-  
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<ProjectDetailsRouteProp>();
@@ -186,8 +186,16 @@ const ProjectDetails: React.FC = () => {
                 }
               })}
             </View>
-            <View style={{ flexDirection: "row", marginTop: 10, justifyContent: "space-between" }}>
-              <Text style={styles.updateBy}>Created By: {update.createdBy}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 10,
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={styles.updateBy}>
+                Created By: {update.createdBy}
+              </Text>
               <Text style={styles.updateDate}>
                 {new Date(update.dateAndTime).toLocaleString()}
               </Text>

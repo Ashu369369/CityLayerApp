@@ -23,6 +23,11 @@ import { setUser } from "../state/slices/userSlice";
 import { setToken } from "../state/slices/authSlice";
 import { DynamicTheme } from "../theme/theme";
 import { useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native";
+import { Button } from "react-native-paper";
+import { DatePickerModal } from "react-native-paper-dates";
+import { en, registerTranslation } from "react-native-paper-dates";
+registerTranslation("en", en);
 
 type SignupScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -41,7 +46,6 @@ type FormData = {
 };
 
 const SignupPage: React.FC = () => {
-  
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const navigation = useNavigation<SignupScreenNavigationProp>();
@@ -49,6 +53,9 @@ const SignupPage: React.FC = () => {
   const dispatch = useDispatch();
   const userState = useSelector((state: RootState) => state.user);
   const userToken = useSelector((state: RootState) => state.auth);
+
+  const [open, setOpen] = useState(false);
+  const [dobDate, setDobDate] = useState<Date | undefined>(undefined);
 
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -134,11 +141,13 @@ const SignupPage: React.FC = () => {
       try {
         const response = await createUser(formData);
 
-
         if (response.errors && response.errors.length > 0) {
           // If errors exist, handle them
           console.log("GraphQL errors:", response.errors);
-          alert("Error: " + response.errors[0]?.message || "An unknown error occurred");
+          alert(
+            "Error: " + response.errors[0]?.message ||
+              "An unknown error occurred"
+          );
           return;
         }
         let message = response?.data?.createUser?.message;
@@ -153,8 +162,7 @@ const SignupPage: React.FC = () => {
           dob: formData.dob,
           role: response?.data?.createUser?.role,
         };
-        if (!user)
-          alert(message);
+        if (!user) alert(message);
 
         // Dispatch the action to store the token and user information
         dispatch(setUser(user));
@@ -217,13 +225,39 @@ const SignupPage: React.FC = () => {
       />
       <ErrorBox errorMessage={errors.username} />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Date of Birth (YYYY-MM-DD)"
-        value={formData.dob}
-        onChangeText={(value) => handleChange("dob", value)}
-        onBlur={() => validateField("dob", formData.dob)}
+      <TouchableOpacity
+        style={[styles.input, { justifyContent: "center" }]}
+        onPress={() => setOpen(true)}
+      >
+        <Text
+          style={{
+            color: formData.dob ? "black" : "rgb(192, 191, 191)",
+            textAlign: "left",
+          }}
+        >
+          {formData.dob ? formData.dob : "Select Date of Birth"}
+        </Text>
+      </TouchableOpacity>
+      <ErrorBox errorMessage={errors.dob} />
+
+      <DatePickerModal
+        locale="en"
+        mode="single"
+        visible={open}
+        onDismiss={() => setOpen(false)}
+        date={dobDate}
+        validRange={{ endDate: new Date() }} // Set valid range with maxDate as today
+        onConfirm={({ date }) => {
+          setOpen(false);
+          setDobDate(date);
+          if (date) {
+            const formattedDate = date.toISOString().split("T")[0]; // Format to YYYY-MM-DD
+            handleChange("dob", formattedDate);
+            validateField("dob", formattedDate);
+          }
+        }}
       />
+
       <ErrorBox errorMessage={errors.dob} />
 
       <TextInput
@@ -274,50 +308,51 @@ const SignupPage: React.FC = () => {
   );
 };
 
-const useStyles = (theme: DynamicTheme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    flexGrow: 1,
-    padding: "20%",
-    justifyContent: "center",
-    backgroundColor: "#ffff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-    color: "var(--darkBlue)",
-  },
-  input: {
-    height: 40,
-    borderColor: "var(--grey)",
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 5,
-    backgroundColor: "var(--white)",
-  },
-  button: {
-    backgroundColor: "var(--lightBlue)",
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "var(--white)",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  LoginText: {
-    marginTop: 0,
-    marginBottom: 10,
-    fontSize: 12,
-    textAlign: "right",
-    color: "blue",
-    textDecorationLine: "none",
-  }
-});
+const useStyles = (theme: DynamicTheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      width: "100%",
+      flexGrow: 1,
+      padding: "20%",
+      justifyContent: "center",
+      backgroundColor: "#ffff",
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: "bold",
+      textAlign: "center",
+      marginBottom: 20,
+      color: "var(--darkBlue)",
+    },
+    input: {
+      height: 40,
+      borderColor: "var(--grey)",
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      marginBottom: 5,
+      backgroundColor: "var(--white)",
+    },
+    button: {
+      backgroundColor: "var(--lightBlue)",
+      paddingVertical: 10,
+      borderRadius: 5,
+      alignItems: "center",
+    },
+    buttonText: {
+      color: "var(--white)",
+      fontWeight: "bold",
+      fontSize: 16,
+    },
+    LoginText: {
+      marginTop: 0,
+      marginBottom: 10,
+      fontSize: 12,
+      textAlign: "right",
+      color: "blue",
+      textDecorationLine: "none",
+    },
+  });
 
 export default SignupPage;
