@@ -23,6 +23,7 @@ import NotificationsScreen from "../screens/Notification";
 import CreateNotificationScreen from "../screens/CreateNotification";
 import Feedback from "../component/Feedback";
 import Feedbacks from "../screens/Feedbacks";
+import CreatePostScreen from "../screens/CreatePost";
 
 import { RootState } from "../state/store";
 import { RootStackParamList } from "../navigation/RootStackParams";
@@ -153,6 +154,7 @@ const DepartmentStack = () => {
       )}
       <Stack.Screen name="Project" component={ProjectDetails} />
       <Stack.Screen name="Program" component={ProgramScreen} />
+      <Stack.Screen name="CreatePost" component={CreatePostScreen} />
       <Stack.Screen name="Edit" component={EditScreen} />
     </Stack.Navigator>
   );

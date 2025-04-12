@@ -6,17 +6,19 @@ import React, { useRef, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
 import ErrorBox from "../component/ErrorBox";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "../state/slices/userSlice";
 import { setToken } from "../state/slices/authSlice";
 import { loginUser, LoginUserResponse, GraphQLResponse } from "../api/userApi";
-import { useTheme } from "react-native-paper";
+import {
+  useTheme,
+  TextInput,
+} from "react-native-paper";
 import { DynamicTheme } from "../theme/theme";
 
 type LoginScreenNavigationProp = StackNavigationProp<
@@ -30,7 +32,7 @@ type FormData = {
 };
 
 const LoginPage: React.FC = () => {
-  
+
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const navigation = useNavigation<LoginScreenNavigationProp>();
@@ -44,7 +46,7 @@ const LoginPage: React.FC = () => {
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
-  const passwordInputRef = useRef<TextInput>(null);
+  const passwordInputRef = useRef<any>(null);
 
   // Handle input changes
   const handleChange = (name: keyof FormData, value: string) => {
@@ -151,18 +153,20 @@ const LoginPage: React.FC = () => {
 
       <TextInput
         style={styles.input}
-        placeholder="Username"
+        mode="outlined"
+        label="Username"
         value={formData.username}
         onChangeText={(value) => handleChange("username", value)}
         onBlur={() => validateField("username", formData.username)}
         returnKeyType="next"
         onSubmitEditing={() => passwordInputRef.current?.focus()}
-      />
+        />
       <ErrorBox errorMessage={errors.username} />
 
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        mode="outlined"
+        label="Password"
         secureTextEntry
         value={formData.password}
         onChangeText={(value) => handleChange("password", value)}
@@ -201,13 +205,11 @@ const useStyles = (theme: DynamicTheme) => StyleSheet.create({
     color: "var(--darkBlue)",
   },
   input: {
-    height: 40,
-    borderColor: "var(--grey)",
-    borderWidth: 1,
-    borderRadius: 5,
+    // height: 40,
+    // borderWidth: 1,
+    // borderRadius: 5,
     paddingHorizontal: 10,
-    marginBottom: 5,
-    backgroundColor: "var(--white)",
+    marginBottom: 10,
   },
   button: {
     backgroundColor: "var(--lightBlue)",
