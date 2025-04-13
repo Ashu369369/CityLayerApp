@@ -174,7 +174,7 @@ const Department: React.FC = () => {
             "https://images.pexels.com/photos/1290141/pexels-photo-1290141.jpeg",
         }}
         style={styles.imageBackground}
-        // imageStyle={styles.image}
+      // imageStyle={styles.image}
       >
         <LinearGradient
           colors={["rgba(0,0,0,0.5)", "rgba(0,0,0,1)"]}
@@ -201,13 +201,12 @@ const Department: React.FC = () => {
             ]}
           >
             <Text
-              style={
-                (styles.headerText,
-                selectedTab === "announcements"
-                  ? styles.focusedHeaderText
-                  : null)
-              }
+              style={[
+                styles.headerText,
+                selectedTab === "announcements" && styles.focusedHeaderText,
+              ]}
             >
+
               Announcements
             </Text>
           </Button>
@@ -222,10 +221,10 @@ const Department: React.FC = () => {
           >
             <Text
               style={
-                (styles.headerText,
-                selectedTab === "announcements"
+                [styles.headerText,
+                selectedTab === "projects"
                   ? styles.focusedHeaderText
-                  : null)
+                  : null]
               }
             >
               Projects
@@ -242,10 +241,10 @@ const Department: React.FC = () => {
           >
             <Text
               style={
-                (styles.headerText,
-                selectedTab === "announcements"
+                [styles.headerText,
+                selectedTab === "programs"
                   ? styles.focusedHeaderText
-                  : null)
+                  : null]
               }
             >
               Programs
@@ -258,49 +257,49 @@ const Department: React.FC = () => {
             visible={sortMenuVisible}
             onDismiss={() => setSortMenuVisible(false)}
             anchor={
-              <Button onPress={() => setSortMenuVisible(true)}>Sort by</Button>
+              <Button onPress={() => setSortMenuVisible(true)} labelStyle={styles.headerText}>Sort by</Button>
             }
             contentStyle={styles.sortByList}
-            
+
           >
-              <Menu.Item
-                onPress={() => handleSort("title-asc")}
-                title={
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.soryByListItem}>Name</Text>
-                    <IconButton icon="arrow-up" size={16} iconColor={theme.colors.surface} />
-                  </View>
-                }
-                
-              />
-              <Menu.Item
-                onPress={() => handleSort("title-desc")}
-                title={
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.soryByListItem}>Name</Text>
-                    <IconButton icon="arrow-down" size={16} iconColor={theme.colors.surface} />
-                  </View>
-                }
-              />
-              <Divider />
-              <Menu.Item
-                onPress={() => handleSort("createdAt-asc")}
-                title={
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.soryByListItem}>Date</Text>
-                    <IconButton icon="arrow-up" size={16} iconColor={theme.colors.surface} />
-                  </View>
-                }
-              />
-              <Menu.Item
-                onPress={() => handleSort("createdAt-desc")}
-                title={
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.soryByListItem}>Date</Text>
-                    <IconButton icon="arrow-down" size={16} iconColor={theme.colors.surface} />
-                  </View>
-                }
-              />
+            <Menu.Item
+              onPress={() => handleSort("title-asc")}
+              title={
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={styles.soryByListItem}>Name</Text>
+                  <IconButton icon="arrow-up" size={16} iconColor={theme.colors.surface} />
+                </View>
+              }
+
+            />
+            <Menu.Item
+              onPress={() => handleSort("title-desc")}
+              title={
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={styles.soryByListItem}>Name</Text>
+                  <IconButton icon="arrow-down" size={16} iconColor={theme.colors.surface} />
+                </View>
+              }
+            />
+            <Divider />
+            <Menu.Item
+              onPress={() => handleSort("createdAt-asc")}
+              title={
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={styles.soryByListItem}>Date</Text>
+                  <IconButton icon="arrow-up" size={16} iconColor={theme.colors.surface} />
+                </View>
+              }
+            />
+            <Menu.Item
+              onPress={() => handleSort("createdAt-desc")}
+              title={
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={styles.soryByListItem}>Date</Text>
+                  <IconButton icon="arrow-down" size={16} iconColor={theme.colors.surface} />
+                </View>
+              }
+            />
           </Menu>
           {role >= 2 && (
             <Button onPress={() => handleCreateNew(selectedTab)}>
@@ -308,8 +307,8 @@ const Department: React.FC = () => {
               {selectedTab === "projects"
                 ? "Project"
                 : selectedTab === "programs"
-                ? "Program"
-                : "Announcement"}
+                  ? "Program"
+                  : "Announcement"}
             </Button>
           )}
         </View>
@@ -330,8 +329,8 @@ const Department: React.FC = () => {
           selectedTab === "announcements"
             ? item.announcementId.toString() // Use announcementId for announcements
             : item.projectid
-            ? item.projectid.toString()
-            : item.programid.toString()
+              ? item.projectid.toString()
+              : item.programid.toString()
         } // Dynamic key based on type
         ListHeaderComponent={renderHeader}
         renderItem={({ item }) => (
@@ -354,8 +353,8 @@ const Department: React.FC = () => {
                   {selectedTab === "projects"
                     ? item.title
                     : selectedTab === "programs"
-                    ? item.name
-                    : item.messageTitle}
+                      ? item.name
+                      : item.messageTitle}
                 </Title>
                 {/* Render description based on selected tab */}
 
@@ -367,8 +366,8 @@ const Department: React.FC = () => {
                         item.status === "Active"
                           ? { color: "green", fontWeight: "bold" }
                           : item.status === "Pending"
-                          ? { color: "orange", fontWeight: "bold" }
-                          : { color: "red", fontWeight: "bold" }
+                            ? { color: "orange", fontWeight: "bold" }
+                            : { color: "red", fontWeight: "bold" }
                       }
                     >
                       {item.status}
@@ -379,8 +378,8 @@ const Department: React.FC = () => {
                   {selectedTab === "projects"
                     ? item.description
                     : selectedTab === "programs"
-                    ? item.description
-                    : item.messageBody}
+                      ? item.description
+                      : item.messageBody}
                 </Paragraph>
               </Card.Content>
               {role === 2 || role === 3 ? (
