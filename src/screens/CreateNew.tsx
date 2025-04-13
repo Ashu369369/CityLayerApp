@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   Alert,
   ScrollView,
   ActivityIndicator,
@@ -15,13 +14,11 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
-// type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">; // Define the route prop type for CreateNew screen
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { createDepartment } from "../api/deptApi";
-import Constants from "expo-constants";
-import { createProject, getProjectsByDepartmentId } from "../api/projectApi";
+import { createProject } from "../api/projectApi";
 import { demoProjects } from "../demoData/projects";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useTheme } from "react-native-paper";
@@ -29,16 +26,11 @@ import { DynamicTheme } from "../theme/theme";
 import { createProgram, Program } from "../api/programApi";
 import programs from "../demoData/programs";
 import { getProgramsByDepartmentId } from "../api/programApi";
-import { getDepartment } from "../api/deptApi";
-import type { Department } from "../api/deptApi";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import useStyles from "../styles/CreateNew";
-import { Dropdown } from "../component/dropDown";
 import moment from "moment";
 import { Announcement, createAnnouncement } from "../api/announcementsApi";
 import { formatDate } from "../Tools/formatDate";
 import saveOfflineData from "../Tools/offlineMode";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CreateNewScreen: React.FC = (params) => {
   const theme = useTheme();
@@ -64,8 +56,6 @@ const CreateNewScreen: React.FC = (params) => {
   const [newTeamMember, setNewTeamMember] = useState("");
   const [timeline, setTimeline] = useState("");
   const [createdby, setCreatedby] = useState("");
-  const loggedInUser = useSelector((state: RootState) => state.user);
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>(); // Properly type the navigation prop
   const dynamicTheme = useTheme() as DynamicTheme; // Cast to DynamicTheme type
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showDuePicker, setShowDuePicker] = useState(false);

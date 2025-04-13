@@ -35,17 +35,7 @@ import { DynamicTheme } from "../theme/theme";
 import saveOfflineData from "../Tools/offlineMode";
 
 
-// 1. Define the correct type for your route params
 type DepartmentScreenRouteProp = RouteProp<RootStackParamList, "Departments">;
-
-type DepartmentScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Department"
->;
-
-const DepartmentScreen: React.FC = () => {
-
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 type DepartmentScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Department'>;
 
 const DepartmentScreen: React.FC = () => {

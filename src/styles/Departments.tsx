@@ -7,8 +7,8 @@ const useStyles = (theme: DynamicTheme) =>
     // in high contrast, grey is "#333333" (lighter) compared to backdrop.
     container: {
       flex: 1,
-      backgroundColor: theme.colors.grey,
-      paddingHorizontal: 16,
+      backgroundColor: theme.colors.background,
+      paddingHorizontal: 10,
     },
     // Card style: If in high contrast mode (background is "#000000"), then use theme.colors.backdrop;
     // otherwise, use theme.colors.background.
@@ -18,16 +18,14 @@ const useStyles = (theme: DynamicTheme) =>
       elevation: 5,
       borderRadius: 10,
       backgroundColor:
-        theme.colors.background === "#000000"
-          ? theme.colors.backdrop
-          : theme.colors.grey,
+        theme.colors.card,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 4,
     },
     cardImage: {
-      height: 180,
+      height: 250,
       borderRadius: 0,
       borderTopLeftRadius: 5,
       borderTopRightRadius: 5,

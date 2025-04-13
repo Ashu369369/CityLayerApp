@@ -67,7 +67,6 @@ const useStyles = (theme: DynamicTheme) =>
       flexGrow: 1,
       backgroundColor: theme.colors.grey,
       borderRadius: 0,
-      color: theme.colors.oppositeText,
     },
     focusedButton: {
       backgroundColor: theme.colors.primary,
@@ -82,7 +81,7 @@ const useStyles = (theme: DynamicTheme) =>
       color: theme.colors.text,
     },
     focusedHeaderText: {
-      color: theme.colors.oppositeText,
+      color: theme.colors.background,
     },
     announcements: {
       padding: 20,
@@ -97,11 +96,11 @@ const useStyles = (theme: DynamicTheme) =>
       padding: 20,
       paddingTop: 25,
       paddingBottom: 35,
-      borderBottomWidth: 0,
       backgroundColor: theme.colors.surface,
       borderRadius: 8,
-      marginVertical: 5,
+      marginVertical: 10,
       borderColor: theme.colors.placeholder,
+      borderBottomWidth: 1,
       borderTopWidth: 1,
       borderLeftWidth: 1,
       borderRightWidth: 1,
@@ -124,21 +123,21 @@ const useStyles = (theme: DynamicTheme) =>
     sortFilterBar: {
       flexDirection: "row",
       justifyContent: "flex-end",
-      backgroundColor: theme.colors.grey,
-      color: "white",
+      backgroundColor: theme.colors.background,
+      // color: "white",
     },
     sortByList:{
       top: -25,
       borderRadius: 5,
       backgroundColor: theme.colors.backdrop,
       borderWidth: 1,
-      borderColor: theme.colors.accent,
+      borderColor: theme.colors.primary,
     },
     soryByListItem:{
-      color: theme.colors.surface
+      color: theme.colors.background ==="#000000" ? theme.colors.text: theme.colors.white,
     },
     CardsContainer: {
-      backgroundColor: theme.colors.grey,
+      backgroundColor: theme.colors.background,
     },
     projectCard: {
       marginHorizontal: 10,

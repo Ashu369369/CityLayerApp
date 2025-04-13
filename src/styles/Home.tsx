@@ -32,7 +32,7 @@ const useStyles = (theme: DynamicTheme) =>
       fontSize: theme.fonts.xlarge.fontSize,
       fontWeight: "bold",
       marginBottom: 10,
-      color: theme.colors.header, // Use header token for added emphasis
+      color: theme.colors.text, // Use header token for added emphasis
     },
     // Smaller welcome message text
     welcomeMessage: {
@@ -48,6 +48,8 @@ const useStyles = (theme: DynamicTheme) =>
       padding: 20,
       paddingVertical: 30,
       borderRadius: 8,
+      borderWidth: 1,
+      borderColor: theme.colors.primary,
       marginBottom: 20,
     },
     dashboardHeader: {
