@@ -295,7 +295,7 @@ const SignupPage: React.FC = () => {
               <DateTimePicker
                 value={selectedDate || new Date()}
                 mode="date"
-                display="spinner"
+                display="inline"
                 onChange={handleDateChange}
                 maximumDate={new Date()} // Prevent selecting future dates
               />

@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
-import { Chip, TextInput, Button } from "react-native-paper"
+import { Chip, TextInput, Button, IconButton } from "react-native-paper"
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -32,7 +32,14 @@ import { Announcement, createAnnouncement } from "../api/announcementsApi";
 import { formatDate } from "../Tools/formatDate";
 import saveOfflineData from "../Tools/offlineMode";
 
+type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">;
+
 const CreateNewScreen: React.FC = (params) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route = useRoute<CreateNewScreenRouteProp>();
+
+  const { type, id } = route.params;
+
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const loggedInUser = useSelector((state: RootState) => state.user);
@@ -60,28 +67,70 @@ const CreateNewScreen: React.FC = (params) => {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showDuePicker, setShowDuePicker] = useState(false);
 
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  type CreateNewScreenRouteProp = RouteProp<RootStackParamList, "CreateNew">;
+  const [tempStartDate, setTempStartDate] = useState(startDate ? moment(startDate, dateFormat).toDate() : new Date());
+  const [tempDueDate, setTempDueDate] = useState(
+    dueDate ? moment(dueDate, dateFormat).toDate() : new Date()
+  );
 
-  const route = useRoute<CreateNewScreenRouteProp>();
-  const { type, id } = route.params;
+  const onChangeStart = (event: any, selectedDate: any) => {
+    if (Platform.OS === 'ios') {
+      if (event.type === 'set' && selectedDate) {
+        const prevDay = tempStartDate.getDate();
+        const newDay = selectedDate.getDate();
 
-  const onChangeStart = (_event: any, date?: Date) => {
-    setShowStartPicker(false); // Always hide on selection (not just for iOS)
-    if (date) {
-      const formatted = formatDate(date, dateFormat);
-      setStartDate(formatted); // Save the formatted string for display
+        // Only update if day is actually changed (user finished date selection)
+        if (prevDay !== newDay) {
+          setStartDate(moment(selectedDate).format(dateFormat));
+          setShowStartPicker(false); // close after full date is selected
+        }
+
+        setTempStartDate(selectedDate); // update temp either way
+      } else {
+        setShowStartPicker(false); // dismissed
+      }
+    } else {
+      // Android behavior: pick and close immediately
+      if (selectedDate) {
+        const formatted = formatDate(selectedDate, dateFormat);
+        setStartDate(formatted);
+      }
+      setShowStartPicker(false);
     }
   };
 
-  const onChangeDue = (_event: any, selectedDate: any) => {
-    setShowDuePicker(Platform.OS === "ios");
+  // const onChangeStart = (_event: any, date?: Date) => {
+  //   setShowStartPicker(false); // Always hide on selection (not just for iOS)
+  //   if (date) {
+  //     const formatted = formatDate(date, dateFormat);
+  //     setStartDate(formatted); // Save the formatted string for display
+  //   }
+  // };
+
+ const onChangeDue = (event: any, selectedDate: any) => {
+  if (Platform.OS === 'ios') {
+    if (event.type === 'set' && selectedDate) {
+      const prevDay = tempDueDate.getDate();
+      const newDay = selectedDate.getDate();
+
+      if (prevDay !== newDay) {
+        setDueDate(moment(selectedDate).format(dateFormat));
+        setShowDuePicker(false);
+      }
+
+      setTempDueDate(selectedDate); // update temp either way
+    } else {
+      setShowDuePicker(false); // dismissed
+    }
+  } else {
     if (selectedDate) {
       const formatted = formatDate(selectedDate, dateFormat);
       setDueDate(formatted);
     }
-  };
+    setShowDuePicker(false);
+  }
+};
+
 
   const handleSubmit = async () => {
     const netInfo = await NetInfo.fetch();
@@ -348,45 +397,51 @@ const CreateNewScreen: React.FC = (params) => {
             multiline
           />
 
-          <TouchableOpacity onPress={() => setShowStartPicker(true)}>
-            <TextInput
-              label={`StartDate ${dateFormat}`}
-              value={startDate}
-              editable={false}
-              mode="outlined"
-            // style={styles.input}
-            />
+          <TouchableOpacity onPress={() => setShowStartPicker(!showStartPicker)}>
+            <View pointerEvents="none" style={{ flexDirection: "row", alignItems: "center" }}>
+              <IconButton icon="calendar-range" size={20} iconColor={theme.colors.backdrop} />
+              <Text style={styles.input}>
+                {startDate ? `Start Date ${startDate}` : `Start Date ${dateFormat}`}
+              </Text>
+            </View>
           </TouchableOpacity>
 
           {showStartPicker && (
             <DateTimePicker
               value={startDate ? moment(startDate, dateFormat).toDate() : new Date()}
               mode="date"
-              display="default"
+              display="inline"
               onChange={onChangeStart}
             />
           )}
 
           {/* Due Date Field */}
           <TouchableOpacity onPress={() => setShowDuePicker(true)}>
-            <TextInput
+            <View pointerEvents="none" style={{ flexDirection: "row", alignItems: "center" }}>
+              <IconButton icon="calendar-range" size={20} iconColor={theme.colors.backdrop} />
+              <Text style={styles.input}>
+                {dueDate ? `Due Date ${dueDate}` : `Due Date ${dateFormat}`}
+              </Text>
+            </View>
+            {/* <TextInput
               mode="outlined"
               label={`Due Date ${dateFormat}`}
               value={dueDate}
               editable={false}
             // style={styles.input}
-            />
+            /> */}
           </TouchableOpacity>
 
           {showDuePicker && (
             <DateTimePicker
               value={dueDate ? moment(dueDate, dateFormat).toDate() : new Date()}
               mode="date"
-              display="default"
+              display="inline"
               onChange={onChangeDue}
               minimumDate={new Date()}
             />
           )}
+
           <Text style={styles.label}>Status</Text>
           <Picker
             selectedValue={status}
@@ -498,39 +553,38 @@ const CreateNewScreen: React.FC = (params) => {
 
 
           <TouchableOpacity onPress={() => setShowStartPicker(true)}>
-            <TextInput
-              label={`StartDate ${dateFormat}`}
-              value={startDate}
-              editable={false}
-              style={styles.input}
-            />
+          <View pointerEvents="none" style={{ flexDirection: "row", alignItems: "center" }}>
+              <IconButton icon="calendar-range" size={20} iconColor={theme.colors.backdrop} />
+              <Text style={styles.input}>
+                {startDate ? `Start Date ${startDate}` : `Start Date ${dateFormat}`}
+              </Text>
+            </View>
           </TouchableOpacity>
 
           {showStartPicker && (
             <DateTimePicker
               value={startDate ? moment(startDate, dateFormat).toDate() : new Date()}
               mode="date"
-              display="default"
+              display="inline"
               onChange={onChangeStart}
             />
           )}
 
           {/* Due Date Field */}
           <TouchableOpacity onPress={() => setShowDuePicker(true)}>
-            <TextInput
-              // mode="outlined"
-              label={`Due Date ${dateFormat}`}
-              value={dueDate}
-              editable={false}
-              style={styles.input}
-            />
+          <View pointerEvents="none" style={{ flexDirection: "row", alignItems: "center" }}>
+              <IconButton icon="calendar-range" size={20} iconColor={theme.colors.backdrop} />
+              <Text style={styles.input}>
+                {dueDate ? `Due Date ${dueDate}` : `Start Date ${dateFormat}`}
+              </Text>
+            </View>
           </TouchableOpacity>
 
           {showDuePicker && (
             <DateTimePicker
               value={dueDate ? moment(dueDate, dateFormat).toDate() : new Date()}
               mode="date"
-              display="default"
+              display="inline"
               onChange={onChangeDue}
               minimumDate={new Date()}
             />
@@ -548,7 +602,7 @@ const CreateNewScreen: React.FC = (params) => {
               selectedValue={repeat}
               onValueChange={(value) => setRepeat(value)}
               style={styles.dropdownPicker}
-              // dropdownIconColor={dynamicTheme.colors.accent} // for iOS
+            // dropdownIconColor={dynamicTheme.colors.accent} // for iOS
             >
               <Picker.Item
                 label="No"
