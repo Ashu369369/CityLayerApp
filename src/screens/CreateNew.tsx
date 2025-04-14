@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { createDepartment } from "../api/deptApi";
-import { createProject } from "../api/projectApi";
+import { createProject, Project } from "../api/projectApi";
 import { demoProjects } from "../demoData/projects";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useTheme } from "react-native-paper";
@@ -43,7 +43,9 @@ const CreateNewScreen: React.FC = (params) => {
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const loggedInUser = useSelector((state: RootState) => state.user);
-  const dateFormat = useSelector((state: RootState) => state.preferences.dateFormat)
+  const dateFormat = useSelector(
+    (state: RootState) => state.preferences.dateFormat
+  );
 
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
@@ -66,6 +68,12 @@ const CreateNewScreen: React.FC = (params) => {
   const dynamicTheme = useTheme() as DynamicTheme; // Cast to DynamicTheme type
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showDuePicker, setShowDuePicker] = useState(false);
+  
+  const [customFields, setCustomFields] = useState<
+    { name: string; value: string }[]
+  >([]);
+  const [newFieldName, setNewFieldName] = useState("");
+  const [newFieldValue, setNewFieldValue] = useState("");
 
 
   const [tempStartDate, setTempStartDate] = useState(startDate ? moment(startDate, dateFormat).toDate() : new Date());
@@ -170,7 +178,10 @@ const CreateNewScreen: React.FC = (params) => {
             }
           } catch (error: any) {
             console.error("Error creating department:", error);
-            Alert.alert("Error", error.message || "Failed to create department.");
+            Alert.alert(
+              "Error",
+              error.message || "Failed to create department."
+            );
           }
         } else {
           await saveOfflineData("create_departments", {
@@ -184,7 +195,6 @@ const CreateNewScreen: React.FC = (params) => {
           );
           navigation.goBack();
         }
-
       } else if (type === "Project") {
         const missingFields = [];
 
@@ -202,7 +212,7 @@ const CreateNewScreen: React.FC = (params) => {
           );
           return;
         }
-        const newProject = {
+        const newProject: Project = {
           projectid: demoProjects.length + 1, // Generate a unique ID
           title,
           description,
@@ -216,6 +226,7 @@ const CreateNewScreen: React.FC = (params) => {
           workforce: { team: workforce }, // Provide default or actual value
           timeline: timeline || "N/A", // Provide default or actual value
           departmentid: id ?? 0, // Ensure departmentid is a number, default to 0 if undefined
+          customFields: [], // Initialize customFields as an empty array
         };
         if (netInfo.isConnected) {
           try {
@@ -233,7 +244,6 @@ const CreateNewScreen: React.FC = (params) => {
           );
           navigation.goBack();
         }
-
       } else if (type === "Program") {
         let repeatAfter: Program["repeatAfter"] = null;
 
@@ -304,7 +314,6 @@ const CreateNewScreen: React.FC = (params) => {
           departmentId: id ?? 0, // Ensure departmentId is a number, default to 0 if undefined
         };
         if (netInfo.isConnected) {
-
           try {
             await createAnnouncement(newAnnouncement as Announcement);
             Alert.alert("Success", "Announcement created successfully!");
@@ -338,7 +347,16 @@ const CreateNewScreen: React.FC = (params) => {
           <TextInput
             style={styles.input}
             placeholder="Title"
-            placeholderTextColor={dynamicTheme.colors.placeholder}
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={title}
             onChangeText={setTitle}
           />
@@ -346,7 +364,16 @@ const CreateNewScreen: React.FC = (params) => {
             style={[styles.input, styles.textArea]}
             placeholder="Description"
             // placeholderTextColor={highcon"#ffffff"
-            placeholderTextColor={dynamicTheme.colors.placeholder}
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={description}
             onChangeText={setDescription}
             multiline
@@ -358,12 +385,32 @@ const CreateNewScreen: React.FC = (params) => {
           <TextInput
             style={styles.input}
             label="Message Title"
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={messageTitle}
             onChangeText={setMessageTitle}
           />
           <TextInput
             style={[styles.input, styles.textArea]}
             label="Message Body"
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={messageBody}
             onChangeText={setMessageBody}
             multiline
@@ -371,6 +418,16 @@ const CreateNewScreen: React.FC = (params) => {
           <TextInput
             style={styles.input}
             label="Created By"
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={String(loggedInUser.username)}
             editable={false}
             disabled
@@ -384,14 +441,36 @@ const CreateNewScreen: React.FC = (params) => {
             style={styles.input}
             mode="outlined"
             // style={styles.input}
-            label="Title"
+            // label="Title"
+            placeholder="Title"
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={title}
             onChangeText={setTitle}
           />
           <TextInput
             style={[styles.input, styles.textArea]}
             mode="outlined"
-            label="Description"
+            // label="Description"
+            placeholder="Description"
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={description}
             onChangeText={setDescription}
             multiline
@@ -405,16 +484,16 @@ const CreateNewScreen: React.FC = (params) => {
               </Text>
             </View>
           </TouchableOpacity>
-
           {showStartPicker && (
             <DateTimePicker
-              value={startDate ? moment(startDate, dateFormat).toDate() : new Date()}
+              value={
+                startDate ? moment(startDate, dateFormat).toDate() : new Date()
+              }
               mode="date"
               display="inline"
               onChange={onChangeStart}
             />
           )}
-
           {/* Due Date Field */}
           <TouchableOpacity onPress={() => setShowDuePicker(true)}>
             <View pointerEvents="none" style={{ flexDirection: "row", alignItems: "center" }}>
@@ -423,18 +502,12 @@ const CreateNewScreen: React.FC = (params) => {
                 {dueDate ? `Due Date ${dueDate}` : `Due Date ${dateFormat}`}
               </Text>
             </View>
-            {/* <TextInput
-              mode="outlined"
-              label={`Due Date ${dateFormat}`}
-              value={dueDate}
-              editable={false}
-            // style={styles.input}
-            /> */}
           </TouchableOpacity>
-
           {showDuePicker && (
             <DateTimePicker
-              value={dueDate ? moment(dueDate, dateFormat).toDate() : new Date()}
+              value={
+                dueDate ? moment(dueDate, dateFormat).toDate() : new Date()
+              }
               mode="date"
               display="inline"
               onChange={onChangeDue}
@@ -449,51 +522,113 @@ const CreateNewScreen: React.FC = (params) => {
             style={styles.picker}
           >
             <Picker.Item label="Active" value="Active" />
-            <Picker.Item label="Pending" value="Pending" />
-            <Picker.Item label="Ongoing" value="Ongoing" />
-            <Picker.Item label="Done" value="Done" />
-            <Picker.Item label="Custom" value="Custom" />
+            <Picker.Item
+              label="Pending"
+              value="Pending"
+              color={dynamicTheme.colors.text}
+            />
+            <Picker.Item
+              label="Ongoing"
+              value="Ongoing"
+              color={dynamicTheme.colors.text}
+            />
+            <Picker.Item
+              label="Done"
+              value="Done"
+              color={dynamicTheme.colors.text}
+            />
+            <Picker.Item
+              label="Custom"
+              value="Custom"
+              color={dynamicTheme.colors.text}
+            />
           </Picker>
           {status === "Custom" && (
             <TextInput
               style={styles.input}
               placeholder="Enter Custom Status"
-              placeholderTextColor={dynamicTheme.colors.placeholder}
+              textColor={
+                dynamicTheme.colors.background === "#000000"
+                  ? dynamicTheme.colors.text
+                  : dynamicTheme.colors.placeholder
+              }
+              placeholderTextColor={
+                dynamicTheme.colors.background === "#000000"
+                  ? dynamicTheme.colors.text
+                  : dynamicTheme.colors.placeholder
+              }
               value={customStatus}
               onChangeText={setCustomStatus}
             />
           )}
           <TextInput
-            label="Assigned To (ID)"
+            placeholder="Assigned To (ID)"
+            style={styles.input}
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             mode="outlined"
             keyboardType="number-pad"
             value={assignedTo}
             onChangeText={setAssignedTo}
-          // style={styles.input}
+            // style={styles.input}
           />
-
           <TextInput
-            label="Budget"
+            placeholder="Budget"
+            style={styles.input}
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             mode="outlined"
             keyboardType="number-pad"
             value={budget}
             onChangeText={setBudget}
             textContentType="none"
-          // style={styles.input}
+            // style={styles.input}
           />
-
-          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
             <TextInput
-              label="Workforce ID"
+              placeholder="Workforce ID"
+              style={styles.input}
+              textColor={
+                dynamicTheme.colors.background === "#000000"
+                  ? dynamicTheme.colors.text
+                  : dynamicTheme.colors.placeholder
+              }
+              placeholderTextColor={
+                dynamicTheme.colors.background === "#000000"
+                  ? dynamicTheme.colors.text
+                  : dynamicTheme.colors.placeholder
+              }
               keyboardType="number-pad"
               mode="outlined"
               value={newTeamMember}
               onChangeText={setNewTeamMember}
-              style={{
-                flex: 1,
-                marginRight: 10,
-                height: 45,
-              }}
+              // style={{
+              //   flex: 1,
+              //   marginRight: 10,
+              //   height: 45,
+              // }}
             />
             <Button
               mode="contained"
@@ -507,18 +642,99 @@ const CreateNewScreen: React.FC = (params) => {
               Add
             </Button>
           </View>
-
           <View style={{ marginTop: 10 }}>
-            <Text style={{ marginBottom: 5, fontWeight: "bold" }}>Team Members:</Text>
+            <Text style={{ marginBottom: 5, fontWeight: "bold" }}>
+              Team Members:
+            </Text>
             {workforce.map((member: string, index: number) => (
               <Chip
                 key={index}
                 onClose={() =>
-                  setWorkforce(workforce.filter((_: any, i: number) => i !== index))
+                  setWorkforce(
+                    workforce.filter((_: any, i: number) => i !== index)
+                  )
                 }
-              // style={}
+                // style={}
               >
                 {member}
+              </Chip>
+            ))}
+          </View>
+          {/*} Just inside the Project section, after your existing fields:*/}
+          {/* === Custom Fields Section === */}
+          <Text style={styles.label}>Custom Fields</Text>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            {/* <View style={{ flexDirection: "row", marginBottom: 8 }}> */}
+            <TextInput
+              // label="Field Name"
+              style={styles.input}
+              placeholder="Field Name"
+              textColor={
+                dynamicTheme.colors.background === "#000000"
+                  ? dynamicTheme.colors.text
+                  : dynamicTheme.colors.placeholder
+              }
+              placeholderTextColor={
+                dynamicTheme.colors.background === "#000000"
+                  ? dynamicTheme.colors.text
+                  : dynamicTheme.colors.placeholder
+              }
+              value={newFieldName}
+              onChangeText={setNewFieldName}
+              // style={{ flex: 1, marginRight: 8 }}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Field Value"
+              textColor={
+                dynamicTheme.colors.background === "#000000"
+                  ? dynamicTheme.colors.text
+                  : dynamicTheme.colors.placeholder
+              }
+              placeholderTextColor={
+                dynamicTheme.colors.background === "#000000"
+                  ? dynamicTheme.colors.text
+                  : dynamicTheme.colors.placeholder
+              }
+              value={newFieldValue}
+              onChangeText={setNewFieldValue}
+            />
+            <Button
+              mode="contained"
+              onPress={() => {
+                if (newFieldName.trim()) {
+                  setCustomFields([
+                    ...customFields,
+                    { name: newFieldName.trim(), value: newFieldValue },
+                  ]);
+                  setNewFieldName("");
+                  setNewFieldValue("");
+                }
+              }}
+            >
+              Add
+            </Button>
+          </View>
+          {/* Display existing custom fields as Chips */}
+          <View
+            style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 16 }}
+          >
+            {customFields.map((f, i) => (
+              <Chip
+                key={i}
+                onClose={() =>
+                  setCustomFields(customFields.filter((_, idx) => idx !== i))
+                }
+                style={{ margin: 4 }}
+              >
+                {f.name}: {f.value}
               </Chip>
             ))}
           </View>
@@ -530,14 +746,32 @@ const CreateNewScreen: React.FC = (params) => {
           <TextInput
             style={styles.input}
             placeholder="Name"
-            placeholderTextColor={dynamicTheme.colors.placeholder}
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={title}
             onChangeText={setTitle}
           />
           <TextInput
             style={[styles.input, styles.textArea]}
             placeholder="Description"
-            placeholderTextColor={dynamicTheme.colors.placeholder}
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={description}
             onChangeText={setDescription}
             multiline
@@ -545,14 +779,23 @@ const CreateNewScreen: React.FC = (params) => {
           <TextInput
             style={styles.input}
             placeholder="Duration (in days)"
-            placeholderTextColor={dynamicTheme.colors.placeholder}
+            textColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
+            placeholderTextColor={
+              dynamicTheme.colors.background === "#000000"
+                ? dynamicTheme.colors.text
+                : dynamicTheme.colors.placeholder
+            }
             value={duration}
             onChangeText={(value) => setDuration(value)}
             keyboardType="numeric"
           />
 
-
           <TouchableOpacity onPress={() => setShowStartPicker(true)}>
+
           <View pointerEvents="none" style={{ flexDirection: "row", alignItems: "center" }}>
               <IconButton icon="calendar-range" size={20} iconColor={theme.colors.backdrop} />
               <Text style={styles.input}>
@@ -563,7 +806,9 @@ const CreateNewScreen: React.FC = (params) => {
 
           {showStartPicker && (
             <DateTimePicker
-              value={startDate ? moment(startDate, dateFormat).toDate() : new Date()}
+              value={
+                startDate ? moment(startDate, dateFormat).toDate() : new Date()
+              }
               mode="date"
               display="inline"
               onChange={onChangeStart}
@@ -572,6 +817,7 @@ const CreateNewScreen: React.FC = (params) => {
 
           {/* Due Date Field */}
           <TouchableOpacity onPress={() => setShowDuePicker(true)}>
+
           <View pointerEvents="none" style={{ flexDirection: "row", alignItems: "center" }}>
               <IconButton icon="calendar-range" size={20} iconColor={theme.colors.backdrop} />
               <Text style={styles.input}>
@@ -582,7 +828,9 @@ const CreateNewScreen: React.FC = (params) => {
 
           {showDuePicker && (
             <DateTimePicker
-              value={dueDate ? moment(dueDate, dateFormat).toDate() : new Date()}
+              value={
+                dueDate ? moment(dueDate, dateFormat).toDate() : new Date()
+              }
               mode="date"
               display="inline"
               onChange={onChangeDue}
@@ -600,6 +848,11 @@ const CreateNewScreen: React.FC = (params) => {
             <Picker
               // mode="dropdown"
               selectedValue={repeat}
+              // placeholderTextColor={
+              //   dynamicTheme.colors.background === "#000000"
+              //     ? dynamicTheme.colors.primary
+              //     : dynamicTheme.colors.placeholder
+              // }
               onValueChange={(value) => setRepeat(value)}
               style={styles.dropdownPicker}
             // dropdownIconColor={dynamicTheme.colors.accent} // for iOS
@@ -688,56 +941,11 @@ const CreateNewScreen: React.FC = (params) => {
       )}
       {/* Submit Button */}
 
-      <Button
-        mode="contained"
-        onPress={handleSubmit}
-        disabled={loading}
-      >{`Create ${type}`}
+      <Button mode="contained" onPress={handleSubmit} disabled={loading}>
+        {`Create ${type}`}
       </Button>
     </ScrollView>
   );
 };
 
 export default CreateNewScreen;
-
-// const useStyles = (theme: DynamicTheme) =>
-//   StyleSheet.create({
-//     container: {
-//       padding: 20,
-//       backgroundColor: "#f9f9f9",
-//       flexGrow: 1,
-//     },
-//     title: {
-//       fontSize: 24,
-//       marginBottom: 20,
-//       fontWeight: "bold",
-//       textAlign: "center",
-//       color: "#333",
-//     },
-//     picker: {
-//       marginBottom: 20,
-//       height: Platform.OS === "ios" ? 200 : 50, // iOS picker height
-//       backgroundColor: "#fff",
-//       borderRadius: 8,
-//       borderWidth: 1,
-//       borderColor: "#ccc",
-//     },
-//     input: {
-//       borderWidth: 1,
-//       borderColor: "#ccc",
-//       borderRadius: 8,
-//       padding: 10,
-//       marginBottom: 15,
-//       backgroundColor: "#fff",
-//       fontSize: 16,
-//     },
-//     textArea: {
-//       height: 100,
-//       textAlignVertical: "top",
-//     },
-//     label: {
-//       marginBottom: 5,
-//       fontWeight: "600",
-//       color: "#555",
-//     },
-// });

@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
-import { TextInput, Button, Text, useTheme, Menu, Divider } from "react-native-paper";
+import {
+  TextInput,
+  Button,
+  Text,
+  useTheme,
+  Menu,
+  Divider,
+} from "react-native-paper";
 import notifications from "../demoData/notifications";
 import { DynamicTheme } from "../theme/theme";
 import saveOfflineData from "../Tools/offlineMode";
 import NetInfo from "@react-native-community/netinfo";
+import useStyles from "../styles/CreateNotification";
 
 const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
-  
+  const dynamicTheme = useTheme() as DynamicTheme;
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const [title, setTitle] = useState("");
@@ -19,7 +27,6 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
   const [severityMenuVisible, setSeverityMenuVisible] = useState(false); // For Severity dropdown
 
   const handleCreateNotification = async () => {
-    
     const netInfo = await NetInfo.fetch();
     if (!title || !description) {
       Alert.alert("Error", "Please fill in all required fields.");
@@ -45,9 +52,9 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
       readBy: [], // Initially no one has read the notification
     };
     if (netInfo.isConnected) {
-    notifications.push(newNotification); 
-    Alert.alert("Success", "Notification created successfully!");
-    }else{
+      notifications.push(newNotification);
+      Alert.alert("Success", "Notification created successfully!");
+    } else {
       await saveOfflineData("create_notifications", newNotification);
       Alert.alert(
         "Offline",
@@ -65,6 +72,16 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
       <TextInput
         mode="outlined"
         placeholder="Enter notification title"
+        textColor={
+          dynamicTheme.colors.background === "#000000"
+            ? dynamicTheme.colors.text
+            : dynamicTheme.colors.placeholder
+        }
+        placeholderTextColor={
+          dynamicTheme.colors.background === "#000000"
+            ? dynamicTheme.colors.text
+            : dynamicTheme.colors.placeholder
+        }
         value={title}
         onChangeText={setTitle}
         style={styles.input}
@@ -76,6 +93,16 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
       <TextInput
         mode="outlined"
         placeholder="Enter notification description"
+        textColor={
+          dynamicTheme.colors.background === "#000000"
+            ? dynamicTheme.colors.text
+            : dynamicTheme.colors.placeholder
+        }
+        placeholderTextColor={
+          dynamicTheme.colors.background === "#000000"
+            ? dynamicTheme.colors.text
+            : dynamicTheme.colors.placeholder
+        }
         value={description}
         onChangeText={setDescription}
         multiline
@@ -88,6 +115,16 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
       <TextInput
         mode="outlined"
         placeholder="Enter department ID (optional)"
+        textColor={
+          dynamicTheme.colors.background === "#000000"
+            ? dynamicTheme.colors.text
+            : dynamicTheme.colors.placeholder
+        }
+        placeholderTextColor={
+          dynamicTheme.colors.background === "#000000"
+            ? dynamicTheme.colors.text
+            : dynamicTheme.colors.placeholder
+        }
         value={departmentId}
         onChangeText={setDepartmentId}
         keyboardType="numeric" // Allow only numeric input
@@ -99,10 +136,12 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
           Severity
         </Text>
         <Menu
+          // style={styles.dropdownPicker}
           visible={severityMenuVisible}
           onDismiss={() => setSeverityMenuVisible(false)} // Properly dismiss the menu
           anchor={
             <Button
+              // style={styles.button}
               mode="outlined"
               onPress={() => setSeverityMenuVisible(true)} // Open the menu
               style={styles.menuButton}
@@ -112,6 +151,7 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
           }
         >
           <Menu.Item
+            // style={styles.dropdownPickerItem}
             onPress={() => {
               setSeverity("general");
               setSeverityMenuVisible(false); // Close the menu after selection
@@ -194,40 +234,5 @@ const CreateNotificationScreen: React.FC = ({ navigation }: any) => {
     </View>
   );
 };
-
-const useStyles = (theme: DynamicTheme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
-  },
-  label: {
-    marginBottom: 5,
-    fontWeight: "bold",
-  },
-  input: {
-    marginBottom: 15,
-    padding: 10,
-    backgroundColor: "#f0f0f0",
-  },
-  dropdownContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "baseline",
-  },
-  menuButton: {
-    marginLeft: 30,
-    marginBottom: 15,
-    borderRadius: 5,
-    borderWidth: 1,
-    alignSelf: "flex-end",
-  },
-  createButton: {
-    marginTop: 20,
-    padding: 5,
-    borderRadius: 5,
-    alignSelf: "flex-end",
-  },
-});
 
 export default CreateNotificationScreen;

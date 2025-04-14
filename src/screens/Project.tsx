@@ -26,10 +26,11 @@ type ProjectDetailsRouteProp = RouteProp<RootStackParamList, "Project">;
 type ProgramScreenRouteProp = RouteProp<RootStackParamList, "Program">;
 
 const ProjectDetails: React.FC = () => {
-
   const theme = useTheme();
   const navigate = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const dateFormat = useSelector((state: RootState) => state.preferences.dateFormat);
+  const dateFormat = useSelector(
+    (state: RootState) => state.preferences.dateFormat
+  );
   const styles = useStyles(theme as DynamicTheme);
   const route = useRoute<ProjectDetailsRouteProp>();
   const { projectid } = route.params;
@@ -141,13 +142,21 @@ const ProjectDetails: React.FC = () => {
           {formatDate(project.createdat, dateFormat)}
         </Text>
       </View>
+      {project.customFields?.map((f, i) => (
+        <View key={i} style={{ flexDirection: "row", marginVertical: 4 }}>
+          <Text style={{ fontWeight: "bold" }}>{f.fieldname}:</Text>
+          <Text> {f.fieldvalue}</Text>
+        </View>
+      ))}
 
       <Divider style={styles.divider} />
       <View style={styles.rowContainer}>
         <Text style={styles.subTitle}>Project Updates</Text>
         <Button
           mode="contained"
-          onPress={() => navigate.navigate("CreatePost", { id: projectid, type: "project" })}
+          onPress={() =>
+            navigate.navigate("CreatePost", { id: projectid, type: "project" })
+          }
           style={styles.createPostButton}
           labelStyle={styles.createPostButtonLabel}
         >

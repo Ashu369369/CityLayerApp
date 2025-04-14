@@ -104,13 +104,14 @@ const ProfileScreen: React.FC = () => {
             try {
               const response = await deleteUser(Number(user.id));
               if (response.data?.deleteUser.success) {
+                console.log(response.data);
                 Alert.alert("Success", response.data.deleteUser.message);
                 dispatch(clearUser());
               } else {
                 Alert.alert(
                   "Error",
                   response.data?.deleteUser.message ||
-                  "Failed to delete account"
+                    "Failed to delete account"
                 );
               }
             } catch (error) {
@@ -165,8 +166,8 @@ const ProfileScreen: React.FC = () => {
               {user.role === 1
                 ? "User"
                 : user.role === 2
-                  ? "Employee"
-                  : "Admin"}
+                ? "Employee"
+                : "Admin"}
             </Text>
           </Card.Content>
         </Card>
@@ -196,10 +197,9 @@ const ProfileScreen: React.FC = () => {
             />
           </View>
         </View>
-        <View style={{flexDirection:"row", marginTop: 20}}>
-
+        <View style={{ flexDirection: "row", marginTop: 20 }}>
           <Text style={styles.label}>Date Format</Text>
-          <View style={[styles.pickerContainer, {flex: 1, marginLeft: 20}]}>
+          <View style={[styles.pickerContainer, { flex: 1, marginLeft: 20 }]}>
             <Picker
               selectedValue={dateFormat}
               onValueChange={(value) => dispatch(setDateFormat(value))}
@@ -211,7 +211,6 @@ const ProfileScreen: React.FC = () => {
             </Picker>
           </View>
         </View>
-
       </ScrollView>
 
       {/* Logout and Delete Buttons fixed at bottom */}
