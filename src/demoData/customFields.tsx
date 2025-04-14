@@ -1,25 +1,25 @@
 export const customfieldproject = [
   {
-    "customId": "1",
-    "projectId": "1",
+    "customId": 1,
+    "projectId": 1,
     "fieldName": "Client Name",
     "fieldValue": "Acme Corp"
   },
   {
-    "customId": "2",
-    "projectId": "1",
+    "customId": 2,
+    "projectId": 1,
     "fieldName": "Start Date",
     "fieldValue": "2024-05-10"
   },
   {
-    "customId": "3",
-    "projectId": "2",
+    "customId": 3,
+    "projectId": 2,
     "fieldName": "Project Manager",
     "fieldValue": "John Doe"
   },
   {
-    "customId": "4",
-    "projectId": "2",
+    "customId": 4,
+    "projectId": 2,
     "fieldName": "Budget",
     "fieldValue": "$50,000"
   }

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/RootStackParams";
-import { getProjectById, Project } from "../api/projectApi";
+import { CustomField, getCustomFieldsByProjectId, getProjectById, Project } from "../api/projectApi";
 import useStyles from "../styles/Project";
 import theme, { DynamicTheme } from "../theme/theme";
 import { Button, Card, Divider, Surface, useTheme } from "react-native-paper";
@@ -35,6 +35,7 @@ const ProjectDetails: React.FC = () => {
   const route = useRoute<ProjectDetailsRouteProp>();
   const { projectid } = route.params;
   const [project, setProject] = useState<Project | null>(null);
+  const [customFields, setCustomFields] = useState<CustomField[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updates, setUpdates] = useState<ProjectUpdate[]>([]);
@@ -44,6 +45,8 @@ const ProjectDetails: React.FC = () => {
       try {
         const fetchedProject = await getProjectById(projectid);
         setProject(fetchedProject || null);
+        const customFields = getCustomFieldsByProjectId(projectid);
+        setCustomFields(customFields);
       } catch (error) {
         console.error("Error fetching project:", error);
         setError("Error fetching project");
@@ -142,10 +145,10 @@ const ProjectDetails: React.FC = () => {
           {formatDate(project.createdat, dateFormat)}
         </Text>
       </View>
-      {project.customFields?.map((f, i) => (
+      {customFields?.map((f, i) => (
         <View key={i} style={{ flexDirection: "row", marginVertical: 4 }}>
-          <Text style={{ fontWeight: "bold" }}>{f.fieldname}:</Text>
-          <Text> {f.fieldvalue}</Text>
+          <Text style={{ fontWeight: "bold" }}>{f.fieldName}:</Text>
+          <Text> {f.fieldValue}</Text>
         </View>
       ))}
 

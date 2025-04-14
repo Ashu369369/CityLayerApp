@@ -200,7 +200,7 @@ const MainNavBar: React.FC = () => {
           tabBarIcon: ({ color, size }) => {
             if (route.name === "Home") iconName = "home";
             else if (route.name === "Search") iconName = "search";
-            else if (route.name === "Departments") iconName = "list";
+            else if (route.name === "Departments") iconName = "business-outline";
             else if (route.name === "Profile") iconName = "person";
 
             return <Ionicons name={iconName} size={size} color={color} />;
