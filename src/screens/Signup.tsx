@@ -10,15 +10,9 @@ import {
   Platform,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  View
+  View,
 } from "react-native";
-import {
-  Text,
-  TextInput,
-  Button,
-  Dialog,
-  Portal,
-} from "react-native-paper";
+import { Text, TextInput, Button, Dialog, Portal } from "react-native-paper";
 import ErrorBox from "../component/ErrorBox"; // Import the ErrorBox component\
 import {
   createUser,
@@ -32,6 +26,7 @@ import { setUser } from "../state/slices/userSlice";
 import { setToken } from "../state/slices/authSlice";
 import { DynamicTheme } from "../theme/theme";
 import { useTheme } from "react-native-paper";
+import useStyles from "../styles/Signup";
 
 type SignupScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -50,7 +45,6 @@ type FormData = {
 };
 
 const SignupPage: React.FC = () => {
-
   const theme = useTheme();
   const styles = useStyles(theme as DynamicTheme);
   const navigation = useNavigation<SignupScreenNavigationProp>();
@@ -73,7 +67,7 @@ const SignupPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null); // State to store selected date
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
-  //all the refs 
+  //all the refs
   const lastNameref = useRef<any>(null);
   const usernameref = useRef<any>(null);
   const dobref = useRef<any>(null);
@@ -145,7 +139,6 @@ const SignupPage: React.FC = () => {
     setShowDatePicker(false); // Close the modal
   };
 
-
   const handleSignup = async () => {
     let allValid = true;
     const newErrors: Partial<FormData> = {};
@@ -172,11 +165,13 @@ const SignupPage: React.FC = () => {
       try {
         const response = await createUser(formData);
 
-
         if (response.errors && response.errors.length > 0) {
           // If errors exist, handle them
           console.log("GraphQL errors:", response.errors);
-          alert("Error: " + response.errors[0]?.message || "An unknown error occurred");
+          alert(
+            "Error: " + response.errors[0]?.message ||
+              "An unknown error occurred"
+          );
           return;
         }
         let message = response?.data?.createUser?.message;
@@ -191,8 +186,7 @@ const SignupPage: React.FC = () => {
           dob: formData.dob,
           role: response?.data?.createUser?.role,
         };
-        if (!user)
-          alert(message);
+        if (!user) alert(message);
 
         // Dispatch the action to store the token and user information
         dispatch(setUser(user));
@@ -272,7 +266,7 @@ const SignupPage: React.FC = () => {
         onChangeText={(value) => handleChange("dob", value)}
         onBlur={() => validateField("dob", formData.dob)}
       /> */}
-      <ErrorBox errorMessage={errors.dob} />
+      {/* <ErrorBox errorMessage={errors.dob} /> */}
 
       {/* Date of Birth Field */}
       <TouchableOpacity onPress={() => setShowDatePicker(true)}>
@@ -289,7 +283,11 @@ const SignupPage: React.FC = () => {
       {/* DateTimePicker for iOS */}
       {Platform.OS === "ios" && showDatePicker && (
         <Portal>
-          <Dialog visible={showDatePicker} onDismiss={() => setShowDatePicker(false)} style={styles.dateTimePortal}>
+          <Dialog
+            visible={showDatePicker}
+            onDismiss={() => setShowDatePicker(false)}
+            style={styles.dateTimePortal}
+          >
             <Dialog.Content>
               <DateTimePicker
                 value={selectedDate || new Date()}
@@ -390,75 +388,77 @@ const SignupPage: React.FC = () => {
   );
 };
 
-const useStyles = (theme: DynamicTheme) => StyleSheet.create({
-  container: {
-    width: "100%",
-    flexGrow: 1,
-    padding: "20%",
-    justifyContent: "center",
-    backgroundColor: "#ffff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-    color: "var(--darkBlue)",
-  },
-  dateTimePortal: {
-    backgroundColor: theme.colors.surface,
-  },
-  input: {
-    borderColor: theme.colors.backdrop,
-    marginBottom: 5,
-  },
-  button: {
-    backgroundColor: "var(--lightBlue)",
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "var(--white)",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  LoginText: {
-    marginTop: 0,
-    marginBottom: 10,
-    fontSize: 12,
-    textAlign: "right",
-    color: "blue",
-    textDecorationLine: "none",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  pickerContainer: {
-    backgroundColor: "#000",
-    padding: 20,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  confirmButton: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  confirmButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  }, textPlaceholder: {
-    color: "#aaa",
-  },
-  textSelected: {
-    color: "#000",
-  },
-});
+// const useStyles = (theme: DynamicTheme) =>
+//   StyleSheet.create({
+//     container: {
+//       width: "100%",
+//       flexGrow: 1,
+//       padding: "20%",
+//       justifyContent: "center",
+//       backgroundColor: "#ffff",
+//     },
+//     title: {
+//       fontSize: 24,
+//       fontWeight: "bold",
+//       textAlign: "center",
+//       marginBottom: 20,
+//       color: "var(--darkBlue)",
+//     },
+//     dateTimePortal: {
+//       backgroundColor: theme.colors.surface,
+//     },
+//     input: {
+//       borderColor: theme.colors.backdrop,
+//       marginBottom: 5,
+//     },
+//     button: {
+//       backgroundColor: "var(--lightBlue)",
+//       paddingVertical: 10,
+//       borderRadius: 5,
+//       alignItems: "center",
+//     },
+//     buttonText: {
+//       color: "var(--white)",
+//       fontWeight: "bold",
+//       fontSize: 16,
+//     },
+//     LoginText: {
+//       marginTop: 0,
+//       marginBottom: 10,
+//       fontSize: 12,
+//       textAlign: "right",
+//       color: "blue",
+//       textDecorationLine: "none",
+//     },
+//     modalContainer: {
+//       flex: 1,
+//       justifyContent: "flex-end",
+//       backgroundColor: "rgba(0, 0, 0, 0.5)",
+//     },
+//     pickerContainer: {
+//       backgroundColor: "#000",
+//       padding: 20,
+//       borderTopLeftRadius: 10,
+//       borderTopRightRadius: 10,
+//     },
+//     confirmButton: {
+//       backgroundColor: "#007BFF",
+//       paddingVertical: 10,
+//       borderRadius: 5,
+//       alignItems: "center",
+//       marginTop: 10,
+//     },
+//     confirmButtonText: {
+//       color: "#fff",
+//       fontWeight: "bold",
+//       fontSize: 16,
+//     },
+//     textPlaceholder: {
+//       color: "#aaa",
+//     },
+//     textSelected: {
+//       color: "#000",
+//     },
+//   });
 
 export default SignupPage;

@@ -1,6 +1,10 @@
 import { ProjectPrivacy } from "expo/config";
 import { demoProjects } from "../demoData/projects";
 
+export interface CustomField {
+  fieldname: string;
+  fieldvalue: string;
+}
 export interface Project {
   projectid: number;
   title: string;
@@ -15,8 +19,9 @@ export interface Project {
   departmentid: number;
   createdat: string;
   updatedat: string;
-}
 
+  customFields?: CustomField[];
+}
 
 export const getAllProjects = (): Project[] => {
   return demoProjects;
@@ -50,5 +55,9 @@ export const countActiveProjects = (): number => {
 };
 
 export const createProject = (newProject: Project): void => {
+  if (!newProject.customFields) {
+    newProject.customFields = [];
+  }
+  // newProject.projectid = demoProjects.length + 1; // Assign a new ID
   demoProjects.push(newProject);
 };
