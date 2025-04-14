@@ -159,7 +159,7 @@ const ProfileScreen: React.FC = () => {
               </View>
             </View>
             <Text style={styles.dob}>
-              Date of Birth: {formatDate(user.dob, dateFormat)}
+              Date of Birth: {user.dob ? formatDate(user.dob, dateFormat) : "N/A"}
             </Text>
             <Text style={styles.role}>
               Role:{" "}
