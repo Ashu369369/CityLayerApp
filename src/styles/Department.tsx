@@ -1,7 +1,5 @@
 import { StyleSheet } from "react-native";
 import { DynamicTheme } from "../theme/theme";
-import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
-
 const useStyles = (theme: DynamicTheme) =>
   StyleSheet.create({
     container: {

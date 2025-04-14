@@ -11,8 +11,17 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   View,
+  Pressable
 } from "react-native";
-import { Text, TextInput, Button, Dialog, Portal } from "react-native-paper";
+import {
+  Text,
+  TextInput,
+  Button,
+  Dialog,
+  Portal,
+  Icon,
+  IconButton,
+} from "react-native-paper";
 import ErrorBox from "../component/ErrorBox"; // Import the ErrorBox component\
 import {
   createUser,
@@ -269,17 +278,15 @@ const SignupPage: React.FC = () => {
       {/* <ErrorBox errorMessage={errors.dob} /> */}
 
       {/* Date of Birth Field */}
-      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-        <View pointerEvents="box-none">
-          <TextInput
-            label="Date of Birth (YYYY-MM-DD)"
-            mode="outlined"
-            value={formData.dob}
-            style={styles.input}
-            editable={false} // still prevents manual input
-          />
+      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+        <View pointerEvents="none" style={{ flexDirection: "row",alignItems:"center" }}>
+          <IconButton icon="calendar-range" size={20} iconColor={theme.colors.backdrop} />
+          <Text style={styles.input}>
+            {formData.dob ? formData.dob : 'Date of Birth (YYYY-MM-DD)'}
+          </Text>
         </View>
       </TouchableOpacity>
+
       {/* DateTimePicker for iOS */}
       {Platform.OS === "ios" && showDatePicker && (
         <Portal>
@@ -292,7 +299,7 @@ const SignupPage: React.FC = () => {
               <DateTimePicker
                 value={selectedDate || new Date()}
                 mode="date"
-                display="spinner"
+                display="inline"
                 onChange={handleDateChange}
                 maximumDate={new Date()} // Prevent selecting future dates
               />
