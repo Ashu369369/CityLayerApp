@@ -1,9 +1,12 @@
 import { ProjectPrivacy } from "expo/config";
 import { demoProjects } from "../demoData/projects";
+import { customfieldproject } from "../demoData/customFields";
 
 export interface CustomField {
-  fieldname: string;
-  fieldvalue: string;
+  customId: number;
+  projectId: number;
+  fieldName: string;
+  fieldValue: string;
 }
 export interface Project {
   projectid: number;
@@ -55,9 +58,20 @@ export const countActiveProjects = (): number => {
 };
 
 export const createProject = (newProject: Project): void => {
-  if (!newProject.customFields) {
-    newProject.customFields = [];
+    if (newProject.customFields && newProject.customFields.length > 0) {
+      newProject.customFields.forEach((cf) => {
+        customfieldproject.push({
+          customId: (customfieldproject.length+1),
+          projectId: newProject.projectid,
+          fieldName: cf.fieldName,
+          fieldValue: cf.fieldValue,
+        });
+      })
   }
-  // newProject.projectid = demoProjects.length + 1; // Assign a new ID
+  delete newProject.customFields;
   demoProjects.push(newProject);
+};
+
+export const getCustomFieldsByProjectId = (projectId: number): CustomField[] => {
+  return customfieldproject.filter((field) => field.projectId === projectId);
 };
