@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { View, FlatList, TouchableOpacity, Alert } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
-import notificationsData, { markNotificationAsRead } from "../demoData/notifications";
+import notificationsData, {
+  markNotificationAsRead,
+} from "../demoData/notifications";
 import useStyles from "../styles/Notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
@@ -12,13 +14,18 @@ import { formatDate } from "../Tools/formatDate";
 
 const NotificationsScreen: React.FC = () => {
   const theme = useTheme();
-  const dateFormat = useSelector((state : RootState) => state.preferences.dateFormat);
+  const dateFormat = useSelector(
+    (state: RootState) => state.preferences.dateFormat
+  );
   const styles = useStyles(theme as DynamicTheme);
   const currentUserId = useSelector((state: RootState) => state.user.id);
   const currentUserRole = useSelector((state: RootState) => state.user.role);
 
   const [notifications, setNotifications] = useState(
-    [...notificationsData].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    [...notificationsData].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
   );
 
   const [severityFilter, setSeverityFilter] = useState("");
@@ -52,12 +59,20 @@ const NotificationsScreen: React.FC = () => {
     React.useCallback(() => {
       return () => {
         notificationsData.forEach((notification) => {
-          if (!notification.readBy.includes(currentUserId ? currentUserId : 0)) {
-            markNotificationAsRead(notification.notificationId, currentUserId ? currentUserId : 0);
+          if (
+            !notification.readBy.includes(currentUserId ? currentUserId : 0)
+          ) {
+            markNotificationAsRead(
+              notification.notificationId,
+              currentUserId ? currentUserId : 0
+            );
           }
         });
         setNotifications(
-          [...notificationsData].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          [...notificationsData].sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
         );
       };
     }, [currentUserId])
@@ -88,7 +103,11 @@ const NotificationsScreen: React.FC = () => {
     }
   };
 
-  const renderNotification = ({ item }: { item: typeof notificationsData[0] }) => {
+  const renderNotification = ({
+    item,
+  }: {
+    item: (typeof notificationsData)[0];
+  }) => {
     const isRead = item.readBy.includes(currentUserId ? currentUserId : 0);
     const severityStyle = getSeverityStyle(item.severity);
 
@@ -133,8 +152,8 @@ const NotificationsScreen: React.FC = () => {
               styles.filterButton,
               severityFilter === level && styles.activeFilterButton,
             ]}
-            onPress={() =>
-              setSeverityFilter(severityFilter === level ? "" : level) // Toggle filter
+            onPress={
+              () => setSeverityFilter(severityFilter === level ? "" : level) // Toggle filter
             }
           >
             <View style={styles.filterItem}>

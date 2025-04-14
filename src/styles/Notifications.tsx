@@ -1,114 +1,103 @@
+// src/styles/Notifications.ts
 import { StyleSheet } from "react-native";
 import { DynamicTheme } from "../theme/theme";
 
-const useStyles = (theme: DynamicTheme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.grey,
-    padding: 0,
-  },
-  notificationCard: {
-    // marginBottom: 10,
-    padding: 5,
-    borderRadius: 0,
-    elevation: 3,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    shadowOpacity: 0.2,
-    borderWidth: 1, // Default thin border for all notifications
-    borderLeftWidth: 10, // Thicker left border for severity
-    backgroundColor: theme.colors.disabled, // Background color for unread notifications
-    borderRightColor: theme.colors.disabled, // Default border color
-    borderTopColor: theme.colors.disabled, // Default border color
-    borderBottomColor: theme.colors.surface, // Default border color
-  },
-  unreadNotification: {
-    backgroundColor: theme.colors.surface,
-  },
-  severityImportant: {
-    color: theme.colors.error,
-    borderLeftColor: theme.colors.error, // Red left border for important severity
-  },
-  severityWarning: {
-    borderLeftColor: "#FFA500", // Yellow left border for warning severity
-  },
-  severityGeneral: {
-    borderLeftColor: theme.colors.primary, // Blue left border for general severity
-  },
-  severityDefault: {
-    borderLeftColor: theme.colors.placeholder, // Grey left border for other cases
-  },
-  notificationTitle: {
-    // fontSize: theme.fonts.medium.fontSize,
-    fontWeight: "bold",
-    color: theme.colors.backdrop,
-    marginBottom: 5,
-  },
-  notificationDescription: {
-    // fontSize: theme.fonts.regular.fontSize,
-    color: theme.colors.text,
-    marginBottom: 10,
-  },
-  notificationMeta: {
-    // fontSize: theme.fonts.small.fontSize,
-    color: theme.colors.placeholder,
-  },
-  noNotifications: {
-    // fontSize: theme.fonts.medium.fontSize,
-    color: theme.colors.text,
-    textAlign: "center",
-    marginTop: 20,
-  },
-  deleteButton: {
-    marginTop: 10,
-    padding: 5,
-    backgroundColor: theme.colors.white,
-    borderWidth: 1,
-    borderColor: theme.colors.white,
-    borderRadius: 5,
-    alignItems: "center",
-    opacity: 0.5,
-  },
-  deleteButtonText: {
-    color: "grey",
-    fontWeight: "bold",
-  },
-  filterContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 10,
-    backgroundColor: theme.colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.backdrop,
-  },
-  filterButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 5,
-    borderWidth: 0,
-  },
-  activeFilterButton: {
-    backgroundColor: "#000",
-    borderColor: "#6FBBB1",
-  },
-  filterButtonText: {
-    fontSize: 14,
-    color: "#555",
-  },
-  activeFilterButtonText: {
-    color: "#fff",
-  },
-  filterItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  severityDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 0,
-    marginRight: 8,
-    color: "#000",
-  },
-});
-
-export default useStyles;
+export default (theme: DynamicTheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+      padding: 12,
+    },
+    filterContainer: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      marginBottom: 12,
+    },
+    filterButton: {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderRadius: 20,
+      backgroundColor: theme.colors.surface,
+    },
+    activeFilterButton: {
+      backgroundColor: theme.colors.primary,
+    },
+    filterItem: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    severityDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      marginRight: 6,
+    },
+    filterButtonText: {
+      fontSize: theme.fonts.regular.fontSize,
+      color: theme.colors.text,
+    },
+    activeFilterButtonText: {
+      color: theme.colors.oppositeText,
+      fontWeight: "600",
+    },
+    notificationCard: {
+      marginBottom: 12,
+      borderRadius: 8,
+      backgroundColor: theme.colors.surface,
+      elevation: 2,
+    },
+    unreadNotification: {
+      borderWidth: 2,
+      borderColor: theme.colors.accent,
+    },
+    severityImportant: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.error,
+    },
+    severityWarning: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.warning,
+    },
+    severityGeneral: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.primary,
+    },
+    severityDefault: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.placeholder,
+    },
+    notificationTitle: {
+      fontSize: theme.fonts.medium.fontSize,
+      fontWeight: "600",
+      color: theme.colors.text,
+      marginBottom: 4,
+    },
+    notificationDescription: {
+      fontSize: theme.fonts.regular.fontSize,
+      color: theme.colors.text,
+      marginBottom: 8,
+    },
+    notificationMeta: {
+      fontSize: theme.fonts.light.fontSize,
+      color: theme.colors.placeholder,
+      marginBottom: 8,
+    },
+    deleteButton: {
+      alignSelf: "flex-end",
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+      borderRadius: 4,
+      backgroundColor: theme.colors.error,
+    },
+    deleteButtonText: {
+      fontSize: theme.fonts.light.fontSize,
+      color: theme.colors.oppositeText,
+    },
+    noNotifications: {
+      textAlign: "center",
+      marginTop: 40,
+      fontSize: theme.fonts.regular.fontSize,
+      color: theme.colors.placeholder,
+    },
+  });
